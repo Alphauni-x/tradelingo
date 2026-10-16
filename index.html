@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>贸语通 · 外贸与国际物流英语学习平台</title>
+<style>
+  :root{
+    --navy:#12305e; --navy2:#1b4380; --navy3:#0d2449;
+    --gold:#c9a227; --gold2:#e3c25c;
+    --bg:#f4f6fa; --line:#e3e8f0; --text:#22304a; --muted:#6b7a93;
+    --green:#1e8e5a; --red:#c0392b; --orange:#d97e1a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Microsoft YaHei","PingFang SC","Segoe UI",sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+  .app{display:flex;min-height:100vh;}
+
+  /* ===== 侧边栏 ===== */
+  .sidebar{width:220px;background:linear-gradient(180deg,var(--navy3),var(--navy));color:#fff;display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:10;}
+  .logo{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.12);}
+  .logo .cn{font-family:"STZhongsong","SimSun",serif;font-size:22px;letter-spacing:3px;color:#fff;}
+  .logo .cn b{color:var(--gold2);}
+  .logo .en{font-size:10px;letter-spacing:1.6px;color:rgba(255,255,255,.55);margin-top:4px;text-transform:uppercase;}
+  .nav{flex:1;padding:14px 0;}
+  .nav-item{display:flex;align-items:center;gap:10px;width:100%;padding:12px 20px;background:none;border:none;color:rgba(255,255,255,.72);font-size:14px;cursor:pointer;text-align:left;border-left:3px solid transparent;transition:.15s;}
+  .nav-item:hover{color:#fff;background:rgba(255,255,255,.06);}
+  .nav-item.active{color:#fff;background:rgba(255,255,255,.1);border-left-color:var(--gold);}
+  .nav-item .ico{width:18px;text-align:center;font-size:15px;}
+  .nav-item .badge{margin-left:auto;background:var(--gold);color:#fff;font-size:11px;border-radius:10px;padding:1px 7px;}
+  .side-footer{padding:14px 20px;font-size:11px;color:rgba(255,255,255,.4);border-top:1px solid rgba(255,255,255,.1);line-height:1.7;}
+
+  /* ===== 主区 ===== */
+  .main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-width:0;}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;}
+  .topbar h1{font-size:17px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:10px;}
+  .topbar h1::before{content:"";display:block;width:4px;height:16px;background:var(--gold);border-radius:2px;}
+  .top-right{font-size:12px;color:var(--muted);display:flex;gap:14px;align-items:center;}
+  .top-right b{color:var(--navy);}
+  .content{padding:24px 28px;max-width:1150px;width:100%;}
+
+  /* ===== 通用组件 ===== */
+  .card{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 1px 3px rgba(18,48,94,.05);margin-bottom:20px;overflow:hidden;}
+  .card-head{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:#fbfcfe;flex-wrap:wrap;gap:8px;}
+  .card-head h3{font-size:15px;color:var(--navy);font-weight:600;}
+  .card-body{padding:20px;}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:6px;border:1px solid var(--navy);background:var(--navy);color:#fff;font-size:13px;cursor:pointer;transition:.15s;}
+  .btn:hover{background:var(--navy2);}
+  .btn.ghost{background:#fff;color:var(--navy);}
+  .btn.ghost:hover{background:#eef3fa;}
+  .btn.gold{background:var(--gold);border-color:var(--gold);color:#fff;}
+  .btn.gold:hover{background:#b8931f;}
+  .btn.sm{padding:5px 11px;font-size:12px;}
+  .btn.danger{background:#fff;color:var(--red);border-color:var(--red);}
+  .btn.danger:hover{background:#fdf0ee;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;background:#eef3fa;color:var(--navy);border:1px solid #d8e2f0;margin:2px 4px 2px 0;}
+  .tag.gold{background:#faf5e4;color:#8a6d14;border-color:#e8d9a0;}
+  .muted{color:var(--muted);}
+  .num{font-family:Georgia,serif;}
+  input[type=text],textarea,select{border:1px solid #ccd6e4;border-radius:6px;padding:9px 12px;font-size:13px;font-family:inherit;width:100%;outline:none;background:#fff;color:var(--text);}
+  input[type=text]:focus,textarea:focus{border-color:var(--navy2);box-shadow:0 0 0 3px rgba(27,67,128,.1);}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{background:#f0f4f9;color:var(--navy);text-align:left;padding:10px 14px;font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap;}
+  td{padding:11px 14px;border-bottom:1px solid #eef1f6;vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr.row-hover:hover td{background:#f8fafd;}
+  .icon-btn{background:#eef3fa;border:1px solid #d8e2f0;border-radius:50%;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--navy);transition:.15s;padding:0;line-height:1;flex:none;}
+  .icon-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .mini-btn{background:none;border:none;cursor:pointer;font-size:16px;color:#c3ccda;padding:2px 5px;line-height:1;}
+  .mini-btn:hover{color:var(--gold);}
+  .mini-btn.on{color:var(--gold);}
+  .toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);background:rgba(13,36,73,.94);color:#fff;padding:10px 20px;border-radius:6px;font-size:13px;z-index:300;max-width:80%;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.25);}
+  .kbd{display:inline-block;background:#f0f4f9;border:1px solid #d8e2f0;border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:11px;font-family:Consolas,monospace;color:var(--navy);}
+  @keyframes fadeIn{from{opacity:0}}
+
+  /* ===== 总览 ===== */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px 20px;position:relative;overflow:hidden;}
+  .stat::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;}
+  .stat.s1::before{background:var(--navy);} .stat.s2::before{background:var(--gold);}
+  .stat.s3::before{background:var(--green);} .stat.s4::before{background:var(--orange);}
+  .stat .label{font-size:12px;color:var(--muted);}
+  .stat .val{font-size:30px;font-weight:700;color:var(--navy);margin-top:6px;font-family:Georgia,serif;}
+  .stat .sub{font-size:11px;color:var(--muted);margin-top:4px;}
+  .task-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;}
+  .task{border:1px solid var(--line);border-radius:8px;padding:14px;text-align:center;background:#fbfcfe;}
+  .task .v{font-size:24px;font-weight:700;font-family:Georgia,serif;color:var(--navy);}
+  .task .k{font-size:12px;color:var(--muted);margin-top:3px;}
+  .task.due .v{color:var(--red);} .task.star .v{color:var(--gold);}
+  .task.wrong .v{color:var(--orange);} .task.today .v{color:var(--green);}
+  .progress-wrap{margin-top:6px;}
+  .bar{height:8px;background:#e8edf4;border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle;}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--navy2),var(--gold));border-radius:4px;}
+  .empty{text-align:center;padding:50px 20px;color:var(--muted);}
+  .empty .big{font-size:38px;margin-bottom:12px;}
+
+  /* ===== 筛选栏 ===== */
+  .filter-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;}
+  .filter-bar input{max-width:220px;}
+  .filter-bar select{width:auto;min-width:120px;}
+  .word-term{font-weight:600;color:var(--navy);font-size:14px;}
+  .word-phon{color:var(--muted);font-size:12px;font-family:Georgia,serif;}
+  .pos-chip{display:inline-block;font-size:11px;color:#8a6d14;background:#faf5e4;border:1px solid #e8d9a0;border-radius:3px;padding:1px 6px;margin-right:6px;font-style:italic;}
+  .mastery-dots{letter-spacing:2px;font-size:12px;white-space:nowrap;}
+  .mastery-dots .on{color:var(--gold);} .mastery-dots .off{color:#d9dfe8;}
+
+  /* ===== 翻转卡片 ===== */
+  .flash-stage{display:flex;flex-direction:column;align-items:center;padding:10px 0;}
+  .flash-counter{font-size:12px;color:var(--muted);margin-bottom:14px;text-align:center;line-height:1.9;}
+  .flash-card{width:100%;max-width:640px;min-height:300px;background:linear-gradient(160deg,#fff,#f6f9fd);border:2px solid var(--navy);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:34px;cursor:pointer;position:relative;box-shadow:0 6px 18px rgba(18,48,94,.1);}
+  .flash-say{position:absolute;top:14px;right:16px;}
+  .flash-term{font-size:32px;font-weight:700;color:var(--navy);font-family:Georgia,serif;}
+  .flash-phon{color:var(--muted);margin-top:8px;font-family:Georgia,serif;}
+  .flash-zh{font-size:22px;color:var(--text);font-weight:600;}
+  .flash-def{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.8;max-width:480px;}
+  .flash-ex{margin-top:12px;font-size:13px;color:var(--navy2);line-height:1.7;font-style:italic;}
+  .flash-btns{display:flex;gap:14px;margin-top:22px;}
+  .grade-btn{padding:10px 26px;border-radius:8px;border:none;font-size:14px;cursor:pointer;color:#fff;transition:.15s;}
+  .grade-btn:hover{transform:translateY(-1px);filter:brightness(1.08);}
+  .g-no{background:var(--red);} .g-mid{background:var(--orange);} .g-yes{background:var(--green);}
+
+  /* ===== 句子 ===== */
+  .sent-en{font-size:15px;color:var(--text);line-height:1.7;}
+  .sent-zh{font-size:13px;color:var(--muted);line-height:1.7;margin-top:6px;transition:.2s;}
+  .scene-chip{display:inline-block;font-size:11px;background:#eef6ef;color:var(--green);border:1px solid #cfe6d4;border-radius:3px;padding:1px 7px;}
+
+  /* ===== 测验 ===== */
+  .quiz-opt{display:block;width:100%;text-align:left;padding:14px 18px;margin-bottom:12px;background:#fff;border:1px solid #ccd6e4;border-radius:8px;font-size:14px;cursor:pointer;transition:.12s;color:var(--text);}
+  .quiz-opt:hover{border-color:var(--navy2);background:#f6f9fd;}
+  .quiz-opt.correct{border-color:var(--green);background:#eef8f2;color:var(--green);font-weight:600;}
+  .quiz-opt.wrong{border-color:var(--red);background:#fdf0ee;color:var(--red);}
+  .quiz-opt:disabled{cursor:default;}
+  .quiz-q{font-size:20px;font-weight:600;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .quiz-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:18px;}
+  .score-ring{width:120px;height:120px;border-radius:50%;border:10px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:var(--green);margin:0 auto 16px;font-family:Georgia,serif;}
+  .spell-input{max-width:360px;margin:0 auto;display:block;text-align:center;font-size:16px;}
+  .dictation-box{text-align:center;padding:10px 0 4px;}
+
+  /* ===== 数据管理 ===== */
+  .drop-zone{border:2px dashed #c3d0e2;border-radius:8px;padding:30px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s;background:#fbfcfe;}
+  .drop-zone:hover,.drop-zone.drag{border-color:var(--navy2);background:#f2f6fc;}
+  textarea.code{font-family:Consolas,monospace;font-size:12px;min-height:130px;line-height:1.6;}
+  .msg{padding:10px 14px;border-radius:6px;font-size:13px;margin-bottom:12px;display:none;}
+  .msg.ok{background:#eef8f2;color:var(--green);border:1px solid #cfe6d4;display:block;}
+  .msg.err{background:#fdf0ee;color:var(--red);border:1px solid #f0cdc9;display:block;}
+  .setting-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+  .setting-row .lab{width:96px;color:var(--muted);font-size:13px;flex:none;}
+  .setting-row select{width:auto;min-width:170px;}
+  .setting-row input[type=range]{width:170px;}
+
+  /* ===== 弹窗 ===== */
+  .modal-mask{position:fixed;inset:0;background:rgba(13,36,73,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;animation:fadeIn .15s;}
+  .modal{background:#fff;border-radius:10px;max-width:660px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.2);}
+  .modal-head{padding:16px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#fbfcfe;position:sticky;top:0;z-index:2;}
+  .modal-head h3{color:var(--navy);font-size:16px;display:flex;align-items:center;gap:10px;}
+  .modal-close{border:none;background:none;font-size:20px;color:var(--muted);cursor:pointer;}
+  .modal-body{padding:24px;}
+  .detail-row{margin-bottom:16px;}
+  .detail-row .k{font-size:12px;color:var(--muted);margin-bottom:4px;}
+  .detail-row .v{font-size:14px;line-height:1.7;}
+  .form-row{margin-bottom:14px;}
+  .form-row .k{font-size:12px;color:var(--muted);margin-bottom:5px;}
+
+  /* ===== 悬停查词 ===== */
+  .hiword{cursor:help;border-bottom:1px dashed transparent;border-radius:2px;padding:0 1px;transition:background .12s;}
+  .hiword.known{border-bottom-color:#cfd9e6;}
+  .hiword:hover{background:#fff3cf;border-bottom-color:var(--gold);color:var(--navy3);}
+  .dict-pop{position:fixed;z-index:400;display:none;max-width:320px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;box-shadow:0 10px 30px rgba(18,48,94,.2);padding:12px 14px;}
+  .dict-pop .dw{display:flex;align-items:center;gap:8px;font-family:Georgia,serif;font-size:17px;font-weight:700;color:var(--navy);}
+  .dict-pop .dterm{cursor:pointer;border-bottom:1px dashed var(--gold);}
+  .dict-pop .dterm:hover{color:var(--navy2);background:#fff6d8;}
+  .dict-pop .dp{font-family:Georgia,serif;font-size:12px;color:var(--muted);margin-top:3px;}
+  .dict-pop .dm{font-size:14px;font-weight:600;color:var(--text);margin-top:8px;line-height:1.6;}
+  .dict-pop .dn{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6;}
+  .dict-pop .dmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted);}
+  .dict-pop .src{background:#eef3fa;border:1px solid #d8e2f0;border-radius:3px;padding:1px 6px;color:var(--navy);}
+  .dict-pop .dok{color:var(--green);}
+  .dict-pop .dadd{border:none;background:none;color:var(--navy2);cursor:pointer;font-size:11px;padding:0;text-decoration:underline;font-family:inherit;}
+  .dict-pop .dhint{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font-size:11px;color:var(--muted);}
+
+  @media (max-width:900px){
+    .sidebar{width:64px;} .logo .cn,.logo .en,.nav-item .txt,.nav-item .badge,.side-footer{display:none;}
+    .main{margin-left:64px;} .stat-grid,.task-grid{grid-template-columns:repeat(2,1fr);}
+    .content{padding:18px 14px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="cn">贸语<b>通</b></div>
+      <div class="en">TradeLingo · FT &amp; Logistics English</div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')"><span class="ico">📊</span><span class="txt">学习总览</span></button>
+      <button class="nav-item" data-view="words" onclick="switchView('words')"><span class="ico">📖</span><span class="txt">单词学习</span><span class="badge" id="navDue" style="display:none">0</span></button>
+      <button class="nav-item" data-view="sentences" onclick="switchView('sentences')"><span class="ico">✉️</span><span class="txt">句子学习</span></button>
+      <button class="nav-item" data-view="quiz" onclick="switchView('quiz')"><span class="ico">✏️</span><span class="txt">测验中心</span></button>
+      <button class="nav-item" data-view="data" onclick="switchView('data')"><span class="ico">🗂️</span><span class="txt">数据管理</span></button>
+    </nav>
+    <div class="side-footer">v1.4 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h1 id="viewTitle">学习总览</h1>
+      <div class="top-right">
+        <span>待复习 <b id="topDue">0</b></span>
+        <span>词库 <b id="topWords">0</b></span>
+        <span>句库 <b id="topSents">0</b></span>
+      </div>
+    </div>
+    <div class="content" id="viewRoot"></div>
+  </div>
+</div>
+<div id="modalRoot"></div>
+
+<script>
+/* ================= 工具 ================= */
+const STORE_KEY = 'tradelingo_v1';
+/* 间隔重复阶梯（天）：level 0 → 6 */
+const REVIEW_DAYS = [0, 1, 2, 4, 7, 15, 30];
+function uid(p){ return p + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(ts){ const d=new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function todayKey(){ return fmtDate(Date.now()); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function pickN(arr,n){ return shuffle([...arr]).slice(0,n); }
+function uniq(arr){ return [...new Set(arr)]; }
+let _toastTimer=null;
+function toast(msg){
+  let el = document.getElementById('toastBox');
+  if(!el){ el=document.createElement('div'); el.id='toastBox'; el.className='toast'; document.body.appendChild(el); }
+  el.textContent = msg; el.style.display='block';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>{ el.style.display='none'; }, 2200);
+}
+
+/* ================= 数据层 ================= */
+function emptyDB(){ return { words:[], sentences:[], imports:[], quizLog:[], studyLog:{},
+  settings:{ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true } }; }
+function loadDB(){
+  try{ const raw = localStorage.getItem(STORE_KEY); if(!raw) return emptyDB();
+    return Object.assign(emptyDB(), JSON.parse(raw));
+  }catch(e){ return emptyDB(); }
+}
+function saveDB(){ invalidateDictIndex(); try{ localStorage.setItem(STORE_KEY, JSON.stringify(DB)); }catch(e){ console.warn(e); } }
+let DB = loadDB();
+/* 兼容旧版本数据 */
+function migrate(){
+  DB.settings = Object.assign({ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true }, DB.settings||{});
+  if(!DB.studyLog) DB.studyLog = {};
+  DB.words.forEach(w=>{
+    if(w.starred==null) w.starred=false;
+    if(w.wrongBook==null) w.wrongBook=false;
+    if(w.level==null) w.level = w.mastery||0;
+    if(w.nextReviewAt==null) w.nextReviewAt=0;
+    if(w.lastReviewAt==null) w.lastReviewAt=0;
+  });
+  DB.sentences.forEach(s=>{ if(s.starred==null) s.starred=false; });
+}
+
+/* ================= 发音模块 ================= */
+let _audioEl = null, _onlineDisabled = false;
+function hasLocalTTS(){ return typeof window!=='undefined' && 'speechSynthesis' in window; }
+function pickVoice(lang){
+  if(!hasLocalTTS()) return null;
+  let vs = [];
+  try{ vs = speechSynthesis.getVoices()||[]; }catch(e){ return null; }
+  const norm = l => String(l||'').replace('_','-').toLowerCase();
+  return vs.find(v=>norm(v.lang)===lang.toLowerCase())
+      || vs.find(v=>norm(v.lang).startsWith(lang.slice(0,2)))
+      || null;
+}
+function speakLocal(text){
+  if(!hasLocalTTS()){ toast('当前浏览器不支持本地语音合成'); return; }
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = DB.settings.accent==='uk' ? 'en-GB' : 'en-US';
+    u.rate = DB.settings.rate; u.pitch = 1; u.volume = 1;
+    const v = pickVoice(u.lang); if(v) u.voice = v;
+    speechSynthesis.speak(u);
+  }catch(e){ console.warn(e); }
+}
+function speakOnline(text, onFail){
+  try{
+    if(typeof Audio==='undefined'){ if(onFail) onFail(); return; }
+    if(!_audioEl) _audioEl = new Audio();
+    const type = DB.settings.accent==='uk' ? 1 : 2;
+    _audioEl.onerror = ()=>{ if(onFail) onFail(); };
+    _audioEl.src = 'https://dict.youdao.com/dictvoice?audio='+encodeURIComponent(text)+'&type='+type;
+    const p = _audioEl.play();
+    if(p && p.catch) p.catch(()=>{ if(onFail) onFail(); });
+  }catch(e){ if(onFail) onFail(); }
+}
+/* 主发音入口：auto = 在线优先，失败回退本地（5 分钟内不再重试在线） */
+function speak(text){
+  if(!text) return;
+  text = String(text).trim();
+  const eng = DB.settings.engine;
+  if(eng==='local'){ speakLocal(text); return; }
+  if(eng==='online'){ speakOnline(text, ()=>toast('在线发音失败，请检查网络或改用本地语音')); return; }
+  if(_onlineDisabled){ speakLocal(text); return; }
+  speakOnline(text, ()=>{
+    _onlineDisabled = true;
+    setTimeout(()=>{ _onlineDisabled=false; }, 5*60*1000);
+    speakLocal(text);
+  });
+}
+function speakEl(el){
+  if(!el) return;
+  try{ if(window.event && window.event.stopPropagation) window.event.stopPropagation(); }catch(e){}
+  speak(el.getAttribute('data-say'));
+}
+function previewVoice(){ speak('Bill of Lading'); }
+
+/* ================= 悬停查词（内置常用词库 + 词库 + 在线兜底） =================
+   格式：词条|音标|词性|中文释义   （含空格的词组会先整段匹配，如 Bill of Lading） */
+const COMMON_RAW = `
+the|/ðə/|art.|这；那个（定冠词）
+a|/ə/|art.|一个
+an|/ən/|art.|一个（元音前）
+of|/əv/|prep.|…的；属于
+and|/ænd/|conj.|和；并且
+or|/ɔː/|conj.|或者；否则
+but|/bʌt/|conj.|但是
+to|/tuː/|prep.|到；向；为了
+in|/ɪn/|prep.|在…里；在…方面
+on|/ɒn/|prep.|在…上；关于
+at|/æt/|prep.|在（某地/某时）；以（某价格）
+for|/fɔː/|prep.|为了；对于
+with|/wɪð/|prep.|和…一起；带有
+by|/baɪ/|prep.|由；通过；以…方式
+from|/frɒm/|prep.|从；来自
+as|/æz/|conj.|作为；如同
+if|/ɪf/|conj.|如果
+so|/səʊ/|conj.|所以；因此
+that|/ðæt/|pron.|那个；那
+this|/ðɪs/|pron.|这个
+these|/ðiːz/|pron.|这些
+those|/ðəʊz/|pron.|那些
+it|/ɪt/|pron.|它
+its|/ɪts/|pron.|它的
+we|/wiː/|pron.|我们
+our|/ˈaʊə/|pron.|我们的
+us|/ʌs/|pron.|我们（宾格）
+you|/juː/|pron.|你；你们
+your|/jɔː/|pron.|你的；你们的
+they|/ðeɪ/|pron.|他们
+their|/ðeə/|pron.|他们的
+i|/aɪ/|pron.|我
+me|/miː/|pron.|我（宾格）
+my|/maɪ/|pron.|我的
+he|/hiː/|pron.|他
+she|/ʃiː/|pron.|她
+is|/ɪz/|v.|是（be 的第三人称单数）
+am|/æm/|v.|是（be 的第一人称单数）
+are|/ɑː/|v.|是（be 的复数/第二人称）
+was|/wɒz/|v.|是（过去式单数）
+were|/wɜː/|v.|是（过去式复数）
+be|/biː/|v.|是；成为
+been|/biːn/|v.|be 的过去分词
+will|/wɪl/|v.|将；会
+would|/wʊd/|v.|将会；愿意（委婉）
+shall|/ʃæl/|v.|将（合同条款常用）
+should|/ʃʊd/|v.|应该
+can|/kæn/|v.|能；可以
+could|/kʊd/|v.|能够（委婉请求）
+may|/meɪ/|v.|可以；可能
+might|/maɪt/|v.|可能
+must|/mʌst/|v.|必须
+have|/hæv/|v.|有；已经
+has|/hæz/|v.|有（第三人称单数）
+had|/hæd/|v.|有（过去式）
+do|/duː/|v.|做；助动词
+does|/dʌz/|v.|做（第三人称单数）
+did|/dɪd/|v.|做（过去式）
+not|/nɒt/|adv.|不；没有
+no|/nəʊ/|adv.|不；没有
+yes|/jes/|adv.|是的
+please|/pliːz/|adv.|请
+kindly|/ˈkaɪndli/|adv.|请；劳驾（函电常用）
+thank|/θæŋk/|v.|感谢
+thanks|/θæŋks/|n.|感谢
+sorry|/ˈsɒri/|adj.|抱歉的
+dear|/dɪə/|adj.|亲爱的（函电称呼）
+regards|/rɪˈɡɑːdz/|n.|问候（函电结尾）
+sincerely|/sɪnˈsɪəli/|adv.|真诚地（函电结尾）
+all|/ɔːl/|adj.|所有的
+any|/ˈeni/|adj.|任何的
+each|/iːtʃ/|adj.|每个
+every|/ˈevri/|adj.|每一个
+some|/sʌm/|adj.|一些
+more|/mɔː/|adj.|更多的
+most|/məʊst/|adj.|最多的
+such|/sʌtʃ/|adj.|这样的
+very|/ˈveri/|adv.|非常
+too|/tuː/|adv.|也；太
+also|/ˈɔːlsəʊ/|adv.|也；另外
+however|/haʊˈevə/|adv.|然而
+therefore|/ˈðeəfɔː/|adv.|因此
+accordingly|/əˈkɔːdɪŋli/|adv.|相应地；因此
+hereby|/ˌhɪəˈbaɪ/|adv.|特此（函电、合同常用）
+herewith|/ˌhɪəˈwɪð/|adv.|随函（附上）
+herein|/ˌhɪərˈɪn/|adv.|在此（本文件中）
+thereof|/ˌðeərˈɒv/|adv.|其；由此（合同用语）
+accept|/əkˈsept/|v.|接受；承兑
+advise|/ədˈvaɪz/|v.|通知；建议
+agree|/əˈɡriː/|v.|同意
+allow|/əˈlaʊ/|v.|允许；给予（折扣等）
+apply|/əˈplaɪ/|v.|申请；适用
+appreciate|/əˈpriːʃieɪt/|v.|感激；感谢
+arrange|/əˈreɪndʒ/|v.|安排
+arrive|/əˈraɪv/|v.|到达
+ask|/ɑːsk/|v.|询问；要求
+avoid|/əˈvɔɪd/|v.|避免
+book|/bʊk/|v.|预订（舱位、房间）
+buy|/baɪ/|v.|购买
+cancel|/ˈkænsl/|v.|取消
+check|/tʃek/|v.|检查；核对
+collect|/kəˈlekt/|v.|收取；托收
+compare|/kəmˈpeə/|v.|比较
+comply|/kəmˈplaɪ/|v.|遵从；符合
+confirm|/kənˈfɜːm/|v.|确认
+consider|/kənˈsɪdə/|v.|考虑
+consolidate|/kənˈsɒlɪdeɪt/|v.|拼箱；合并
+contact|/ˈkɒntækt/|v.|联系
+cover|/ˈkʌvə/|v.|投保；涵盖
+declare|/dɪˈkleə/|v.|申报（海关）
+delay|/dɪˈleɪ/|v.|延迟
+deliver|/dɪˈlɪvə/|v.|交付；发运
+dispatch|/dɪˈspætʃ/|v.|发运；派遣
+discuss|/dɪˈskʌs/|v.|讨论
+draw|/drɔː/|v.|开立（汇票、信用证）
+effect|/ɪˈfekt/|v.|办理（保险等）；实现
+enclose|/ɪnˈkləʊz/|v.|随函附上
+ensure|/ɪnˈʃʊə/|v.|确保
+establish|/ɪˈstæblɪʃ/|v.|开立（信用证）；建立
+expect|/ɪkˈspekt/|v.|期望；预计
+explain|/ɪkˈspleɪn/|v.|解释
+handle|/ˈhændl/|v.|处理；操作
+hope|/həʊp/|v.|希望
+inform|/ɪnˈfɔːm/|v.|通知
+insist|/ɪnˈsɪst/|v.|坚持
+inspect|/ɪnˈspekt/|v.|检验
+issue|/ˈɪʃuː/|v.|签发；开立
+load|/ləʊd/|v.|装货
+unload|/ˌʌnˈləʊd/|v.|卸货
+locate|/ləʊˈkeɪt/|v.|位于；查找
+make|/meɪk/|v.|做；使得
+mention|/ˈmenʃn/|v.|提及
+negotiate|/nɪˈɡəʊʃieɪt/|v.|洽谈；议付
+note|/nəʊt/|v.|注意到
+offer|/ˈɒfə/|v.|报价；提供
+pack|/pæk/|v.|包装
+pay|/peɪ/|v.|付款
+permit|/pəˈmɪt/|v.|允许
+place|/pleɪs/|v.|订购（下订单）
+prefer|/prɪˈfɜː/|v.|偏好；宁愿
+prepare|/prɪˈpeə/|v.|准备
+present|/prɪˈzent/|v.|提交（单据）
+proceed|/prəˈsiːd/|v.|着手；继续
+provide|/prəˈvaɪd/|v.|提供
+purchase|/ˈpɜːtʃəs/|v.|采购
+quote|/kwəʊt/|v.|报价
+reach|/riːtʃ/|v.|到达；达成
+receive|/rɪˈsiːv/|v.|收到
+recommend|/ˌrekəˈmend/|v.|推荐；建议
+reduce|/rɪˈdjuːs/|v.|减少
+refuse|/rɪˈfjuːz/|v.|拒绝
+regret|/rɪˈɡret/|v.|遗憾；抱歉
+reject|/rɪˈdʒekt/|v.|拒收；拒绝
+release|/rɪˈliːs/|v.|放行；放货
+remind|/rɪˈmaɪnd/|v.|提醒
+remit|/rɪˈmɪt/|v.|汇付
+reply|/rɪˈplaɪ/|v.|答复
+request|/rɪˈkwest/|v.|请求
+require|/rɪˈkwaɪə/|v.|需要；要求
+reserve|/rɪˈzɜːv/|v.|预订；保留
+return|/rɪˈtɜːn/|v.|归还；返回
+revise|/rɪˈvaɪz/|v.|修改
+settle|/ˈsetl/|v.|结算；解决
+ship|/ʃɪp/|v.|装运
+sign|/saɪn/|v.|签署
+specify|/ˈspesɪfaɪ/|v.|指明；规定
+state|/steɪt/|v.|说明；陈述
+submit|/səbˈmɪt/|v.|提交
+suggest|/səˈdʒest/|v.|建议
+supply|/səˈplaɪ/|v.|供应
+transship|/trænsˈʃɪp/|v.|转船；转运
+trust|/trʌst/|v.|相信；希望
+understand|/ˌʌndəˈstænd/|v.|理解
+verify|/ˈverɪfaɪ/|v.|核实
+wait|/weɪt/|v.|等待
+welcome|/ˈwelkəm/|v.|欢迎
+account|/əˈkaʊnt/|n.|账户；账目
+advice|/ədˈvaɪs/|n.|通知（函电用语）；建议
+agent|/ˈeɪdʒənt/|n.|代理；代理人
+agreement|/əˈɡriːmənt/|n.|协议
+amount|/əˈmaʊnt/|n.|金额；数量
+applicant|/ˈæplɪkənt/|n.|申请人（开证申请人）
+balance|/ˈbæləns/|n.|余额
+bank|/bæŋk/|n.|银行
+beneficiary|/ˌbenɪˈfɪʃəri/|n.|受益人
+bill|/bɪl/|n.|账单；票据
+broker|/ˈbrəʊkə/|n.|经纪人
+buyer|/ˈbaɪə/|n.|买方
+cargo|/ˈkɑːɡəʊ/|n.|货物（船载货）
+carrier|/ˈkæriə/|n.|承运人
+carton|/ˈkɑːtn/|n.|纸箱
+catalogue|/ˈkætəlɒɡ/|n.|产品目录
+certificate|/səˈtɪfɪkət/|n.|证书
+charge|/tʃɑːdʒ/|n.|费用；收费
+claim|/kleɪm/|n.|索赔；主张
+clause|/klɔːz/|n.|条款
+client|/ˈklaɪənt/|n.|客户
+commission|/kəˈmɪʃn/|n.|佣金
+company|/ˈkʌmpəni/|n.|公司
+compensation|/ˌkɒmpenˈseɪʃn/|n.|赔偿
+complaint|/kəmˈpleɪnt/|n.|投诉；异议
+condition|/kənˈdɪʃn/|n.|条件；状况
+consignee|/ˌkɒnsaɪˈniː/|n.|收货人
+consignor|/kənˈsaɪnə/|n.|发货人
+consignment|/kənˈsaɪnmənt/|n.|一批托运货物
+container|/kənˈteɪnə/|n.|集装箱
+contract|/ˈkɒntrækt/|n.|合同
+cost|/kɒst/|n.|成本
+country|/ˈkʌntri/|n.|国家
+currency|/ˈkʌrənsi/|n.|货币
+customer|/ˈkʌstəmə/|n.|客户
+customs|/ˈkʌstəmz/|n.|海关
+damage|/ˈdæmɪdʒ/|n.|损坏
+date|/deɪt/|n.|日期
+deadline|/ˈdedlaɪn/|n.|截止期限
+delivery|/dɪˈlɪvəri/|n.|交付；交货
+detail|/ˈdiːteɪl/|n.|细节
+discount|/ˈdɪskaʊnt/|n.|折扣
+document|/ˈdɒkjumənt/|n.|单据；文件
+draft|/drɑːft/|n.|汇票；草案
+duty|/ˈdjuːti/|n.|关税；义务
+expense|/ɪkˈspens/|n.|费用；开支
+export|/ˈekspɔːt/|n.|出口
+fee|/fiː/|n.|费用
+freight|/freɪt/|n.|运费；货物
+goods|/ɡʊdz/|n.|货物
+guarantee|/ˌɡærənˈtiː/|n.|保证；担保
+import|/ˈɪmpɔːt/|n.|进口
+inspection|/ɪnˈspekʃn/|n.|检验
+insurance|/ɪnˈʃʊərəns/|n.|保险
+interest|/ˈɪntrəst/|n.|利息；兴趣
+invoice|/ˈɪnvɔɪs/|n.|发票
+item|/ˈaɪtəm/|n.|项目；商品
+letter|/ˈletə/|n.|信函
+margin|/ˈmɑːdʒɪn/|n.|利润；差额
+market|/ˈmɑːkɪt/|n.|市场
+merchandise|/ˈmɜːtʃəndaɪz/|n.|商品
+method|/ˈmeθəd/|n.|方式；方法
+order|/ˈɔːdə/|n.|订单；订购
+package|/ˈpækɪdʒ/|n.|包装；包裹
+packing|/ˈpækɪŋ/|n.|包装
+pallet|/ˈpælɪt/|n.|托盘
+payment|/ˈpeɪmənt/|n.|付款；支付
+penalty|/ˈpenəlti/|n.|罚金；罚款
+period|/ˈpɪəriəd/|n.|期限；时期
+policy|/ˈpɒləsi/|n.|保单；政策
+port|/pɔːt/|n.|港口
+price|/praɪs/|n.|价格
+product|/ˈprɒdʌkt/|n.|产品
+profit|/ˈprɒfɪt/|n.|利润
+quantity|/ˈkwɒntəti/|n.|数量
+rate|/reɪt/|n.|费率；汇率
+receipt|/rɪˈsiːt/|n.|收据
+reference|/ˈrefrəns/|n.|参考；文件编号（函电引用）
+refund|/ˈriːfʌnd/|n.|退款
+remittance|/rɪˈmɪtəns/|n.|汇款
+requirement|/rɪˈkwaɪəmənt/|n.|要求
+risk|/rɪsk/|n.|风险
+sample|/ˈsɑːmpl/|n.|样品
+seller|/ˈselə/|n.|卖方
+service|/ˈsɜːvɪs/|n.|服务
+shipment|/ˈʃɪpmənt/|n.|装运；装运的货物
+shortage|/ˈʃɔːtɪdʒ/|n.|短少；短缺
+space|/speɪs/|n.|舱位；空间
+specification|/ˌspesɪfɪˈkeɪʃn/|n.|规格说明
+stock|/stɒk/|n.|库存；现货
+supplier|/səˈplaɪə/|n.|供应商
+surcharge|/ˈsɜːtʃɑːdʒ/|n.|附加费
+survey|/ˈsɜːveɪ/|n.|检验；公证
+tariff|/ˈtærɪf/|n.|关税；运价表
+term|/tɜːm/|n.|术语；条款；期限
+time|/taɪm/|n.|时间
+total|/ˈtəʊtl/|n.|总计
+transport|/ˈtrænspɔːt/|n.|运输
+unit|/ˈjuːnɪt/|n.|单位；件
+value|/ˈvæljuː/|n.|价值；金额
+vessel|/ˈvesl/|n.|船舶
+warehouse|/ˈweəhaʊs/|n.|仓库
+weight|/weɪt/|n.|重量
+week|/wiːk/|n.|周；星期
+original|/əˈrɪdʒənl/|adj.|正本的；原始的
+irrevocable|/ɪˈrevəkəbl/|adj.|不可撤销的
+confirmed|/kənˈfɜːmd/|adj.|已确认的
+latest|/ˈleɪtɪst/|adj.|最新的
+available|/əˈveɪləbl/|adj.|可获得的；有货的
+convenient|/kənˈviːniənt/|adj.|方便的
+urgent|/ˈɜːdʒənt/|adj.|紧急的
+mutual|/ˈmjuːtʃuəl/|adj.|相互的
+partial|/ˈpɑːʃl/|adj.|部分的
+additional|/əˈdɪʃənl/|adj.|额外的
+competitive|/kəmˈpetətɪv/|adj.|有竞争力的
+net|/net/|adj.|净的（净价、净重）
+gross|/ɡrəʊs/|adj.|总的（毛重、毛价）
+bill of lading|/ˌbɪl əv ˈleɪdɪŋ/|n.|提单
+letter of credit|/ˌletər əv ˈkredɪt/|n.|信用证
+certificate of origin|/səˈtɪfɪkət əv ˈɒrɪdʒɪn/|n.|原产地证书
+packing list|/ˈpækɪŋ lɪst/|n.|装箱单
+commercial invoice|/kəˈmɜːʃl ˈɪnvɔɪs/|n.|商业发票
+proforma invoice|/prəʊˈfɔːmə ˈɪnvɔɪs/|n.|形式发票
+sales contract|/seɪlz ˈkɒntrækt/|n.|销售合同
+purchase order|/ˈpɜːtʃəs ˈɔːdə/|n.|采购订单
+shipping documents|/ˈʃɪpɪŋ ˈdɒkjumənts/|n.|装运单据
+shipping advice|/ˈʃɪpɪŋ ədˈvaɪs/|n.|装运通知
+shipping space|/ˈʃɪpɪŋ speɪs/|n.|舱位
+shipping mark|/ˈʃɪpɪŋ mɑːk/|n.|唛头
+port of loading|/pɔːt əv ˈləʊdɪŋ/|n.|装货港
+port of discharge|/pɔːt əv dɪsˈtʃɑːdʒ/|n.|卸货港
+port of destination|/pɔːt əv ˌdestɪˈneɪʃn/|n.|目的港
+customs clearance|/ˈkʌstəmz ˈklɪərəns/|n.|清关；报关
+customs declaration|/ˈkʌstəmz ˌdekləˈreɪʃn/|n.|报关单
+free time|/friː taɪm/|n.|免箱期；免堆期
+lead time|/ˈliːd taɪm/|n.|交货周期；前置时间
+unit price|/ˈjuːnɪt praɪs/|n.|单价
+total amount|/ˈtəʊtl əˈmaʊnt/|n.|总金额
+payment terms|/ˈpeɪmənt tɜːmz/|n.|付款条件
+delivery time|/dɪˈlɪvəri taɪm/|n.|交货期
+price list|/praɪs lɪst/|n.|价格表
+trade terms|/treɪd tɜːmz/|n.|贸易术语
+bank charges|/bæŋk tʃɑːdʒɪz/|n.|银行费用
+force majeure|/ˌfɔːs mæˈʒɜː/|n.|不可抗力
+in advance|/ɪn ədˈvɑːns/|adv.|提前；预先
+in duplicate|/ɪn ˈdjuːplɪkət/|adv.|一式两份
+in triplicate|/ɪn ˈtrɪplɪkət/|adv.|一式三份
+at sight|/ət saɪt/|adv.|即期（见票即付）
+subject to|/ˈsʌbdʒɪkt tuː/|phr.|以…为准；须经…
+as soon as possible|/əz suːn əz ˈpɒsəbl/|phr.|尽快
+look forward to|/lʊk ˈfɔːwəd tuː/|phr.|期待；盼望
+in accordance with|/ɪn əˈkɔːdəns wɪð/|phr.|按照；根据
+out of stock|/aʊt əv stɒk/|phr.|缺货
+in stock|/ɪn stɒk/|phr.|有现货
+on behalf of|/ɒn bɪˈhɑːf əv/|phr.|代表
+please find|/pliːz faɪnd/|phr.|请查收（函电常用）
+fob|/ˌef əʊ ˈbiː/|abbr.|装运港船上交货（离岸价）
+cif|/ˌsiː aɪ ˈef/|abbr.|成本加保险费加运费（到岸价）
+cfr|/ˌsiː ef ˈɑː/|abbr.|成本加运费
+exw|/ˌiː eks ˈdʌbljuː/|abbr.|工厂交货
+ddp|/ˌdiː diː ˈpiː/|abbr.|完税后交货
+l/c|/ˌel ˈsiː/|abbr.|信用证（Letter of Credit）
+t/t|/ˌtiː ˈtiː/|abbr.|电汇
+d/p|/ˌdiː ˈpiː/|abbr.|付款交单
+b/l|/ˌbiː ˈel/|abbr.|提单（Bill of Lading）
+moq|/ˌem əʊ ˈkjuː/|abbr.|最小起订量
+eta|/ˌiː tiː ˈeɪ/|abbr.|预计到港时间
+etd|/ˌiː tiː ˈdiː/|abbr.|预计离港时间
+teu|/ˌtiː iː ˈjuː/|abbr.|20 英尺标准箱
+hq|/ˌeɪtʃ ˈkjuː/|abbr.|高柜（40 英尺高箱）
+cy|/ˌsiː ˈwaɪ/|abbr.|集装箱堆场
+cfs|/ˌsiː ef ˈes/|abbr.|集装箱货运站
+`;
+const COMMON_DICT = {};
+COMMON_RAW.split('\n').forEach(line=>{
+  const t = line.trim(); if(!t) return;
+  const p = t.split('|'); if(p.length<4) return;
+  COMMON_DICT[p[0].trim().toLowerCase()] = {
+    term:p[0].trim(), phonetic:p[1].trim(), pos:p[2].trim(), zh:p[3].trim(), from:'builtin' };
+});
+
+function reEsc(s){ return String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+/* 词形还原候选：词库里有原形时，cartons / shipped / quantities 也能查到 */
+function lemmaVariants(w){
+  const s = String(w).toLowerCase(), out = [s];
+  const add = (x,min)=>{ const n=min==null?3:min; if(x && x.length>=n && out.indexOf(x)<0) out.push(x); };
+  if(s.slice(-2)==="'s" || s.slice(-2)==='’s') add(s.slice(0,-2), 2);
+  if(/ies$/.test(s)) add(s.slice(0,-3)+'y');
+  if(/es$/.test(s)) add(s.slice(0,-2));
+  if(/s$/.test(s)) add(s.slice(0,-1));
+  if(/ing$/.test(s)){ const b=s.slice(0,-3); add(b,2); add(b+'e',2); if(/([bdgklmnprt])\1$/.test(b)) add(b.slice(0,-1),2); }
+  if(/ed$/.test(s)){ const b=s.slice(0,-2); add(b); add(b+'e'); if(/([bdgklmnprt])\1$/.test(b)) add(b.slice(0,-1)); if(/i$/.test(b)) add(b.slice(0,-1)+'y'); }
+  return out;
+}
+/* 查词索引：内置库打底，用户词库覆盖（用户词库优先） */
+let _dictIdx = null, _dictPhrases = null;
+function invalidateDictIndex(){ _dictIdx = null; _dictPhrases = null; }
+function dictIndex(){
+  if(_dictIdx) return _dictIdx;
+  const m = Object.assign({}, COMMON_DICT);
+  DB.words.forEach(w=>{
+    const k = String(w.term||'').toLowerCase().trim(); if(!k) return;
+    m[k] = { term:w.term, phonetic:w.phonetic||'', pos:w.pos||'', zh:w.translation||'', def:w.definition||'', from:'db' };
+  });
+  _dictIdx = m; return m;
+}
+/* 需要整段匹配的词条（含空格 / 斜杠 / 连字符） */
+function phraseEntries(){
+  if(_dictPhrases) return _dictPhrases;
+  const idx = dictIndex();
+  _dictPhrases = Object.keys(idx).filter(k=>/[\s\/\-]/.test(k))
+    .sort((a,b)=> b.length - a.length)
+    .map(k=>({ term: idx[k].term, key:k }));
+  return _dictPhrases;
+}
+/* 本地查词：精确 → 词形还原 */
+function lookupLocal(word){
+  const idx = dictIndex();
+  const w = String(word==null?'':word).toLowerCase().trim();
+  if(!w) return null;
+  const vars = lemmaVariants(w);
+  for(let i=0;i<vars.length;i++){
+    const hit = idx[vars[i]];
+    if(hit){ const o = Object.assign({}, hit); o.matched = vars[i]; if(vars[i]!==w) o.lemma = vars[i]; return o; }
+  }
+  return null;
+}
+/* 把英文文本渲染为可悬停查词的 HTML（词组优先整段匹配） */
+function enHTML(text){
+  const raw = String(text==null?'':text);
+  if(!raw) return '';
+  if(!DB.settings.hoverDict) return esc(raw);
+  let s = raw;
+  const marks = [];
+  phraseEntries().forEach(ph=>{
+    const pat = reEsc(ph.term).replace(/[\s\u00a0]+/g,'[\\s\\u00a0\\-]+');
+    const re = new RegExp('(^|[^A-Za-z])(' + pat + ')(?![A-Za-z])','gi');
+    s = s.replace(re, (m,p1)=>{ marks.push(m.slice(p1.length)); return p1 + '\u0001' + (marks.length-1) + '\u0001'; });
+  });
+  s = esc(s).replace(/[A-Za-z][A-Za-z'’\-]*/g, m=>{
+    const e = lookupLocal(m);
+    return '<span class="hiword' + (e && e.from==='db' ? ' known' : '') + '" data-w="' + esc(m) + '">' + m + '</span>';
+  });
+  s = s.replace(/\u0001(\d+)\u0001/g, (m,i)=>{
+    const w = marks[+i], e = lookupLocal(w);
+    return '<span class="hiword phrase' + (e && e.from==='db' ? ' known' : '') + '" data-w="' + esc(w) + '">' + esc(w) + '</span>';
+  });
+  return s;
+}
+/* 在线词典兜底（结果缓存到本机，两次失败后 5 分钟内不再请求） */
+const DICT_CACHE_KEY = 'tradelingo_dict_v1';
+let dictCache = {}; try{ dictCache = JSON.parse(localStorage.getItem(DICT_CACHE_KEY)||'{}')||{}; }catch(e){ dictCache = {}; }
+let _dictSeq = 0, _dictFail = 0, _dictBlockUntil = 0;
+function saveDictCache(){ try{ localStorage.setItem(DICT_CACHE_KEY, JSON.stringify(dictCache)); }catch(e){} }
+function fetchJSON(url, ms){
+  return new Promise(resolve=>{
+    if(typeof fetch!=='function'){ resolve(null); return; }
+    let ctl = null, timer = null;
+    try{ ctl = new AbortController(); timer = setTimeout(()=>{ try{ ctl.abort(); }catch(e){} }, ms||6000); }catch(e){}
+    fetch(url, ctl?{ signal:ctl.signal } : undefined)
+      .then(r=> r && r.ok ? r.json() : null).catch(()=>null).then(j=>{ clearTimeout(timer); resolve(j||null); });
+  });
+}
+function lookupOnline(word, cb){
+  const key = String(word==null?'':word).toLowerCase().trim();
+  if(!key){ cb(null); return; }
+  if(dictCache[key]){ cb(dictCache[key]); return; }
+  if(!DB.settings.onlineDict || Date.now() < _dictBlockUntil || typeof fetch!=='function'){ cb(null); return; }
+  const seq = ++_dictSeq, out = { term: word, from:'online' };
+  Promise.all([
+    fetchJSON('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(key)),
+    fetchJSON('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(key) + '&langpair=en|zh-CN')
+  ]).then(([d1,d2])=>{
+    if(seq !== _dictSeq) return;
+    try{
+      if(Array.isArray(d1) && d1[0]){
+        const o = d1[0];
+        out.phonetic = o.phonetic || ((o.phonetics||[]).map(p=>p.text).filter(Boolean)[0] || '');
+        const m = (o.meanings||[])[0];
+        if(m){ out.pos = m.partOfSpeech || ''; out.def = (m.definitions||[]).map(x=>x.definition).filter(Boolean).slice(0,2).join('；'); }
+      }
+      let zh = d2 && d2.responseData && d2.responseData.translatedText;
+      if(zh && d2.responseStatus === 200){
+        zh = String(zh).replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+        const pm = zh.match(/^(n|vt|vi|v|adj|adv|prep|conj|pron|num|art|abbr|int)\.[\s、,]*/i);
+        if(pm){ out.pos = out.pos || pm[1].toLowerCase(); zh = zh.slice(pm[0].length); }
+        if(zh && zh.toLowerCase() !== key) out.zh = zh;
+      }
+    }catch(e){}
+    if(!out.zh && !out.def){ _dictFail++; if(_dictFail>=2) _dictBlockUntil = Date.now()+5*60000; cb(null); return; }
+    _dictFail = 0; dictCache[key] = out; saveDictCache(); cb(out);
+  }).catch(()=>cb(null));
+}
+/* ---- 悬停词义卡片 ---- */
+let _popTimer = null, _popWord = '', _popEntry = null;
+const POP_HIDE_DELAY = 450;   /* 离开后延迟隐藏，留出把鼠标移到卡片上的时间 */
+function scheduleHidePop(){ clearTimeout(_popTimer); _popTimer = setTimeout(hideDictPop, POP_HIDE_DELAY); }
+function dictPopEl(){
+  let el = document.getElementById('dictPop');
+  if(!el){
+    el = document.createElement('div'); el.id='dictPop'; el.className='dict-pop';
+    el.onmouseenter = ()=>{ clearTimeout(_popTimer); };
+    el.onmouseleave = ()=>{ scheduleHidePop(); };
+    document.body.appendChild(el);
+  }
+  return el;
+}
+function positionPop(el, ev){
+  const pad = 10, w = el.offsetWidth || 240, h = el.offsetHeight || 120;
+  const cx = (ev && ev.clientX) || 0, cy = (ev && ev.clientY) || 0;
+  let x = cx + 14, y = cy + 16;
+  if(x + w > window.innerWidth - pad) x = Math.max(pad, cx - w - 14);
+  if(y + h > window.innerHeight - pad) y = Math.max(pad, cy - h - 12);
+  el.style.left = x + 'px'; el.style.top = y + 'px';
+}
+function hideDictPop(){
+  clearTimeout(_popTimer); _popWord = '';
+  const el = document.getElementById('dictPop'); if(el) el.style.display = 'none';
+}
+function showDictPop(word, ev){
+  if(!DB.settings.hoverDict) return;
+  const q = String(word==null?'':word).trim(); if(!q) return;
+  const el = dictPopEl();
+  clearTimeout(_popTimer);
+  if(_popWord === q.toLowerCase() && el.style.display === 'block'){ positionPop(el, ev); return; }
+  _popWord = q.toLowerCase();
+  const local = lookupLocal(q);
+  if(local){
+    local.query = q; _popEntry = local; renderDictPop(local);
+    el.style.display = 'block'; positionPop(el, ev);
+    return;
+  }
+  _popEntry = null;
+  el.innerHTML = '<div class="dw"><span>' + esc(q) + '</span></div><div class="dn">正在查询…</div>';
+  el.style.display = 'block'; positionPop(el, ev);
+  const cur = _popWord;
+  lookupOnline(q, data=>{
+    if(_popWord !== cur) return;
+    const e = data ? Object.assign({ term:q }, data) : { term:q, zh:'', from:'miss' };
+    _popEntry = e; renderDictPop(e); positionPop(el, ev);
+  });
+}
+function renderDictPop(e){
+  const el = dictPopEl();
+  const term = e.term || _popWord;
+  const inLib = e.from==='db' || DB.words.some(x=>String(x.term||'').toLowerCase() === String(term).toLowerCase());
+  const srcLabel = e.from==='db' ? '词库' : e.from==='builtin' ? '常用词库' : e.from==='online' ? '在线词典' : '未收录';
+  el.innerHTML = `
+    <div class="dw">
+      <span class="dterm" onclick="openDictDetail()" title="点击查看单词详情">${esc(term)}</span>
+      <button class="icon-btn" data-say="${esc(term)}" onclick="speakEl(this)" title="朗读">🔊</button></div>
+    ${e.phonetic?`<div class="dp">${esc(e.phonetic)}</div>`:''}
+    ${e.lemma?`<div class="dn" style="margin-top:2px">词形还原 → <b>${esc(e.lemma)}</b></div>`:''}
+    <div class="dm">${e.zh?esc(e.zh):'<span class="muted" style="font-weight:400">暂未收录释义</span>'}</div>
+    ${e.def?`<div class="dn">${esc(e.def)}</div>`:''}
+    <div class="dmeta">
+      <span class="src">${srcLabel}</span>
+      ${e.pos?`<span>${esc(e.pos)}</span>`:''}
+      ${inLib?'<span class="dok">✓ 已在词库</span>':'<button class="dadd" onclick="addPopEntryToLib()">＋ 加入词库</button>'}
+    </div>
+    ${e.from==='miss'?'<div class="dn">未收录该词，可开启「在线查词」或先加入词库后补全释义。</div>':''}
+    <div class="dhint">💡 点击单词可查看详情</div>`;
+  el.style.display = 'block';
+}
+/* 点击卡片上的单词 → 显示详情（词库内直接开详情弹窗，词库外显示词典详情并可加入词库） */
+function openDictDetail(){
+  const e = _popEntry; if(!e) return;
+  const term = String(e.term || _popWord || '').trim(); if(!term) return;
+  const exist = DB.words.find(x=>String(x.term||'').toLowerCase() === term.toLowerCase());
+  hideDictPop();
+  if(exist){ openWordDetail(exist.id); return; }
+  closeModal();
+  const srcLabel = e.from==='builtin' ? '常用词库' : e.from==='online' ? '在线词典' : '未收录';
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>${esc(term)}
+          <button class="icon-btn" data-say="${esc(term)}" onclick="speakEl(this)" title="朗读">🔊</button>
+        </h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:14px">
+          <span class="word-phon" style="font-size:15px">${esc(e.phonetic||'')}</span>
+          ${e.pos?`<span class="pos-chip" style="margin-left:8px">${esc(e.pos)}</span>`:''}
+        </div>
+        <div class="detail-row"><div class="k">释义</div><div class="v" style="font-size:17px;font-weight:600;color:var(--navy)">${e.zh?esc(e.zh):'—'}</div></div>
+        ${e.def?`<div class="detail-row"><div class="k">详解</div><div class="v">${esc(e.def)}</div></div>`:''}
+        ${e.lemma?`<div class="detail-row"><div class="k">词形还原</div><div class="v">${esc(e.lemma)}</div></div>`:''}
+        <div class="detail-row"><div class="k">词义来源</div><div class="v muted">${srcLabel}</div></div>
+        <p class="muted" style="font-size:12px">该词还未加入你的词库，加入后可参与卡片记忆、测验与间隔复习。</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:18px">
+          <button class="btn gold" onclick="addPopEntryToLib(true)">＋ 加入词库</button>
+          <button class="btn ghost" onclick="closeModal()">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function addPopEntryToLib(fromModal){
+  const e = _popEntry; if(!e) return;
+  const term = String(e.term || _popWord || '').trim(); if(!term) return;
+  const exist = DB.words.find(x=>String(x.term||'').toLowerCase() === term.toLowerCase());
+  if(exist){ toast('「' + exist.term + '」已在词库中'); if(fromModal) openWordDetail(exist.id); return; }
+  DB.words.push({ id:uid('w_'), term:term, phonetic:e.phonetic||'', pos:e.pos||'', translation:e.zh||'',
+    definition:e.def||'', exampleEn:'', exampleZh:'', tags:['悬停查词'],
+    mastery:0, level:0, starred:false, wrongBook:false, right:0, wrong:0, addedAt:Date.now(), lastReviewAt:0, nextReviewAt:0 });
+  saveDB(); updateTop();
+  const added = DB.words[DB.words.length-1];
+  if(!e.zh){ hideDictPop(); openWordEdit(added.id); toast('已加入词库，请补全释义'); return; }
+  toast('已加入词库：' + term);
+  if(fromModal){ openWordDetail(added.id); return; }
+  renderDictPop(Object.assign({}, e, { from:'db' }));
+}
+function toggleHoverDict(){ DB.settings.hoverDict = !DB.settings.hoverDict; saveDB(); hideDictPop(); render(); }
+/* 事件委托：页面任何 .hiword 都可悬停查词 */
+document.addEventListener('mouseover', e=>{
+  if(!DB.settings.hoverDict) return;
+  const t = e.target;
+  const word = t && t.closest ? t.closest('.hiword') : null;
+  if(word){ showDictPop(word.getAttribute('data-w'), e); return; }
+  const pop = document.getElementById('dictPop');
+  if(pop && pop.style.display === 'block'){
+    if(pop.contains(t)) clearTimeout(_popTimer);   /* 鼠标在卡片上：保持展开 */
+    else scheduleHidePop();                        /* 移向卡片的途中不再立即隐藏 */
+  }
+});
+document.addEventListener('mouseout', e=>{
+  const t = e.target;
+  if(t && t.closest && t.closest('.hiword')) scheduleHidePop();
+});
+window.addEventListener('scroll', hideDictPop, true);
+window.addEventListener('resize', hideDictPop);
+
+/* ================= 导入解析（宽容匹配 AI 输出） ================= */
+function pick(o, keys){ for(const k of keys){ if(o[k]!=null && String(o[k]).trim()!=='') return o[k]; } return ''; }
+function normalizeImport(json){
+  let src = json;
+  if(Array.isArray(json)) src = { words: json };
+  if(!src || typeof src!=='object') throw new Error('数据格式不正确：应为 JSON 对象或数组');
+  const meta = src.meta || src.info || {};
+  const wRaw = src.words || src.vocabulary || src.wordList || [];
+  const sRaw = src.sentences || src.phrases || src.sentenceList || [];
+  if(!Array.isArray(wRaw) && !Array.isArray(sRaw)) throw new Error('未找到 words 或 sentences 数组');
+  const words = [], sentences = [];
+  wRaw.forEach(w=>{
+    if(!w || typeof w!=='object') return;
+    const term = String(pick(w,['term','word','english','en','headword'])).trim();
+    if(!term) return;
+    let tags = pick(w,['tags','tag','labels']);
+    if(typeof tags==='string') tags = tags.split(/[,，;；\/、\s]+/).filter(Boolean);
+    if(!Array.isArray(tags)) tags=[];
+    words.push({
+      id: uid('w_'), term: term,
+      phonetic: String(pick(w,['phonetic','phonetic_en','ipa'])),
+      pos: String(pick(w,['pos','partOfSpeech','type'])),
+      translation: String(pick(w,['translation','zh','chinese','meaning','cn'])),
+      definition: String(pick(w,['definition','explain','note','desc'])),
+      exampleEn: String(pick(w,['exampleEn','example','example_en','sentence'])),
+      exampleZh: String(pick(w,['exampleZh','example_zh','example_cn'])),
+      tags: tags.map(String),
+      mastery:0, level:0, starred:false, wrongBook:false,
+      right:0, wrong:0, addedAt:Date.now(), lastReviewAt:0, nextReviewAt:0
+    });
+  });
+  sRaw.forEach(s=>{
+    if(!s || typeof s!=='object') return;
+    const en = String(pick(s,['en','english','sentence','text'])).trim();
+    if(!en) return;
+    sentences.push({
+      id: uid('s_'), en: en,
+      zh: String(pick(s,['zh','chinese','cn','translation'])),
+      scene: String(pick(s,['scene','scenario','category','type'])),
+      notes: String(pick(s,['notes','note','tip'])),
+      mastery:0, starred:false, addedAt:Date.now()
+    });
+  });
+  return { words, sentences, meta };
+}
+function applyImport(parsed){
+  const exist = new Set(DB.words.map(w=>w.term.toLowerCase()));
+  let nw=0, dup=0;
+  parsed.words.forEach(w=>{
+    if(exist.has(w.term.toLowerCase())){ dup++; return; }
+    DB.words.push(w); exist.add(w.term.toLowerCase()); nw++;
+  });
+  const existS = new Set(DB.sentences.map(s=>s.en.toLowerCase()));
+  let ns=0;
+  parsed.sentences.forEach(s=>{
+    if(existS.has(s.en.toLowerCase())) return;
+    DB.sentences.push(s); existS.add(s.en.toLowerCase()); ns++;
+  });
+  DB.imports.unshift({ id:uid('i_'), title: parsed.meta.title||'未命名批次', category: parsed.meta.category||'—',
+    source: parsed.meta.source||'—', date: Date.now(), words:nw, sentences:ns, duplicates:dup });
+  saveDB();
+  return {nw, ns, dup};
+}
+
+/* ================= 学习调度（间隔重复） ================= */
+function recordStudy(){
+  const k = todayKey();
+  DB.studyLog[k] = (DB.studyLog[k]||0) + 1;
+}
+/* quality: 1 认识 / 0 模糊 / -1 不认识 */
+function schedule(w, quality){
+  if(quality>0) w.level = Math.min(6,(w.level||0)+1);
+  else if(quality<0) w.level = 0;
+  const days = REVIEW_DAYS[w.level]!=null ? REVIEW_DAYS[w.level] : 30;
+  const base = quality>0 ? Math.max(days,1)*86400000
+             : quality<0 ? 10*60000
+             : 12*3600000;
+  w.nextReviewAt = Date.now() + base;
+  w.lastReviewAt = Date.now();
+  w.mastery = Math.min(5, w.level);
+  recordStudy();
+}
+function dueWords(){ return DB.words.filter(w=>w.lastReviewAt && w.nextReviewAt<=Date.now()); }
+function lowWords(n){ return [...DB.words].sort((a,b)=>(a.level-b.level)||(a.wrong-b.wrong)).slice(0,n||15); }
+
+/* ================= 视图切换 ================= */
+const TITLES = {dashboard:'学习总览', words:'单词学习', sentences:'句子学习', quiz:'测验中心', data:'数据管理'};
+let currentView = 'dashboard';
+function switchView(v){
+  currentView = v;
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active', b.getAttribute('data-view')===v));
+  document.getElementById('viewTitle').textContent = TITLES[v];
+  render();
+}
+function render(){
+  updateTop();
+  if(currentView==='dashboard') renderDashboard();
+  else if(currentView==='words') renderWords();
+  else if(currentView==='sentences') renderSentences();
+  else if(currentView==='quiz') renderQuizHome();
+  else renderData();
+}
+function updateTop(){
+  const due = dueWords().length;
+  document.getElementById('topWords').textContent = DB.words.length;
+  document.getElementById('topSents').textContent = DB.sentences.length;
+  document.getElementById('topDue').textContent = due;
+  const nb = document.getElementById('navDue');
+  if(due>0){ nb.style.display='inline-block'; nb.textContent=due; } else nb.style.display='none';
+}
+
+/* ================= 学习总览 ================= */
+function renderDashboard(){
+  const root = document.getElementById('viewRoot');
+  const ws = DB.words, ss = DB.sentences;
+  const mastered = ws.filter(w=>w.mastery>=4).length;
+  const learning = ws.filter(w=>w.mastery>=1&&w.mastery<4).length;
+  const newbie = ws.filter(w=>w.mastery===0).length;
+  const pct = ws.length ? Math.round(mastered/ws.length*100) : 0;
+  const due = dueWords().length;
+  const starred = ws.filter(w=>w.starred).length;
+  const wrongBook = ws.filter(w=>w.wrongBook).length;
+  const todayCount = DB.studyLog[todayKey()]||0;
+  const lastQuiz = DB.quizLog[0];
+  const quizRows = DB.quizLog.slice(0,5).map(q=>
+    `<tr class="row-hover"><td>${fmtDate(q.date)}</td><td>${q.mode==='dictation'?'听写':'综合'}</td><td class="num">${q.total} 题</td><td class="num" style="color:${q.score/q.total>=0.6?'var(--green)':'var(--red)'};font-weight:600">${q.score} / ${q.total}</td><td class="num">${Math.round(q.score/q.total*100)}%</td></tr>`).join('');
+  const imports = DB.imports.slice(0,5).map(i=>
+    `<tr class="row-hover"><td><b>${esc(i.title)}</b></td><td>${esc(i.category)}</td><td class="num">+${i.words} 词 / +${i.sentences} 句</td><td class="muted">${fmtDate(i.date)}</td></tr>`).join('');
+
+  if(ws.length+ss.length===0){
+    root.innerHTML = `
+    <div class="card"><div class="card-body"><div class="empty">
+      <div class="big">🌐</div>
+      <div style="font-size:16px;color:var(--navy);font-weight:600;margin-bottom:8px">欢迎使用「贸语通」</div>
+      <p>当前词库为空。请先前往「数据管理」导入 AI 生成的 JSON 词库数据，<br>或载入内置示例数据快速体验。</p>
+      <div style="margin-top:18px;display:flex;gap:10px;justify-content:center">
+        <button class="btn" onclick="switchView('data')">前往数据管理</button>
+        <button class="btn ghost" onclick="loadDemo()">载入示例数据</button>
+      </div>
+    </div></div></div>`;
+    return;
+  }
+  root.innerHTML = `
+  <div class="stat-grid">
+    <div class="stat s1"><div class="label">词库总量</div><div class="val num">${ws.length}</div><div class="sub">句子 ${ss.length} 条</div></div>
+    <div class="stat s2"><div class="label">已掌握单词</div><div class="val num" style="color:var(--gold)">${mastered}</div><div class="sub">掌握率 ${pct}%</div></div>
+    <div class="stat s3"><div class="label">学习中</div><div class="val num" style="color:var(--green)">${learning}</div><div class="sub">新词待学 ${newbie} 个</div></div>
+    <div class="stat s4"><div class="label">句子已掌握</div><div class="val num" style="color:var(--orange)">${ss.filter(s=>s.mastery>=2).length}</div><div class="sub">共 ${ss.length} 条</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>今日学习任务</h3><span class="muted" style="font-size:12px">${todayKey()}</span></div>
+    <div class="card-body">
+      <div class="task-grid">
+        <div class="task due"><div class="v num">${due}</div><div class="k">到期待复习</div></div>
+        <div class="task star"><div class="v num">${starred}</div><div class="k">生词本</div></div>
+        <div class="task wrong"><div class="v num">${wrongBook}</div><div class="k">错题待巩固</div></div>
+        <div class="task today"><div class="v num">${todayCount}</div><div class="k">今日练习次数</div></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn gold" onclick="startReview()">🔁 ${due>0?('复习 '+due+' 个到期单词'):'开始巩固练习'}</button>
+        <button class="btn" onclick="startDictation()">🎧 听写测验</button>
+        <button class="btn ghost" onclick="startFlash()">🃏 卡片记忆</button>
+        <button class="btn ghost" onclick="startQuiz()">✏️ 综合测验</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>学习进度</h3></div>
+    <div class="card-body">
+      <div class="progress-wrap">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="muted">单词掌握进度</span><b class="num">${pct}%</b></div>
+        <div class="bar" style="width:100%"><i style="width:${pct}%"></i></div>
+      </div>
+      ${lastQuiz?`<p class="muted" style="margin-top:14px;font-size:12px">上次测验：${fmtDate(lastQuiz.date)}，得分 ${lastQuiz.score}/${lastQuiz.total}</p>`:''}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>最近导入批次</h3><button class="btn ghost sm" onclick="switchView('data')">管理数据</button></div>
+    <table><thead><tr><th>批次名称</th><th>分类</th><th>导入量</th><th>日期</th></tr></thead>
+    <tbody>${imports || '<tr><td colspan="4" class="muted" style="text-align:center;padding:24px">暂无导入记录</td></tr>'}</tbody></table>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>测验记录</h3></div>
+    <table><thead><tr><th>日期</th><th>类型</th><th>题量</th><th>得分</th><th>正确率</th></tr></thead>
+    <tbody>${quizRows || '<tr><td colspan="5" class="muted" style="text-align:center;padding:24px">暂无测验记录，去测验中心试试吧</td></tr>'}</tbody></table>
+  </div>`;
+}
+
+/* ================= 单词学习 ================= */
+let wordFilter = { q:'', tag:'全部', scope:'全部', mode:'list' };
+let flash = null;
+
+function renderWords(){
+  const root = document.getElementById('viewRoot');
+  if(DB.words.length===0){
+    root.innerHTML = `<div class="card"><div class="card-body"><div class="empty">
+      <div class="big">📖</div><p>词库为空，请先在「数据管理」中导入数据。</p>
+      <div style="margin-top:16px"><button class="btn" onclick="switchView('data')">前往导入</button></div></div></div></div>`;
+    return;
+  }
+  if(wordFilter.mode==='flash' && flash){ renderFlash(); return; }
+  const tags = ['全部', ...uniq(DB.words.flatMap(w=>w.tags))];
+  const list = filteredWords();
+  const rows = list.map(w=>{
+    const dots = [0,1,2,3,4].map(i=>`<span class="${i<w.mastery?'on':'off'}">●</span>`).join('');
+    const when = w.nextReviewAt>Date.now() ? ('下次复习 '+fmtDate(w.nextReviewAt)) : (w.lastReviewAt?'待复习':'新词');
+    return `<tr class="row-hover">
+      <td>
+        <div style="display:flex;align-items:center;gap:9px">
+          <button class="icon-btn" data-say="${esc(w.term)}" onclick="speakEl(this)" title="朗读">🔊</button>
+          <div style="cursor:pointer" onclick="openWordDetail('${w.id}')">
+            <span class="word-term">${esc(w.term)}</span>
+            ${w.wrongBook?'<span class="tag" style="border-color:#f0cdc9;background:#fdf0ee;color:var(--red)">错题</span>':''}
+            <br><span class="word-phon">${esc(w.phonetic)}</span>
+          </div>
+        </div>
+      </td>
+      <td style="cursor:pointer" onclick="openWordDetail('${w.id}')">${w.pos?`<span class="pos-chip">${esc(w.pos)}</span>`:''}${esc(w.translation)}</td>
+      <td>${w.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</td>
+      <td><span class="mastery-dots">${dots}</span><br><span class="muted" style="font-size:11px">${when}</span></td>
+      <td style="white-space:nowrap">
+        <button class="mini-btn ${w.starred?'on':''}" onclick="toggleStar('word','${w.id}')" title="生词本">${w.starred?'★':'☆'}</button>
+        <button class="mini-btn" onclick="openWordEdit('${w.id}')" title="编辑">✎</button>
+        <button class="mini-btn" onclick="deleteWord('${w.id}')" title="删除">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+  root.innerHTML = `
+  <div class="filter-bar">
+    <input type="text" placeholder="🔍 搜索单词或释义…" value="${esc(wordFilter.q)}" oninput="wordFilter.q=this.value;renderWordsDebounced()">
+    <select onchange="wordFilter.tag=this.value;renderWords()">
+      ${tags.map(t=>`<option ${t===wordFilter.tag?'selected':''}>${esc(t)}</option>`).join('')}
+    </select>
+    <select onchange="wordFilter.scope=this.value;renderWords()">
+      ${['全部','未掌握','待复习','生词本','错题本'].map(t=>`<option ${t===wordFilter.scope?'selected':''}>${esc(t)}</option>`).join('')}
+    </select>
+    <span class="muted" style="font-size:12px">共 ${list.length} 条</span>
+    <span style="flex:1"></span>
+    <button class="btn ghost" onclick="exportFilteredWords()">⬇ 导出当前列表</button>
+    <button class="btn gold" onclick="startFlash()">🃏 卡片记忆</button>
+    <button class="btn" onclick="startDictation()">🎧 听写模式</button>
+  </div>
+  <div class="card"><table>
+    <thead><tr><th style="width:30%">单词</th><th style="width:28%">释义</th><th>标签</th><th style="width:150px">掌握 / 复习</th><th style="width:110px">操作</th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="5" class="muted" style="text-align:center;padding:30px">无匹配结果</td></tr>'}</tbody>
+  </table></div>`;
+}
+let _wt=null; function renderWordsDebounced(){ clearTimeout(_wt); _wt=setTimeout(renderWords,250); }
+/* 当前筛选条件下的单词列表（供渲染与导出共用） */
+function filteredWords(){
+  const q = wordFilter.q.toLowerCase();
+  const dueIds = new Set(dueWords().map(w=>w.id));
+  return DB.words.filter(w=>{
+    if(wordFilter.tag!=='全部' && !w.tags.includes(wordFilter.tag)) return false;
+    if(wordFilter.scope==='未掌握' && w.mastery>=4) return false;
+    if(wordFilter.scope==='生词本' && !w.starred) return false;
+    if(wordFilter.scope==='错题本' && !w.wrongBook) return false;
+    if(wordFilter.scope==='待复习' && !dueIds.has(w.id)) return false;
+    if(q && !(w.term.toLowerCase().includes(q)||w.translation.toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+
+function toggleStar(kind, id){
+  if(kind==='word'){ const w=DB.words.find(x=>x.id===id); if(!w) return; w.starred=!w.starred; }
+  else { const s=DB.sentences.find(x=>x.id===id); if(!s) return; s.starred=!s.starred; }
+  saveDB(); render();
+}
+function deleteWord(id){
+  const w = DB.words.find(x=>x.id===id); if(!w) return;
+  if(!confirm('删除单词「'+w.term+'」？该操作不可恢复。')) return;
+  DB.words = DB.words.filter(x=>x.id!==id); saveDB(); updateTop();
+  closeModal(); render();
+}
+function deleteSent(id){
+  const s = DB.sentences.find(x=>x.id===id); if(!s) return;
+  if(!confirm('删除这个句子？该操作不可恢复。')) return;
+  DB.sentences = DB.sentences.filter(x=>x.id!==id); saveDB(); updateTop();
+  closeModal(); render();
+}
+function openWordDetail(id){
+  const w = DB.words.find(x=>x.id===id); if(!w) return;
+  const nextTxt = w.nextReviewAt>Date.now() ? fmtDate(w.nextReviewAt) : (w.lastReviewAt?'现在就可以复习':'尚未开始');
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>${esc(w.term)}
+          <button class="icon-btn" data-say="${esc(w.term)}" onclick="speakEl(this)">🔊</button>
+        </h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:14px">
+          <span class="word-phon" style="font-size:15px">${esc(w.phonetic)}</span>
+          ${w.pos?`<span class="pos-chip" style="margin-left:8px">${esc(w.pos)}</span>`:''}
+        </div>
+        <div class="detail-row"><div class="k">释义</div><div class="v" style="font-size:17px;font-weight:600;color:var(--navy)">${esc(w.translation)}</div></div>
+        ${w.definition?`<div class="detail-row"><div class="k">详解</div><div class="v">${esc(w.definition)}</div></div>`:''}
+        ${w.exampleEn?`<div class="detail-row"><div class="k">例句
+          <button class="icon-btn" style="width:22px;height:22px;font-size:11px;margin-left:6px" data-say="${esc(w.exampleEn)}" onclick="speakEl(this)">🔊</button>
+        </div><div class="v" style="font-style:italic;color:var(--navy2)">${enHTML(w.exampleEn)}</div>${w.exampleZh?`<div class="v sent-zh">${esc(w.exampleZh)}</div>`:''}</div>`:''}
+        ${w.tags.length?`<div class="detail-row"><div class="k">标签</div><div>${w.tags.map(t=>`<span class="tag gold">${esc(t)}</span>`).join('')}</div></div>`:''}
+        <div class="detail-row"><div class="k">学习记录</div><div class="v muted">
+          掌握等级 <b class="num">Lv.${w.level}</b> · 答对 <b class="num" style="color:var(--green)">${w.right}</b> · 答错 <b class="num" style="color:var(--red)">${w.wrong}</b><br>
+          下次复习：<b>${nextTxt}</b> · 加入于 ${fmtDate(w.addedAt)}</div></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:18px">
+          <button class="btn ghost" onclick="toggleStar('word','${w.id}')">${w.starred?'★ 移出生词本':'☆ 加入生词本'}</button>
+          <button class="btn ghost" onclick="openWordEdit('${w.id}')">✎ 编辑</button>
+          <button class="btn danger" onclick="deleteWord('${w.id}')">🗑 删除</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function openWordEdit(id){
+  const w = DB.words.find(x=>x.id===id); if(!w) return;
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-head"><h3>编辑单词</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <div class="form-row"><div class="k">英文（term）</div><input type="text" id="f_term" value="${esc(w.term)}"></div>
+        <div class="form-row"><div class="k">音标（phonetic）</div><input type="text" id="f_phonetic" value="${esc(w.phonetic)}"></div>
+        <div class="form-row"><div class="k">词性（pos）</div><input type="text" id="f_pos" value="${esc(w.pos)}"></div>
+        <div class="form-row"><div class="k">中文释义（translation）</div><input type="text" id="f_translation" value="${esc(w.translation)}"></div>
+        <div class="form-row"><div class="k">详解（definition）</div><textarea id="f_definition" rows="3">${esc(w.definition)}</textarea></div>
+        <div class="form-row"><div class="k">英文例句（exampleEn）</div><textarea id="f_exampleEn" rows="2">${esc(w.exampleEn)}</textarea></div>
+        <div class="form-row"><div class="k">例句翻译（exampleZh）</div><textarea id="f_exampleZh" rows="2">${esc(w.exampleZh)}</textarea></div>
+        <div class="form-row"><div class="k">标签（用逗号分隔，tags）</div><input type="text" id="f_tags" value="${esc(w.tags.join(', '))}"></div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn ghost" onclick="openWordDetail('${w.id}')">取消</button>
+          <button class="btn" onclick="saveWordEdit('${w.id}')">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function saveWordEdit(id){
+  const w = DB.words.find(x=>x.id===id); if(!w) return;
+  const g = k => (document.getElementById('f_'+k).value||'').trim();
+  const term = g('term');
+  if(!term){ toast('英文单词不能为空'); return; }
+  w.term = term;
+  w.phonetic = g('phonetic'); w.pos = g('pos'); w.translation = g('translation');
+  w.definition = g('definition'); w.exampleEn = g('exampleEn'); w.exampleZh = g('exampleZh');
+  w.tags = g('tags').split(/[,，;；\/、]+/).map(s=>s.trim()).filter(Boolean);
+  saveDB(); closeModal(); render(); toast('已保存');
+}
+function openSentEdit(id){
+  const s = DB.sentences.find(x=>x.id===id); if(!s) return;
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-head"><h3>编辑句子</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <div class="form-row"><div class="k">英文句子（en）</div><textarea id="s_en" rows="3">${esc(s.en)}</textarea></div>
+        <div class="form-row"><div class="k">中文翻译（zh）</div><textarea id="s_zh" rows="3">${esc(s.zh)}</textarea></div>
+        <div class="form-row"><div class="k">场景（scene）</div><input type="text" id="s_scene" value="${esc(s.scene)}"></div>
+        <div class="form-row"><div class="k">语言点（notes）</div><input type="text" id="s_notes" value="${esc(s.notes)}"></div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn ghost" onclick="closeModal()">取消</button>
+          <button class="btn" onclick="saveSentEdit('${s.id}')">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function saveSentEdit(id){
+  const s = DB.sentences.find(x=>x.id===id); if(!s) return;
+  const g = k => (document.getElementById('s_'+k).value||'').trim();
+  const en = g('en'); if(!en){ toast('英文句子不能为空'); return; }
+  s.en = en; s.zh = g('zh'); s.scene = g('scene'); s.notes = g('notes');
+  saveDB(); closeModal(); render(); toast('已保存');
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
+
+/* ================= 卡片记忆 / 复习 ================= */
+function autoSpeakAfter(w){ if(DB.settings.autoSpeak) setTimeout(()=>speak(w.term), 260); }
+
+function startFlash(){
+  const pool = lowWords(20);
+  if(pool.length===0){ toast('词库为空，请先导入数据'); return; }
+  flash = { list:pool, idx:0, showZh:false, title:'卡片记忆', review:false };
+  wordFilter.mode='flash';
+  switchView('words');
+}
+function startReview(){
+  const due = dueWords();
+  const pool = due.length ? due : lowWords(15);
+  if(pool.length===0){ toast('词库为空，请先导入数据'); return; }
+  flash = { list:pickN(pool, Math.min(pool.length, 30)), idx:0, showZh:false,
+            title: due.length ? ('到期复习 · '+due.length+' 个单词') : '巩固练习（暂无到期单词）' };
+  wordFilter.mode='flash';
+  switchView('words');
+}
+function renderFlash(){
+  const root = document.getElementById('viewRoot');
+  const f = flash, w = f.list[f.idx];
+  if(!w){
+    root.innerHTML = `<div class="card"><div class="card-body"><div class="empty">
+      <div class="big">🎉</div><p>${esc(f.title)} 完成！共复习 ${f.list.length} 个单词。</p>
+      <div style="margin-top:16px;display:flex;gap:10px;justify-content:center">
+        <button class="btn gold" onclick="startReview()">继续复习</button>
+        <button class="btn ghost" onclick="wordFilter.mode='list';flash=null;renderWords()">返回列表</button>
+      </div></div></div></div>`;
+    flash=null; updateTop(); return;
+  }
+  const front = `
+    <div class="flash-term">${esc(w.term)}</div>
+    ${w.phonetic?`<div class="flash-phon">${esc(w.phonetic)}</div>`:''}
+    ${w.pos?`<div style="margin-top:8px"><span class="pos-chip">${esc(w.pos)}</span></div>`:''}`;
+  const back = `
+    <div class="flash-zh">${esc(w.translation)}</div>
+    ${w.definition?`<div class="flash-def">${esc(w.definition)}</div>`:''}
+    ${w.exampleEn?`<div class="flash-ex">“${enHTML(w.exampleEn)}”<br><span style="font-style:normal;color:var(--muted);font-size:12px">${esc(w.exampleZh)}</span></div>`:''}`;
+  root.innerHTML = `
+  <div class="flash-stage">
+    <div class="flash-counter">
+      <b>${esc(f.title)}</b> · 第 <b class="num">${f.idx+1}</b> / ${f.list.length} 张<br>
+      <span style="font-size:11px">当前等级 Lv.${w.level}${w.wrongBook?' · 曾答错':''}</span>
+    </div>
+    <div class="flash-card" onclick="flipCard()">
+      <button class="icon-btn flash-say" data-say="${esc(w.term)}" onclick="speakEl(this)" title="朗读">🔊</button>
+      ${f.showZh? back : front}
+    </div>
+    <div class="flash-btns" ${f.showZh?'':'style="opacity:.35;pointer-events:none"'}>
+      <button class="grade-btn g-no" onclick="gradeCard(-1)">😐 不认识</button>
+      <button class="grade-btn g-mid" onclick="gradeCard(0)">🤔 模糊</button>
+      <button class="grade-btn g-yes" onclick="gradeCard(1)">✅ 认识</button>
+    </div>
+    <div class="muted" style="margin-top:14px;font-size:11px;text-align:center">
+      快捷键：<span class="kbd">空格</span> 翻面 / 下一张 ·
+      <span class="kbd">1</span> 不认识 · <span class="kbd">2</span> 模糊 · <span class="kbd">3</span> 认识
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn ghost sm" onclick="toggleFlashStar('${w.id}')">${w.starred?'★ 已在生词本':'☆ 加入生词本'}</button>
+      <button class="btn ghost sm" onclick="wordFilter.mode='list';flash=null;renderWords()">退出卡片模式</button>
+    </div>
+  </div>`;
+  if(!f.showZh) autoSpeakAfter(w);
+}
+function toggleFlashStar(id){ const w=DB.words.find(x=>x.id===id); if(!w) return; w.starred=!w.starred; saveDB(); renderFlash(); }
+function flipCard(){ if(flash){ flash.showZh=true; renderFlash(); } }
+function gradeCard(v){
+  if(!flash) return;
+  const w = flash.list[flash.idx];
+  if(v>0){ w.right++; w.wrongBook=false; schedule(w,1); }
+  else if(v<0){ w.wrong++; w.wrongBook=true; schedule(w,-1); }
+  else { schedule(w,0); }
+  saveDB(); updateTop();
+  flash.idx++; flash.showZh=false;
+  renderFlash();
+}
+
+/* ================= 句子学习 ================= */
+let sentHide = true;
+function renderSentences(){
+  const root = document.getElementById('viewRoot');
+  if(DB.sentences.length===0){
+    root.innerHTML = `<div class="card"><div class="card-body"><div class="empty">
+      <div class="big">✉️</div><p>句库为空，请先在「数据管理」中导入数据。</p>
+      <div style="margin-top:16px"><button class="btn" onclick="switchView('data')">前往导入</button></div></div></div></div>`;
+    return;
+  }
+  const rows = DB.sentences.map(s=>{
+    const stars = [0,1,2].map(i=>`<span style="color:${i<s.mastery?'var(--gold)':'#d9dfe8'}">★</span>`).join('');
+    return `<tr class="row-hover">
+      <td style="width:7%"><button class="icon-btn" data-say="${esc(s.en)}" onclick="speakEl(this)" title="朗读整句">🔊</button></td>
+      <td>
+        <div class="sent-en">${enHTML(s.en)}</div>
+        <div class="sent-zh" style="filter:${sentHide?'blur(5px)':'none'};user-select:${sentHide?'none':'auto'}">${esc(s.zh)}</div>
+        ${s.notes?`<div class="muted" style="font-size:12px;margin-top:6px">💡 ${esc(s.notes)}</div>`:''}
+      </td>
+      <td style="width:100px">${s.scene?`<span class="scene-chip">${esc(s.scene)}</span>`:'—'}</td>
+      <td class="num" style="width:70px">${stars}</td>
+      <td style="white-space:nowrap;width:170px">
+        <button class="mini-btn ${s.starred?'on':''}" onclick="toggleStar('sent','${s.id}')" title="收藏">${s.starred?'★':'☆'}</button>
+        <button class="mini-btn" onclick="openSentEdit('${s.id}')" title="编辑">✎</button>
+        <button class="mini-btn" onclick="deleteSent('${s.id}')" title="删除">🗑</button>
+        <button class="btn ghost sm" onclick="toggleSent('${s.id}')">${s.mastery>=2?'取消掌握':'标记掌握'}</button>
+      </td>
+    </tr>`;
+  }).join('');
+  root.innerHTML = `
+  <div class="filter-bar">
+    <button class="btn ghost" onclick="sentHide=!sentHide;renderSentences()">${sentHide?'👁 显示全部译文':'🙈 隐藏译文（自测）'}</button>
+    <button class="btn ghost" onclick="toggleHoverDict()">${DB.settings.hoverDict?'🔤 悬停查词：开':'🔤 悬停查词：关'}</button>
+    <button class="btn ghost" onclick="exportSentencesCSV()">⬇ 导出句子</button>
+    <span class="muted" style="font-size:12px">提示：点击 🔊 可朗读整句；把鼠标滑到任意英文单词上即可查看词义（词组会整段识别）。</span>
+  </div>
+  <div class="card"><table>
+    <thead><tr><th>朗读</th><th>句子</th><th>场景</th><th>掌握度</th><th>操作</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+function toggleSent(id){
+  const s = DB.sentences.find(x=>x.id===id); if(!s) return;
+  s.mastery = s.mastery>=2 ? 0 : 2;
+  saveDB(); renderSentences();
+}
+
+/* ================= 测验中心 ================= */
+let quiz = null;
+function renderQuizHome(){
+  const root = document.getElementById('viewRoot');
+  if(DB.words.length<4){
+    root.innerHTML = `<div class="card"><div class="card-body"><div class="empty">
+      <div class="big">✏️</div><p>词库中至少需要 4 个单词才能生成测验。</p></div></div></div>`;
+    return;
+  }
+  root.innerHTML = `
+  <div class="card"><div class="card-head"><h3>开始一次测验</h3></div>
+  <div class="card-body">
+    <p class="muted" style="margin-bottom:16px;line-height:1.9">
+      <b>综合测验</b>：英译中选择、中译英选择、单词拼写混合出题。<br>
+      <b>听写测验</b>：听发音写下单词，自动优先抽查薄弱词。<br>
+      答对提升掌握等级并延长复习间隔，答错记入错题本并缩短间隔。</p>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span>题量：</span>
+      <select id="quizCount" style="width:100px">
+        <option value="5">5 题</option><option value="10" selected>10 题</option><option value="15">15 题</option><option value="20">20 题</option>
+      </select>
+      <button class="btn gold" onclick="startQuiz()">✏️ 综合测验</button>
+      <button class="btn" onclick="startDictation()">🎧 听写测验</button>
+      <button class="btn ghost" onclick="startReview()">🔁 复习到期单词</button>
+    </div>
+  </div></div>
+  ${DB.quizLog.length?`<div class="card"><div class="card-head"><h3>历史成绩</h3></div>
+    <table><thead><tr><th>日期</th><th>类型</th><th>题量</th><th>得分</th><th>正确率</th></tr></thead><tbody>
+    ${DB.quizLog.slice(0,10).map(q=>`<tr class="row-hover"><td>${fmtDate(q.date)}</td><td>${q.mode==='dictation'?'听写':'综合'}</td><td class="num">${q.total}</td><td class="num">${q.score}</td><td class="num" style="color:${q.score/q.total>=0.6?'var(--green)':'var(--red)'}">${Math.round(q.score/q.total*100)}%</td></tr>`).join('')}
+    </tbody></table></div>`:''}`;
+}
+function getCount(){
+  const el = document.getElementById('quizCount');
+  return el ? parseInt(el.value,10) : 10;
+}
+function quizPool(n){
+  const weak = lowWords(Math.max(n*3, 20));
+  const weakIds = new Set(weak.map(w=>w.id));
+  const rest = shuffle(DB.words.filter(w=>!weakIds.has(w.id)));
+  return shuffle([...pickN(weak, Math.max(n*2, n)), ...rest]).slice(0,n);
+}
+function startQuiz(){
+  const n = Math.min(getCount(), DB.words.length);
+  const words = quizPool(n);
+  const qs = words.map(w=>{
+    const others = DB.words.filter(x=>x.id!==w.id && x.translation);
+    if(!w.translation || others.length<3) return { type:'spell', w };
+    const r = Math.random();
+    if(r<0.4) return { type:'e2z', w, opts: shuffle([w.translation, ...pickN(others,3).map(x=>x.translation)]) };
+    if(r<0.75) return { type:'z2e', w, opts: shuffle([w.term, ...pickN(DB.words.filter(x=>x.id!==w.id),3).map(x=>x.term)]) };
+    return { type:'spell', w };
+  });
+  quiz = { qs, idx:0, score:0, answered:false, mode:'mixed' };
+  renderQuizQ();
+}
+function startDictation(){
+  const n = Math.min(getCount(), DB.words.length);
+  const words = quizPool(n);
+  quiz = { qs: words.map(w=>({type:'dictation', w, hint:false})), idx:0, score:0, answered:false, mode:'dictation' };
+  renderQuizQ();
+}
+function renderQuizQ(){
+  const root = document.getElementById('viewRoot');
+  const q = quiz.qs[quiz.idx];
+  if(!q){ renderQuizResult(); return; }
+  let body='';
+  if(q.type==='e2z'){
+    body = `<div class="quiz-q">${esc(q.w.term)}
+        <button class="icon-btn" data-say="${esc(q.w.term)}" onclick="speakEl(this)">🔊</button></div>
+      ${q.w.phonetic?`<div class="word-phon" style="margin-bottom:14px">${esc(q.w.phonetic)}</div>`:'<div style="margin-bottom:14px"></div>'}
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" id="opt${i}" onclick="answerOpt(${i})"><b class="num">${i+1}.</b> ${esc(o)}</button>`).join('')}`;
+  } else if(q.type==='z2e'){
+    body = `<div class="quiz-q" style="font-family:inherit">${esc(q.w.translation)}</div>
+      <div style="margin-bottom:14px" class="muted">请选择对应的英文表达</div>
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" id="opt${i}" onclick="answerOpt(${i})"><b class="num">${i+1}.</b> ${esc(o)}</button>`).join('')}`;
+  } else if(q.type==='spell'){
+    const hint = q.w.term.replace(/[A-Za-z']/g,'_').split('').join(' ');
+    body = `<div class="quiz-q" style="font-family:inherit">${esc(q.w.translation)}</div>
+      <div class="muted" style="margin-bottom:14px">请拼写对应的英文单词（${q.w.term.length} 个字母）<br><span style="letter-spacing:3px;font-family:Georgia,serif">${hint}</span></div>
+      <form onsubmit="submitSpell(event)"><input type="text" class="spell-input" id="spellInput" autocomplete="off" placeholder="输入英文并回车">
+      <div style="text-align:center;margin-top:14px"><button class="btn" type="submit">提交答案</button></div></form>`;
+  } else {
+    body = `<div class="dictation-box">
+        <div class="muted" style="margin-bottom:10px">听发音，写出对应单词</div>
+        <button class="btn gold" style="font-size:15px;padding:12px 30px" data-say="${esc(q.w.term)}" onclick="speakEl(this)">🔊 播放发音</button>
+        <div style="font-size:19px;font-weight:600;color:var(--navy);margin:18px 0 6px">${esc(q.w.translation)}</div>
+        ${q.hint?`<div class="muted" style="font-family:Georgia,serif;letter-spacing:2px">${esc(q.w.term.replace(/[A-Za-z']/g,'_').split('').join(' '))}</div>`:''}
+        <form onsubmit="submitSpell(event)" style="margin-top:14px">
+          <input type="text" class="spell-input" id="spellInput" autocomplete="off" placeholder="输入你听到的单词并回车">
+          <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
+            <button class="btn" type="submit">提交答案</button>
+            <button class="btn ghost" type="button" onclick="quiz.qs[quiz.idx].hint=true;renderQuizQ()">显示提示</button>
+          </div>
+        </form>
+      </div>`;
+  }
+  root.innerHTML = `
+  <div class="card"><div class="card-body">
+    <div class="quiz-meta"><span>${quiz.mode==='dictation'?'🎧 听写测验':'✏️ 综合测验'} · 第 <b class="num">${quiz.idx+1}</b> / ${quiz.qs.length} 题</span><span>当前得分 <b class="num">${quiz.score}</b></span></div>
+    ${body}
+    <div id="quizNext" style="margin-top:16px;text-align:right;display:none">
+      <button class="btn gold" onclick="nextQ()">下一题 →</button>
+      <span class="muted" style="font-size:11px;margin-left:10px"><span class="kbd">Enter</span> 继续</span>
+    </div>
+  </div></div>`;
+  const si = document.getElementById('spellInput'); if(si) si.focus();
+  if(q.type==='dictation' && DB.settings.autoSpeak) setTimeout(()=>speak(q.w.term), 300);
+}
+function answerOpt(i){
+  if(quiz.answered) return;
+  const q = quiz.qs[quiz.idx];
+  const correctIdx = q.opts.indexOf(q.type==='e2z' ? q.w.translation : q.w.term);
+  quiz.answered = true;
+  document.querySelectorAll('.quiz-opt').forEach((b,idx)=>{ b.disabled=true; if(idx===correctIdx) b.classList.add('correct'); });
+  if(i!==correctIdx){ document.getElementById('opt'+i).classList.add('wrong'); gradeWord(q.w,false); }
+  else { quiz.score++; gradeWord(q.w,true); }
+  showNext();
+}
+function submitSpell(e){
+  e.preventDefault();
+  if(quiz.answered) return;
+  const q = quiz.qs[quiz.idx];
+  const inp = document.getElementById('spellInput');
+  const val = (inp.value||'').trim().toLowerCase().replace(/\s+/g,' ');
+  if(!val) return;
+  quiz.answered = true;
+  const ok = val === q.w.term.toLowerCase().replace(/\s+/g,' ');
+  inp.disabled = true;
+  inp.style.borderColor = ok ? 'var(--green)' : 'var(--red)';
+  inp.insertAdjacentHTML('afterend', `<div style="text-align:center;margin-top:10px;font-weight:600;color:${ok?'var(--green)':'var(--red)'}">
+    ${ok?'✅ 回答正确':'❌ 正确答案：'+esc(q.w.term)}
+    <button class="icon-btn" style="margin-left:8px" data-say="${esc(q.w.term)}" onclick="speakEl(this)">🔊</button></div>`);
+  if(ok){ quiz.score++; gradeWord(q.w,true); } else gradeWord(q.w,false);
+  showNext();
+}
+function showNext(){ const n=document.getElementById('quizNext'); if(n) n.style.display='block'; }
+function nextQ(){ quiz.idx++; quiz.answered=false; renderQuizQ(); }
+function gradeWord(w, ok){
+  if(ok){ w.right++; w.wrongBook=false; schedule(w,1); }
+  else { w.wrong++; w.wrongBook=true; schedule(w,-1); }
+  saveDB(); updateTop();
+}
+function renderQuizResult(){
+  const root = document.getElementById('viewRoot');
+  const pct = Math.round(quiz.score/quiz.qs.length*100);
+  const ringColor = pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
+  const mode = quiz.mode;
+  DB.quizLog.unshift({date:Date.now(), total:quiz.qs.length, score:quiz.score, mode:mode});
+  DB.quizLog = DB.quizLog.slice(0,50);
+  saveDB(); updateTop();
+  root.innerHTML = `
+  <div class="card"><div class="card-body" style="text-align:center;padding:44px">
+    <div class="score-ring" style="border-color:${ringColor};color:${ringColor}">${pct}%</div>
+    <div style="font-size:17px;font-weight:600;margin-bottom:6px">${mode==='dictation'?'听写':'综合'}测验完成！</div>
+    <p class="muted">得分 ${quiz.score} / ${quiz.qs.length} ${pct>=80?'· 表现优秀 🎉':pct>=60?'· 继续加油':'· 建议先复习卡片再测'}</p>
+    <div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn gold" onclick="${mode==='dictation'?'startDictation()':'startQuiz()'}">再来一次</button>
+      <button class="btn ghost" onclick="renderQuizHome()">返回测验中心</button>
+      <button class="btn ghost" onclick="startReview()">复习到期/错题单词</button>
+    </div>
+  </div></div>`;
+  quiz = null;
+}
+
+/* ================= 数据管理 ================= */
+function renderData(){
+  const root = document.getElementById('viewRoot');
+  const st = DB.settings;
+  const localTTS = hasLocalTTS();
+  root.innerHTML = `
+  <div id="importMsg" class="msg"></div>
+
+  <div class="card">
+    <div class="card-head"><h3>🔊 发音设置</h3>
+      <button class="btn ghost sm" onclick="previewVoice()">试听 Bill of Lading</button>
+    </div>
+    <div class="card-body">
+      <div class="setting-row">
+        <span class="lab">发音引擎</span>
+        <select onchange="setSetting('engine',this.value)">
+          <option value="auto" ${st.engine==='auto'?'selected':''}>自动（在线优先，失败回退本地）</option>
+          <option value="online" ${st.engine==='online'?'selected':''}>在线发音（音质更自然，需联网）</option>
+          <option value="local" ${st.engine==='local'?'selected':''}>本地语音合成（离线可用）</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span class="lab">口音</span>
+        <select onchange="setSetting('accent',this.value)">
+          <option value="us" ${st.accent==='us'?'selected':''}>美式英语 en-US</option>
+          <option value="uk" ${st.accent==='uk'?'selected':''}>英式英语 en-GB</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span class="lab">语速</span>
+        <input type="range" min="0.6" max="1.3" step="0.05" value="${st.rate}" oninput="onRateChange(this)">
+        <b id="rateVal" class="num muted">${Number(st.rate).toFixed(2)}x</b>
+      </div>
+      <div class="setting-row">
+        <span class="lab">自动发音</span>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="autoSpeakBox" ${st.autoSpeak?'checked':''} onchange="setSetting('autoSpeak',this.checked)">
+          <span>卡片翻面前、听写出题时自动朗读</span>
+        </label>
+      </div>
+      <p class="muted" style="font-size:12px;margin-top:6px">
+        ${localTTS?'✅ 当前浏览器支持本地语音合成，离线也能发音。':'⚠️ 当前浏览器未提供本地语音合成，建议切换到「在线发音」或用 Chrome / Edge 打开。'}
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>导入 JSON 词库数据</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost sm" onclick="downloadTemplate()">⬇ 下载 JSON 模板</button>
+        <button class="btn ghost sm" onclick="loadDemo()">载入示例数据</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="muted" style="margin-bottom:14px;line-height:1.8">
+        将 AI 根据图片 / 文档 / Excel 提取整理后的 JSON 文件导入。<br>
+        数据规范请参阅项目内文档 <b>《AI数据制作指南.md》</b>，把该文档连同素材一并发给 AI 即可获得符合规范的 JSON。</p>
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div style="font-size:26px;margin-bottom:8px">📥</div>
+        点击选择 <b>.json</b> 文件，或拖拽文件到此处
+        <input type="file" id="fileInput" accept=".json,.txt" style="display:none" onchange="handleFile(this.files[0])">
+      </div>
+      <div style="margin-top:16px">
+        <div class="muted" style="margin-bottom:6px;font-size:12px">或直接粘贴 JSON 文本：</div>
+        <textarea class="code" id="pasteArea" placeholder='{"meta":{"title":"..."},"words":[...],"sentences":[...]}'></textarea>
+        <div style="margin-top:10px"><button class="btn" onclick="importPaste()">导入粘贴内容</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>⬇ 导出单词与句子</h3></div>
+    <div class="card-body">
+      <div class="setting-row">
+        <span class="lab">导出范围</span>
+        <select id="expRange" onchange="updateExportPreview()">
+          <option value="all">全部单词</option>
+          <option value="due">待复习单词</option>
+          <option value="star">生词本</option>
+          <option value="wrong">错题本</option>
+          <option value="new">未掌握（Lv.0–3）</option>
+          <option value="mastered">已掌握（Lv.4+）</option>
+        </select>
+        <span class="muted" id="expPreview" style="font-size:12px"></span>
+      </div>
+      <div class="setting-row">
+        <span class="lab">文件格式</span>
+        <select id="expFormat">
+          <option value="csv">CSV（Excel / WPS 直接打开）</option>
+          <option value="txt">TXT（纯词表，可导入其他 App）</option>
+          <option value="md">Markdown 表格</option>
+          <option value="json">JSON</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span class="lab">内容</span>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="expDetail" checked><span>含音标 / 释义 / 例句</span></label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="expProgress"><span>含学习进度（等级 / 复习记录）</span></label>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" onclick="exportWordsFromUI()">⬇ 导出单词</button>
+        <button class="btn ghost" onclick="exportSentencesFromUI()">⬇ 导出句子</button>
+      </div>
+      <p class="muted" style="font-size:12px;margin-top:12px">CSV 已带 UTF-8 BOM，中文用 Excel / WPS 打开不会乱码；单词列表页的「导出当前列表」会按当前搜索与筛选条件导出。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>🔤 悬停查词</h3><span class="muted" style="font-size:12px">鼠标滑过英文即可看词义</span></div>
+    <div class="card-body">
+      <div class="setting-row">
+        <span class="lab">悬停查词</span>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" ${st.hoverDict?'checked':''} onchange="setSetting('hoverDict',this.checked);renderData()">
+          <span>开启后，句子与例句中的英文单词可悬停查看释义</span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <span class="lab">在线查词</span>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" ${st.onlineDict?'checked':''} onchange="setSetting('onlineDict',this.checked);renderData()">
+          <span>词库未收录时联网查询（需联网，结果缓存在本机）</span>
+        </label>
+      </div>
+      <p class="muted" style="font-size:12px;line-height:1.8">
+        查词优先顺序：<b>你的词库</b> → <b>内置常用词库</b>（含词形还原，如 cartons → carton、shipped → ship）→ <b>在线词典</b>。
+        词组会整段识别（如 Bill of Lading、Letter of Credit、L/C）。词义卡片上的「＋ 加入词库」可把生词直接收进词库。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>备份与恢复</h3></div>
+    <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn ghost" onclick="exportAll()">⬇ 导出全部数据（含学习进度）</button>
+      <button class="btn danger" onclick="clearAll()">🗑 清空全部数据</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>导入历史</h3></div>
+    <table><thead><tr><th>批次</th><th>分类</th><th>来源</th><th>导入量</th><th>日期</th></tr></thead>
+    <tbody>${DB.imports.map(i=>`<tr class="row-hover"><td><b>${esc(i.title)}</b></td><td>${esc(i.category)}</td><td class="muted">${esc(i.source)}</td><td class="num">+${i.words} 词 / +${i.sentences} 句${i.duplicates?` <span class="muted">(去重 ${i.duplicates})</span>`:''}</td><td class="muted">${fmtDate(i.date)}</td></tr>`).join('') || '<tr><td colspan="5" class="muted" style="text-align:center;padding:24px">暂无记录</td></tr>'}</tbody></table>
+  </div>`;
+
+  const dz = document.getElementById('dropZone');
+  dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
+  updateExportPreview();
+}
+function updateExportPreview(){
+  const el = document.getElementById('expPreview');
+  if(!el) return;
+  el.textContent = '当前范围：' + expRangeWords().length + ' 个单词 · 句库共 ' + DB.sentences.length + ' 条';
+}
+
+/* ================= 导出（单词 / 句子） ================= */
+function csvCell(v){ const s = String(v==null?'':v); return /[",\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function toCSV(rows){ return rows.map(r=>r.map(csvCell).join(',')).join('\r\n'); }
+function mdTable(rows){
+  if(!rows.length) return '';
+  return '| ' + rows[0].join(' | ') + ' |\n| ' + rows[0].map(()=>'---').join(' | ') + ' |\n'
+       + rows.slice(1).map(r=>'| ' + r.join(' | ') + ' |').join('\n');
+}
+function wordHeader(detail, progress){
+  const h = ['单词'];
+  if(detail) h.push('音标','词性','中文释义','详解','英文例句','例句翻译','标签');
+  if(progress) h.push('掌握等级','答对','答错','下次复习','加入日期');
+  return h;
+}
+function wordRow(w, detail, progress){
+  const r = [w.term];
+  if(detail) r.push(w.phonetic, w.pos, w.translation, w.definition, w.exampleEn, w.exampleZh, w.tags.join(' '));
+  if(progress) r.push('Lv.'+w.level, w.right, w.wrong, w.nextReviewAt>Date.now()?fmtDate(w.nextReviewAt):'待复习', fmtDate(w.addedAt));
+  return r;
+}
+function wordObj(w, detail, progress){
+  const o = detail
+    ? { term:w.term, phonetic:w.phonetic, pos:w.pos, translation:w.translation, definition:w.definition,
+        exampleEn:w.exampleEn, exampleZh:w.exampleZh, tags:w.tags }
+    : { term:w.term, translation:w.translation };
+  if(progress){ o.level = w.level; o.right = w.right; o.wrong = w.wrong; o.nextReviewAt = w.nextReviewAt; o.addedAt = w.addedAt; }
+  return o;
+}
+function sentHeader(detail, progress){
+  const h = ['英文句子','中文翻译'];
+  if(detail) h.push('场景','语言点');
+  if(progress) h.push('收藏','掌握','加入日期');
+  return h;
+}
+function sentRow(s, detail, progress){
+  const r = [s.en, s.zh];
+  if(detail) r.push(s.scene, s.notes);
+  if(progress) r.push(s.starred?'是':'否', s.mastery>=2?'已掌握':'未掌握', fmtDate(s.addedAt));
+  return r;
+}
+function sentObj(s, detail, progress){
+  const o = detail ? { en:s.en, zh:s.zh, scene:s.scene, notes:s.notes } : { en:s.en, zh:s.zh };
+  if(progress){ o.starred = s.starred; o.mastery = s.mastery; o.addedAt = s.addedAt; }
+  return o;
+}
+function buildExportText(kind, list, fmt, detail, progress){
+  if(fmt==='json') return JSON.stringify(list.map(x=> kind==='words'? wordObj(x,detail,progress) : sentObj(x,detail,progress)), null, 2);
+  const header = kind==='words' ? wordHeader(detail,progress) : sentHeader(detail,progress);
+  const rows = [header, ...list.map(x=> kind==='words'? wordRow(x,detail,progress) : sentRow(x,detail,progress))];
+  if(fmt==='csv') return '\uFEFF' + toCSV(rows);
+  if(fmt==='md') return '# 贸语通导出（' + todayKey() + '）\n\n' + mdTable(rows) + '\n';
+  /* txt：纯词表 */
+  return list.map(x=>{
+    const a = kind==='words' ? x.term : x.en;
+    const b = kind==='words' ? x.translation : x.zh;
+    if(!detail) return a;
+    const extra = kind==='words' && x.phonetic ? ' ' + x.phonetic : '';
+    return a + extra + '\t' + b;
+  }).join('\r\n');
+}
+const EXP_MIME = { csv:'text/csv', txt:'text/plain', md:'text/markdown', json:'application/json' };
+function doExport(kind, list, fmt, detail, progress){
+  if(!list.length){ toast('该范围内没有可导出的内容'); return; }
+  const text = buildExportText(kind, list, fmt, detail, progress);
+  download('tradelingo-' + kind + '-' + fmtDate(Date.now()) + '.' + fmt, text, (EXP_MIME[fmt]||'text/plain') + ';charset=utf-8');
+  toast('已导出 ' + list.length + ' 条（' + fmt.toUpperCase() + '）');
+}
+function expRangeWords(){
+  const el = document.getElementById('expRange');
+  const r = el ? el.value : 'all';
+  const dueIds = new Set(dueWords().map(w=>w.id));
+  if(r==='due') return DB.words.filter(w=>dueIds.has(w.id));
+  if(r==='star') return DB.words.filter(w=>w.starred);
+  if(r==='wrong') return DB.words.filter(w=>w.wrongBook);
+  if(r==='new') return DB.words.filter(w=>w.level<4);
+  if(r==='mastered') return DB.words.filter(w=>w.level>=4);
+  return [...DB.words];
+}
+function exportWordsFromUI(){
+  const fmt = document.getElementById('expFormat').value;
+  const detail = document.getElementById('expDetail').checked;
+  const progress = document.getElementById('expProgress').checked;
+  doExport('words', expRangeWords(), fmt, detail, progress);
+}
+function exportSentencesFromUI(){
+  const fmt = document.getElementById('expFormat').value;
+  const detail = document.getElementById('expDetail').checked;
+  const progress = document.getElementById('expProgress').checked;
+  doExport('sentences', [...DB.sentences], fmt, detail, progress);
+}
+/* 单词列表页：按当前搜索 / 筛选条件导出（CSV） */
+function exportFilteredWords(){
+  const list = filteredWords();
+  if(!list.length){ toast('当前筛选结果为空'); return; }
+  doExport('words', list, 'csv', true, wordFilter.scope==='待复习' || wordFilter.scope==='错题本');
+}
+/* 句子列表页：导出全部句子（CSV） */
+function exportSentencesCSV(){
+  doExport('sentences', [...DB.sentences], 'csv', true, false);
+}
+function setSetting(k,v){ DB.settings[k]=v; saveDB(); }
+function onRateChange(el){
+  setSetting('rate', parseFloat(el.value));
+  const v = document.getElementById('rateVal');
+  if(v) v.textContent = Number(el.value).toFixed(2)+'x';
+}
+function importMsg(ok, text){
+  const el = document.getElementById('importMsg');
+  if(!el){ toast(text); return; }
+  el.className = 'msg '+(ok?'ok':'err');
+  el.textContent = text;
+  try{ el.scrollIntoView({behavior:'smooth', block:'nearest'}); }catch(e){}
+}
+function handleFile(f){
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{ doImport(JSON.parse(reader.result)); }
+    catch(e){ importMsg(false, '导入失败：'+e.message+'（请确认是合法 JSON，且包含 words / sentences 数组）'); }
+  };
+  reader.readAsText(f,'UTF-8');
+}
+function importPaste(){
+  try{ doImport(JSON.parse(document.getElementById('pasteArea').value)); }
+  catch(e){ importMsg(false, '导入失败：'+e.message); }
+}
+function doImport(json){
+  try{
+    const parsed = normalizeImport(json);
+    if(parsed.words.length+parsed.sentences.length===0){ importMsg(false,'导入失败：未解析到有效的单词或句子条目'); return; }
+    const r = applyImport(parsed);
+    renderData(); updateTop();
+    importMsg(true, `✅ 导入成功：新增 ${r.nw} 个单词、${r.ns} 个句子${r.dup?`，自动去重 ${r.dup} 个重复单词`:''}`);
+  }catch(e){ importMsg(false, '导入失败：'+e.message); }
+}
+function download(filename, text, mime){
+  const blob = new Blob([text], {type: mime || 'application/json;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+function exportAll(){ download('tradelingo-backup-'+fmtDate(Date.now())+'.json', JSON.stringify(DB,null,2)); }
+function clearAll(){
+  if(!confirm('确定要清空全部单词、句子与学习记录吗？此操作不可恢复，建议先导出备份。')) return;
+  if(!confirm('再次确认：真的要清空吗？')) return;
+  DB = emptyDB(); saveDB(); updateTop();
+  renderData();
+  importMsg(true,'已清空全部数据。');
+}
+function downloadTemplate(){
+  download('tradelingo-template.json', JSON.stringify({
+    meta:{ title:'模板批次名称', category:'外贸函电', source:'填写来源，如：某教材第3章' },
+    words:[
+      { term:'Bill of Lading', phonetic:'/ˌbɪl əv ˈleɪdɪŋ/', pos:'noun',
+        translation:'提单', definition:'船公司签发的货物收据、运输合同证明和物权凭证。',
+        exampleEn:'Please release the cargo against the original Bill of Lading.',
+        exampleZh:'请凭正本提单放货。', tags:['单证','海运'] }
+    ],
+    sentences:[
+      { en:'We accept payment by irrevocable L/C at sight.', zh:'我们接受不可撤销即期信用证付款。', scene:'支付', notes:'at sight 即期' }
+    ]
+  },null,2));
+}
+function loadDemo(){
+  try{
+    const parsed = normalizeImport(DEMO_DATA);
+    const r = applyImport(parsed);
+    renderData(); updateTop();
+    importMsg(true, `✅ 示例数据载入成功：+${r.nw} 词 / +${r.ns} 句`);
+  }catch(e){ importMsg(false,'载入失败：'+e.message); }
+}
+
+const DEMO_DATA = {
+  meta:{ title:'示例批次 · 外贸物流核心词汇', category:'综合', source:'内置示例' },
+  words:[
+    { term:'Bill of Lading', phonetic:'/ˌbɪl əv ˈleɪdɪŋ/', pos:'noun', translation:'提单', definition:'船公司签发的货物收据、运输合同证明和物权凭证。', exampleEn:'Please release the cargo against the original Bill of Lading.', exampleZh:'请凭正本提单放货。', tags:['单证','海运'] },
+    { term:'Letter of Credit', phonetic:'/ˈletər əv ˈkredɪt/', pos:'noun', translation:'信用证（L/C）', definition:'银行应买方申请开立、承诺凭符合条款的单据付款的结算方式。', exampleEn:'Payment will be made by an irrevocable Letter of Credit at sight.', exampleZh:'付款方式为不可撤销即期信用证。', tags:['支付','单证'] },
+    { term:'FOB', phonetic:'/ˌef əʊ ˈbiː/', pos:'abbr', translation:'装运港船上交货（离岸价）', definition:'卖方负责将货物装上买方指定船只，风险自货物装上船起转移给买方。', exampleEn:'We quote FOB Shanghai at USD 12.50 per piece.', exampleZh:'我方报上海离岸价每件12.50美元。', tags:['贸易术语'] },
+    { term:'CIF', phonetic:'/ˌsiː aɪ ˈef/', pos:'abbr', translation:'成本加保险费加运费（到岸价）', definition:'卖方承担成本、保险费与运费至目的港，风险仍在装运港转移。', exampleEn:'The offer is CIF Rotterdam, with insurance covering 110% of the invoice value.', exampleZh:'此报价为鹿特丹到岸价，按发票金额110%投保。', tags:['贸易术语'] },
+    { term:'Customs Clearance', phonetic:'/ˈkʌstəmz ˈklɪərəns/', pos:'noun', translation:'清关；报关', definition:'进出口货物向海关申报、缴税并获放行的手续。', exampleEn:'It usually takes two working days for customs clearance at Ningbo Port.', exampleZh:'宁波港清关通常需要两个工作日。', tags:['报关'] },
+    { term:'Demurrage', phonetic:'/dɪˈmʌrɪdʒ/', pos:'noun', translation:'滞期费；滞箱费', definition:'未在免堆期/免箱期内完成作业而产生的费用。', exampleEn:'Demurrage will be charged if the container is not returned within the free time.', exampleZh:'如未在免箱期内还箱将产生滞箱费。', tags:['费用','海运'] },
+    { term:'TEU', phonetic:'/ˌtiː iː ˈjuː/', pos:'abbr', translation:'20英尺标准箱', definition:'集装箱运量的计量单位（Twenty-foot Equivalent Unit）。', exampleEn:'This vessel has a capacity of 14,000 TEUs.', exampleZh:'该船载箱量达14000标准箱。', tags:['海运'] },
+    { term:'Inquiry', phonetic:'/ɪnˈkwaɪəri/', pos:'noun', translation:'询盘；询价', definition:'买方向卖方询问价格与交易条件的函电。', exampleEn:'Thank you for your inquiry dated October 10 regarding our ceramic mugs.', exampleZh:'感谢您10月10日关于我方陶瓷杯的询盘。', tags:['函电'] },
+    { term:'Quotation', phonetic:'/kwəʊˈteɪʃn/', pos:'noun', translation:'报价；报价单', definition:'卖方对特定数量商品开列的价格与交易条件。', exampleEn:'Please find our latest quotation, valid for 30 days.', exampleZh:'请查收我方最新报价单，有效期30天。', tags:['函电','价格'] },
+    { term:'Shipment', phonetic:'/ˈʃɪpmənt/', pos:'noun', translation:'装运；货物', definition:'将货物装上运输工具的过程，也指所装运的一批货物。', exampleEn:'The shipment is scheduled to depart on October 20.', exampleZh:'该批货物定于10月20日装运出港。', tags:['运输'] },
+    { term:'Freight Forwarder', phonetic:'/freɪt ˈfɔːwədə/', pos:'noun', translation:'货运代理（货代）', definition:'替委托人安排运输、订舱、报关等事宜的中介机构。', exampleEn:'Please contact our freight forwarder for the warehouse address.', exampleZh:'请联系我方货代获取仓库地址。', tags:['物流'] },
+    { term:'Certificate of Origin', phonetic:'/səˈtɪfɪkət əv ˈɒrɪdʒɪn/', pos:'noun', translation:'原产地证书', definition:'证明货物原产地的文件，用于享受关税优惠。', exampleEn:'A Certificate of Origin is required for tariff preference.', exampleZh:'享受关税优惠需提供原产地证书。', tags:['单证','报关'] }
+  ],
+  sentences:[
+    { en:'Could you please send us your best price for 5,000 pieces, FOB Ningbo?', zh:'请报5,000件的最优价格，FOB宁波条件。', scene:'询盘', notes:'best price 最优价；counter-offer 还盘' },
+    { en:'This price is valid for 30 days and subject to our final confirmation.', zh:'本报价有效期30天，以我方最终确认为准。', scene:'报价', notes:'subject to 以…为准' },
+    { en:'The earliest shipment date is November 15, as vessel space is quite tight recently.', zh:'由于近期舱位紧张，最早装运期为11月15日。', scene:'装运', notes:'vessel space 舱位' },
+    { en:'We accept payment by irrevocable L/C payable against presentation of shipping documents.', zh:'我们接受凭装运单据付款的不可撤销信用证。', scene:'支付', notes:'presentation 交单' },
+    { en:'Upon survey, 15% of the cartons were found badly damaged, and we hereby lodge a claim.', zh:'经检验，15%的纸箱严重破损，我方特此提出索赔。', scene:'索赔', notes:'lodge a claim 提出索赔' },
+    { en:'Please advise the ETD and ETA of the vessel so that we can arrange customs clearance in advance.', zh:'请告知船舶预计离港和到港时间，以便我们提前安排清关。', scene:'物流跟进', notes:'ETD 预计离港时间 / ETA 预计到港时间' }
+  ]
+};
+
+/* ================= 键盘快捷键 ================= */
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ closeModal(); return; }
+  if(document.getElementById('modalRoot').innerHTML) return;
+  const tag = String((e.target && e.target.tagName) || '').toLowerCase();
+  if(tag==='input' || tag==='textarea'){
+    if(e.key==='Enter' && quiz && quiz.answered && currentView==='quiz'){ e.preventDefault(); nextQ(); }
+    return;
+  }
+  if(currentView==='words' && flash){
+    if(e.code==='Space'){ e.preventDefault(); if(!flash.showZh) flipCard(); else gradeCard(1); return; }
+    if(e.key==='1'){ e.preventDefault(); if(flash.showZh) gradeCard(-1); else flipCard(); return; }
+    if(e.key==='2'){ e.preventDefault(); if(flash.showZh) gradeCard(0); return; }
+    if(e.key==='3'){ e.preventDefault(); if(flash.showZh) gradeCard(1); return; }
+    return;
+  }
+  if(currentView==='quiz' && quiz){
+    const q = quiz.qs[quiz.idx];
+    if(q && !quiz.answered && q.opts){
+      const n = parseInt(e.key,10);
+      if(n>=1 && n<=q.opts.length){ e.preventDefault(); answerOpt(n-1); }
+      return;
+    }
+    if(quiz.answered && e.key==='Enter'){ e.preventDefault(); nextQ(); }
+  }
+});
+
+/* ================= 初始化 ================= */
+if(hasLocalTTS()){
+  try{ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = ()=>{}; }catch(e){}
+}
+migrate(); saveDB(); render();
+</script>
+</body>
+</html>

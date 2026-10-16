@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "示例批次 · 外贸物流核心词汇",
+    "category": "综合",
+    "source": "内置示例（可直接导入测试）"
+  },
+  "words": [
+    { "term": "Bill of Lading", "phonetic": "/ˌbɪl əv ˈleɪdɪŋ/", "pos": "noun", "translation": "提单", "definition": "船公司签发的货物收据、运输合同证明和物权凭证。", "exampleEn": "Please release the cargo against the original Bill of Lading.", "exampleZh": "请凭正本提单放货。", "tags": ["单证", "海运"] },
+    { "term": "Letter of Credit", "phonetic": "/ˈletər əv ˈkredɪt/", "pos": "noun", "translation": "信用证（L/C）", "definition": "银行应买方申请开立、承诺凭符合条款的单据付款的结算方式。", "exampleEn": "Payment will be made by an irrevocable Letter of Credit at sight.", "exampleZh": "付款方式为不可撤销即期信用证。", "tags": ["支付", "单证"] },
+    { "term": "FOB", "phonetic": "/ˌef əʊ ˈbiː/", "pos": "abbr", "translation": "装运港船上交货（离岸价）", "definition": "卖方负责将货物装上买方指定船只，风险自货物装上船起转移给买方。", "exampleEn": "We quote FOB Shanghai at USD 12.50 per piece.", "exampleZh": "我方报上海离岸价每件12.50美元。", "tags": ["贸易术语"] },
+    { "term": "CIF", "phonetic": "/ˌsiː aɪ ˈef/", "pos": "abbr", "translation": "成本加保险费加运费（到岸价）", "definition": "卖方承担成本、保险费与运费至目的港，风险仍在装运港转移。", "exampleEn": "The offer is CIF Rotterdam, with insurance covering 110% of the invoice value.", "exampleZh": "此报价为鹿特丹到岸价，按发票金额110%投保。", "tags": ["贸易术语"] },
+    { "term": "Customs Clearance", "phonetic": "/ˈkʌstəmz ˈklɪərəns/", "pos": "noun", "translation": "清关；报关", "definition": "进出口货物向海关申报、缴税并获放行的手续。", "exampleEn": "It usually takes two working days for customs clearance at Ningbo Port.", "exampleZh": "宁波港清关通常需要两个工作日。", "tags": ["报关"] },
+    { "term": "Demurrage", "phonetic": "/dɪˈmʌrɪdʒ/", "pos": "noun", "translation": "滞期费；滞箱费", "definition": "未在免堆期/免箱期内完成作业而产生的费用。", "exampleEn": "Demurrage will be charged if the container is not returned within the free time.", "exampleZh": "如未在免箱期内还箱将产生滞箱费。", "tags": ["费用", "海运"] },
+    { "term": "TEU", "phonetic": "/ˌtiː iː ˈjuː/", "pos": "abbr", "translation": "20英尺标准箱", "definition": "集装箱运量的计量单位（Twenty-foot Equivalent Unit）。", "exampleEn": "This vessel has a capacity of 14,000 TEUs.", "exampleZh": "该船载箱量达14000标准箱。", "tags": ["海运"] },
+    { "term": "Inquiry", "phonetic": "/ɪnˈkwaɪəri/", "pos": "noun", "translation": "询盘；询价", "definition": "买方向卖方询问价格与交易条件的函电。", "exampleEn": "Thank you for your inquiry dated October 10 regarding our ceramic mugs.", "exampleZh": "感谢您10月10日关于我方陶瓷杯的询盘。", "tags": ["函电"] },
+    { "term": "Quotation", "phonetic": "/kwəʊˈteɪʃn/", "pos": "noun", "translation": "报价；报价单", "definition": "卖方对特定数量商品开列的价格与交易条件。", "exampleEn": "Please find our latest quotation, valid for 30 days.", "exampleZh": "请查收我方最新报价单，有效期30天。", "tags": ["函电", "价格"] },
+    { "term": "Shipment", "phonetic": "/ˈʃɪpmənt/", "pos": "noun", "translation": "装运；货物", "definition": "将货物装上运输工具的过程，也指所装运的一批货物。", "exampleEn": "The shipment is scheduled to depart on October 20.", "exampleZh": "该批货物定于10月20日装运出港。", "tags": ["运输"] },
+    { "term": "Freight Forwarder", "phonetic": "/freɪt ˈfɔːwədə/", "pos": "noun", "translation": "货运代理（货代）", "definition": "替委托人安排运输、订舱、报关等事宜的中介机构。", "exampleEn": "Please contact our freight forwarder for the warehouse address.", "exampleZh": "请联系我方货代获取仓库地址。", "tags": ["物流"] },
+    { "term": "Certificate of Origin", "phonetic": "/səˈtɪfɪkət əv ˈɒrɪdʒɪn/", "pos": "noun", "translation": "原产地证书", "definition": "证明货物原产地的文件，用于享受关税优惠。", "exampleEn": "A Certificate of Origin is required for tariff preference.", "exampleZh": "享受关税优惠需提供原产地证书。", "tags": ["单证", "报关"] }
+  ],
+  "sentences": [
+    { "en": "Could you please send us your best price for 5,000 pieces, FOB Ningbo?", "zh": "请报5,000件的最优价格，FOB宁波条件。", "scene": "询盘", "notes": "best price 最优价；counter-offer 还盘" },
+    { "en": "This price is valid for 30 days and subject to our final confirmation.", "zh": "本报价有效期30天，以我方最终确认为准。", "scene": "报价", "notes": "subject to 以…为准" },
+    { "en": "The earliest shipment date is November 15, as vessel space is quite tight recently.", "zh": "由于近期舱位紧张，最早装运期为11月15日。", "scene": "装运", "notes": "vessel space 舱位" },
+    { "en": "We accept payment by irrevocable L/C payable against presentation of shipping documents.", "zh": "我们接受凭装运单据付款的不可撤销信用证。", "scene": "支付", "notes": "presentation 交单" },
+    { "en": "Upon survey, 15% of the cartons were found badly damaged, and we hereby lodge a claim.", "zh": "经检验，15%的纸箱严重破损，我方特此提出索赔。", "scene": "索赔", "notes": "lodge a claim 提出索赔" },
+    { "en": "Please advise the ETD and ETA of the vessel so that we can arrange customs clearance in advance.", "zh": "请告知船舶预计离港和到港时间，以便我们提前安排清关。", "scene": "物流跟进", "notes": "ETD 预计离港时间 / ETA 预计到港时间" }
+  ]
+}

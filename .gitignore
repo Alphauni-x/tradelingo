@@ -1,0 +1,19 @@
+# 项目内部的记忆与配置目录，不随仓库发布
+.workbuddy/
+
+# 依赖与构建产物
+node_modules/
+dist/
+build/
+
+# 编辑器与系统文件
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日志与临时文件
+*.log
+*.tmp
+~$*
