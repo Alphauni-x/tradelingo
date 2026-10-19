@@ -111,6 +111,51 @@
   .empty{text-align:center;padding:54px 20px;color:var(--muted);}
   .empty .big{font-size:34px;margin-bottom:14px;opacity:.85;}
 
+  /* ===== 学习统计 / 今日目标 ===== */
+  .today-flex{display:flex;align-items:center;gap:28px;}
+  .goal-ring{position:relative;width:106px;height:106px;flex:none;}
+  .goal-ring svg{display:block;transform:rotate(-90deg);}
+  .goal-ring .gr-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2;pointer-events:none;}
+  .goal-ring .gr-num{font-size:23px;font-weight:700;color:var(--navy);letter-spacing:-.03em;font-variant-numeric:tabular-nums;}
+  .goal-ring .gr-sub{font-size:10.5px;color:var(--faint);margin-top:2px;}
+  .goal-ring.done .gr-num{color:var(--green);}
+  .today-main{flex:1;min-width:300px;}
+  .today-flex .task-grid{margin-bottom:16px;}
+
+  .stats-block{display:grid;grid-template-columns:262px minmax(0,1fr);gap:36px;align-items:start;}
+  .sb-title{font-size:12px;color:var(--muted);margin-bottom:12px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .sb-title b{color:var(--navy);font-variant-numeric:tabular-nums;font-weight:600;}
+  .heat{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;max-width:300px;}
+  .heat i{width:100%;height:auto;aspect-ratio:1/1;border-radius:4px;background:#f1f5f9;display:block;transition:transform .12s,box-shadow .12s;}
+  .heat i:hover{transform:scale(1.14);box-shadow:0 0 0 1.5px var(--brand);position:relative;z-index:2;}
+  .heat i.l1{background:#e0e7ff;} .heat i.l2{background:#c7d2fe;}
+  .heat i.l3{background:#a5b4fc;} .heat i.l4{background:#6366f1;}
+  .heat i.today{box-shadow:0 0 0 1.5px #94a3b8 inset;}
+  .heat-legend{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--faint);margin-top:9px;}
+  .heat-legend i{width:10px;height:10px;border-radius:2.5px;background:#f1f5f9;display:block;}
+  .heat-legend i.l1{background:#e0e7ff;} .heat-legend i.l2{background:#c7d2fe;}
+  .heat-legend i.l3{background:#a5b4fc;} .heat-legend i.l4{background:#6366f1;}
+  .dist-bar{height:10px;border-radius:99px;overflow:hidden;display:flex;background:var(--line2);}
+  .dist-bar i{display:block;height:100%;transition:width .4s ease;}
+  .dist-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:7px 14px;margin-top:14px;}
+  .dist-legend .dl{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);}
+  .dist-legend .dl i{width:8px;height:8px;border-radius:50%;flex:none;}
+  .dist-legend .dl b{color:var(--navy);font-variant-numeric:tabular-nums;}
+  .weak-wrap{margin-top:22px;padding-top:18px;border-top:1px solid var(--line2);}
+  .weak-list{display:flex;flex-wrap:wrap;gap:7px;}
+  .weak-item{display:inline-flex;align-items:baseline;gap:7px;background:#fbfcfe;border:1px solid #eef2f7;border-radius:7px;padding:6px 10px;font-size:12px;font-family:inherit;cursor:pointer;transition:.14s;max-width:100%;}
+  .weak-item:hover{border-color:var(--brand-line);background:var(--brand-soft);}
+  .weak-item b{color:var(--navy);font-weight:600;white-space:nowrap;}
+  .weak-item span{color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .trend-wrap{margin-top:26px;padding-top:22px;border-top:1px solid var(--line2);}
+  .trend{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;height:92px;align-items:end;}
+  .trend .tc{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative;}
+  .trend .tb{width:100%;max-width:46px;background:linear-gradient(180deg,#a5b4fc,var(--brand));border-radius:5px 5px 2px 2px;min-height:3px;transition:height .4s ease;}
+  .trend .tc.zero .tb{background:#e8ecf1;}
+  .trend .tv{font-size:10.5px;color:var(--navy3);margin-bottom:4px;font-variant-numeric:tabular-nums;font-weight:600;}
+  .trend .tc.zero .tv{color:#cbd5e1;font-weight:400;}
+  .trend-labels{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-top:7px;text-align:center;font-size:10.5px;color:var(--faint);}
+
   /* ===== 筛选栏 ===== */
   .filter-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px;}
   .filter-bar input{max-width:230px;}
@@ -154,10 +199,20 @@
   .score-ring{width:118px;height:118px;border-radius:50%;border:8px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:var(--green);margin:0 auto 18px;font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
   .spell-input{max-width:370px;margin:0 auto;display:block;text-align:center;font-size:16px;letter-spacing:.02em;}
   .dictation-box{text-align:center;padding:12px 0 4px;}
-  .quiz-types{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .quiz-types{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
   .qt{background:#fbfcfe;border:1px solid #eef2f7;border-radius:10px;padding:16px 18px;}
   .qt .qt-h{font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:6px;}
   .qt .qt-d{font-size:12px;color:var(--muted);line-height:1.7;}
+  .sent-fb{margin-top:14px;padding:13px 15px;border-radius:10px;text-align:left;}
+  .sent-fb.ok{background:#ecfdf5;border:1px solid #d1fae5;}
+  .sent-fb.bad{background:#fef2f2;border:1px solid #fadada;}
+  .sent-fb .sfb-h{font-weight:600;font-size:13px;margin-bottom:7px;}
+  .sent-fb.ok .sfb-h{color:#047857;} .sent-fb.bad .sfb-h{color:#b91c1c;}
+  .sent-fb .sfb-en{font-size:14px;line-height:1.7;color:var(--text);}
+  .sent-fb .sfb-zh{font-size:12.5px;color:var(--muted);margin-top:5px;}
+  .ladder{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .ladder .ld{background:var(--brand-soft);color:var(--brand2);border:1px solid var(--brand-line);border-radius:7px;padding:6px 12px;font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .ladder .la{color:#cbd5e1;font-size:12px;}
 
   /* ===== 数据管理 ===== */
   .drop-zone{border:1.5px dashed #d8dfe9;border-radius:12px;padding:32px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s;background:#fbfcfe;}
@@ -209,6 +264,21 @@
     .nav{padding:4px 8px;} .nav-item{justify-content:center;padding:11px 0;}
     .main{margin-left:62px;} .stat-grid,.task-grid{grid-template-columns:repeat(2,1fr);}
     .content{padding:18px 16px 40px;} .topbar{padding:0 18px;} .top-right{gap:10px;font-size:11.5px;}
+    .stats-block{grid-template-columns:1fr;gap:22px;}
+    .today-flex{gap:20px;}
+    .quiz-types{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:560px){
+    .today-flex{flex-direction:column;align-items:stretch;}
+    .today-main{min-width:0;}
+    .goal-ring{margin:0 auto;}
+    .heat{grid-template-columns:repeat(7,minmax(0,1fr));max-width:100%;}
+    .heat i{width:100%;height:auto;aspect-ratio:1/1;}
+    .dist-legend{grid-template-columns:repeat(2,1fr);}
+    .quiz-types{grid-template-columns:1fr;}
+    .stat{padding:14px 16px;} .stat .val{font-size:26px;}
+    .task-grid{gap:8px;} .task{padding:12px 8px;}
+    .content{padding:16px 12px 36px;}
   }
 </style>
 </head>
@@ -226,7 +296,7 @@
       <button class="nav-item" data-view="quiz" onclick="switchView('quiz')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span><span class="txt">测验中心</span></button>
       <button class="nav-item" data-view="data" onclick="switchView('data')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span><span class="txt">数据管理</span></button>
     </nav>
-    <div class="side-footer">v2.0 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
+    <div class="side-footer">v2.1 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
   </aside>
 
   <div class="main">
@@ -251,6 +321,7 @@ const REVIEW_DAYS = [0, 1, 2, 4, 7, 15, 30];
 function uid(p){ return p + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function fmtDate(ts){ const d=new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function fmtDateTime(ts){ const d=new Date(ts); return fmtDate(ts)+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
 function todayKey(){ return fmtDate(Date.now()); }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function pickN(arr,n){ return shuffle([...arr]).slice(0,n); }
@@ -265,8 +336,8 @@ function toast(msg){
 }
 
 /* ================= 数据层 ================= */
-function emptyDB(){ return { words:[], sentences:[], imports:[], quizLog:[], studyLog:{},
-  settings:{ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true } }; }
+function emptyDB(){ return { words:[], sentences:[], imports:[], quizLog:[], studyLog:{}, trash:[],
+  settings:{ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30 } }; }
 function loadDB(){
   try{ const raw = localStorage.getItem(STORE_KEY); if(!raw) return emptyDB();
     return Object.assign(emptyDB(), JSON.parse(raw));
@@ -276,8 +347,10 @@ function saveDB(){ invalidateDictIndex(); try{ localStorage.setItem(STORE_KEY, J
 let DB = loadDB();
 /* 兼容旧版本数据 */
 function migrate(){
-  DB.settings = Object.assign({ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true }, DB.settings||{});
+  DB.settings = Object.assign({ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30 }, DB.settings||{});
   if(!DB.studyLog) DB.studyLog = {};
+  if(!Array.isArray(DB.trash)) DB.trash = [];
+  if(!(DB.settings.dailyGoal>0)) DB.settings.dailyGoal = 30;
   DB.words.forEach(w=>{
     if(w.starred==null) w.starred=false;
     if(w.wrongBook==null) w.wrongBook=false;
@@ -285,7 +358,13 @@ function migrate(){
     if(w.nextReviewAt==null) w.nextReviewAt=0;
     if(w.lastReviewAt==null) w.lastReviewAt=0;
   });
-  DB.sentences.forEach(s=>{ if(s.starred==null) s.starred=false; });
+  DB.sentences.forEach(s=>{
+    if(s.starred==null) s.starred=false;
+    if(s.mastery==null) s.mastery = 0;
+    if(s.level==null) s.level = s.mastery||0;
+    if(s.lastReviewAt==null) s.lastReviewAt = 0;
+    if(s.nextReviewAt==null) s.nextReviewAt = 0;
+  });
 }
 
 /* ================= 发音模块 ================= */
@@ -1190,17 +1269,25 @@ function entryToWord(w){
 }
 function entryToSentence(s){
   if(s==null) return null;
-  if(typeof s==='string'){ const t=s.trim(); return /[A-Za-z]/.test(t) ? { id:uid('s_'), en:t, zh:'', scene:'', notes:'', mastery:0, starred:false, addedAt:Date.now() } : null; }
+  const base = { id:uid('s_'), en:'', zh:'', scene:'', notes:'', mastery:0, level:0, starred:false,
+                 addedAt:Date.now(), lastReviewAt:0, nextReviewAt:0 };
+  if(typeof s==='string'){ const t=s.trim(); if(!/[A-Za-z]/.test(t)) return null; return Object.assign(base,{en:t}); }
   if(typeof s!=='object') return null;
   const en = String(pick(s, K.en)).trim();
   if(!en) return null;
-  return { id:uid('s_'), en:en,
+  const lv = Math.max(0, Math.min(6, Math.round(numOr(pick(s, K.level), 0))));
+  return Object.assign(base, {
+    en: en,
     zh: String(pick(s, K.zh)).trim(),
     scene: String(pick(s, K.scene)).trim(),
     notes: String(pick(s, K.notes)).trim(),
-    mastery: Math.max(0, Math.min(2, Math.round(numOr(pick(s, K.level), 0)))),
+    mastery: Math.min(5, lv),
+    level: lv,
     starred: boolOr(pick(s, K.starred), false),
-    addedAt: numOr(pick(s, K.addedAt), 0) || Date.now() };
+    addedAt: numOr(pick(s, K.addedAt), 0) || Date.now(),
+    lastReviewAt: Math.max(0, numOr(pick(s, K.lastReviewAt), 0)),
+    nextReviewAt: Math.max(0, numOr(pick(s, K.nextReviewAt), 0))
+  });
 }
 function normalizeImport(json){
   if(json==null) throw new Error('没有可导入的内容');
@@ -1229,6 +1316,7 @@ function normalizeImport(json){
 }
 function applyImport(parsed){
   const meta = parsed.meta || {};
+  if(((parsed.words||[]).length + (parsed.sentences||[]).length) > 0) makeSnapshot('导入前');
   const exist = new Set(DB.words.map(w=>String(w.term||'').toLowerCase()));
   let nw=0, dup=0, withProgress=0;
   parsed.words.forEach(w=>{
@@ -1271,6 +1359,8 @@ function schedule(w, quality){
   recordStudy();
 }
 function dueWords(){ return DB.words.filter(w=>w.lastReviewAt && w.nextReviewAt<=Date.now()); }
+function dueSentences(){ return DB.sentences.filter(s=>s.lastReviewAt && s.nextReviewAt<=Date.now()); }
+function lowSentences(n){ return [...DB.sentences].sort((a,b)=>(a.level||0)-(b.level||0)).slice(0,n||10); }
 function lowWords(n){ return [...DB.words].sort((a,b)=>(a.level-b.level)||(a.wrong-b.wrong)).slice(0,n||15); }
 
 /* ================= 视图切换 ================= */
@@ -1300,10 +1390,117 @@ function updateTop(){
 }
 
 /* ================= 学习总览 ================= */
+/* ================= 学习统计 ================= */
+function heatLevel(n){
+  if(!n) return '';
+  if(n<5) return 'l1';
+  if(n<15) return 'l2';
+  if(n<30) return 'l3';
+  return 'l4';
+}
+function studyStats(){
+  const log = DB.studyLog || {};
+  const tk = todayKey();
+  const now = new Date(); now.setHours(0,0,0,0);
+  /* 以周一为起点，取最近 5 周共 35 天 */
+  const dow = (now.getDay()+6)%7;
+  const start = new Date(now); start.setDate(now.getDate()-dow-28);
+  const cells = [];
+  for(let i=0;i<35;i++){
+    const d = new Date(start); d.setDate(start.getDate()+i);
+    const k = fmtDate(d.getTime());
+    cells.push({ k, n: log[k]||0, today: k===tk });
+  }
+  /* 当前连续打卡：今天还没学则从昨天起算，不让「今天还没开始」打断记录 */
+  let streak = 0;
+  const cur = new Date(now);
+  if(!(log[tk]||0)) cur.setDate(cur.getDate()-1);
+  for(let i=0;i<3650;i++){
+    if((log[fmtDate(cur.getTime())]||0)>0){ streak++; cur.setDate(cur.getDate()-1); } else break;
+  }
+  /* 历史最长连续 */
+  const keys = Object.keys(log).filter(k=>log[k]>0).sort();
+  let best = 0, run = 0, prev = null;
+  keys.forEach(k=>{
+    const t = new Date(String(k).replace(/-/g,'/')).getTime();
+    if(prev!=null && Math.round((t-prev)/86400000)===1) run++; else run = 1;
+    if(run>best) best = run;
+    prev = t;
+  });
+  /* 掌握度分布 0-5 */
+  const dist = [0,0,0,0,0,0];
+  DB.words.forEach(w=>{ dist[Math.max(0,Math.min(5, w.mastery||0))]++; });
+  /* 近 7 日 */
+  const week = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(now); d.setDate(now.getDate()-i);
+    const k = fmtDate(d.getTime());
+    week.push({ k, n: log[k]||0, lab: i===0 ? '今天' : '周'+'日一二三四五六'[d.getDay()] });
+  }
+  return { cells, streak, best, dist, week, todayCount: log[tk]||0, total: keys.length };
+}
+function goalRingHTML(done, goal){
+  const pct = goal>0 ? Math.min(1, done/goal) : 0;
+  const R = 44, C = 2*Math.PI*R;
+  const dash = (C*pct).toFixed(2);
+  const ok = done>=goal;
+  return `<div class="goal-ring${ok?' done':''}">
+    <svg width="106" height="106" viewBox="0 0 106 106">
+      <circle cx="53" cy="53" r="${R}" fill="none" stroke="#eef2f7" stroke-width="9"/>
+      <circle cx="53" cy="53" r="${R}" fill="none" stroke="${ok?'#059669':'#4f46e5'}" stroke-width="9"
+        stroke-linecap="round" stroke-dasharray="${dash} ${C.toFixed(2)}"/>
+    </svg>
+    <div class="gr-in"><div class="gr-num">${done}</div><div class="gr-sub">今日 / ${goal}</div></div>
+  </div>`;
+}
+function statsCardHTML(){
+  const st = studyStats();
+  const totalW = DB.words.length;
+  const base = totalW || 1;
+  const COLORS = ['#cbd5e1','#a5b4fc','#818cf8','#6366f1','#4f46e5','#3730a3'];
+  const LABELS = ['未学','初识','熟悉','已掌握','熟练','精通'];
+  const distBar = st.dist.map((n,i)=> n ? `<i style="width:${(n/base*100).toFixed(2)}%;background:${COLORS[i]}"></i>` : '').join('');
+  const distLegend = st.dist.map((n,i)=>`<div class="dl"><i style="background:${COLORS[i]}"></i>${LABELS[i]}<b>${n}</b></div>`).join('');
+  const weak = [...DB.words].sort((a,b)=>(a.level-b.level)||(b.wrong-a.wrong)).slice(0,5);
+  const maxN = Math.max(1, ...st.week.map(w=>w.n));
+  const bars = st.week.map(w=>{
+    const h = w.n ? Math.max(7, Math.round(w.n/maxN*74)) : 3;
+    return `<div class="tc${w.n?'':' zero'}" title="${w.k} · ${w.n} 次"><span class="tv">${w.n||''}</span><div class="tb" style="height:${h}px"></div></div>`;
+  }).join('');
+  const labels = st.week.map(w=>`<span>${w.lab}</span>`).join('');
+  const weekSum = st.week.reduce((a,b)=>a+b.n,0);
+  return `<div class="card">
+    <div class="card-head"><h3>学习统计</h3><span class="muted" style="font-size:12px">累计学习 ${st.total} 天 · 历史最长连续 ${st.best} 天</span></div>
+    <div class="card-body">
+      <div class="stats-block">
+        <div>
+            <div class="sb-title"><span>近 5 周热力图</span><span>连续 <b>${st.streak}</b> 天</span></div>
+            <div class="heat">${st.cells.map(c=>`<i class="${heatLevel(c.n)}${c.today?' today':''}" title="${c.k} · ${c.n} 次"></i>`).join('')}</div>
+            <div class="heat-legend"><span>少</span><i></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>多</span></div>
+          </div>
+          <div>
+            <div class="sb-title"><span>掌握度分布</span><b>${totalW} 个词</b></div>
+            <div class="dist-bar">${distBar}</div>
+            <div class="dist-legend">${distLegend}</div>
+            ${weak.length?`<div class="weak-wrap">
+              <div class="sb-title"><span>最需要巩固</span><span style="font-size:11px">按掌握度与错误次数排序</span></div>
+              <div class="weak-list">${weak.map(w=>`<button class="weak-item" onclick="openWordDetail('${w.id}')" title="查看详情"><b>${esc(w.term)}</b><span>${esc(w.translation||'').slice(0,14)}</span></button>`).join('')}</div>
+            </div>`:''}
+          </div>
+      </div>
+      <div class="trend-wrap">
+        <div class="sb-title"><span>近 7 日练习次数</span><span>合计 <b>${weekSum}</b> 次</span></div>
+        <div class="trend">${bars}</div>
+        <div class="trend-labels">${labels}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
 function renderDashboard(){
   const root = document.getElementById('viewRoot');
   const ws = DB.words, ss = DB.sentences;
-  const sMastered = ss.filter(s=>s.mastery>=2).length;
+  const sMastered = ss.filter(s=>s.mastery>=4).length;
   const mastered = ws.filter(w=>w.mastery>=4).length;
   const learning = ws.filter(w=>w.mastery>=1&&w.mastery<4).length;
   const newbie = ws.filter(w=>w.mastery===0).length;
@@ -1342,31 +1539,27 @@ function renderDashboard(){
   <div class="card">
     <div class="card-head"><h3>今日学习任务</h3><span class="muted" style="font-size:12px">${todayKey()}</span></div>
     <div class="card-body">
-      <div class="task-grid">
-        <div class="task due"><div class="v num${due?'':' zero'}">${due}</div><div class="k">到期待复习</div></div>
-        <div class="task star"><div class="v num${starred?'':' zero'}">${starred}</div><div class="k">生词本</div></div>
-        <div class="task wrong"><div class="v num${wrongBook?'':' zero'}">${wrongBook}</div><div class="k">错题待巩固</div></div>
-        <div class="task today"><div class="v num${todayCount?'':' zero'}">${todayCount}</div><div class="k">今日练习次数</div></div>
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn gold" onclick="startReview()">${due>0?('复习 '+due+' 个到期单词'):'开始巩固练习'}</button>
-        <button class="btn ghost" onclick="startDictation()">听写测验</button>
-        <button class="btn ghost" onclick="startFlash()">卡片记忆</button>
-        <button class="btn ghost" onclick="startQuiz()">综合测验</button>
+      <div class="today-flex">
+        ${goalRingHTML(todayCount, DB.settings.dailyGoal)}
+        <div class="today-main">
+          <div class="task-grid">
+            <div class="task due"><div class="v num${due?'':' zero'}">${due}</div><div class="k">到期待复习</div></div>
+            <div class="task star"><div class="v num${starred?'':' zero'}">${starred}</div><div class="k">生词本</div></div>
+            <div class="task wrong"><div class="v num${wrongBook?'':' zero'}">${wrongBook}</div><div class="k">错题待巩固</div></div>
+            <div class="task today"><div class="v num${todayCount?'':' zero'}">${todayCount}</div><div class="k">今日练习次数</div></div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn gold" onclick="startReview()">${due>0?('复习 '+due+' 个到期单词'):'开始巩固练习'}</button>
+            <button class="btn ghost" onclick="startDictation()">听写测验</button>
+            <button class="btn ghost" onclick="startFlash()">卡片记忆</button>
+            <button class="btn ghost" onclick="startQuiz()">综合测验</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-head"><h3>学习进度</h3></div>
-    <div class="card-body">
-      <div class="progress-wrap">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="muted">单词掌握进度</span><b class="num">${pct}%</b></div>
-        <div class="bar" style="width:100%"><i style="width:${pct}%"></i></div>
-      </div>
-      ${lastQuiz?`<p class="muted" style="margin-top:14px;font-size:12px">上次测验：${fmtDate(lastQuiz.date)}，得分 ${lastQuiz.score}/${lastQuiz.total}</p>`:''}
-    </div>
-  </div>
+  ${statsCardHTML()}
 
   <div class="card">
     <div class="card-head"><h3>最近导入批次</h3><button class="btn ghost sm" onclick="switchView('data')">管理数据</button></div>
@@ -1375,7 +1568,7 @@ function renderDashboard(){
   </div>
 
   <div class="card">
-    <div class="card-head"><h3>测验记录</h3></div>
+    <div class="card-head"><h3>测验记录</h3>${lastQuiz?`<span class="muted" style="font-size:12px">上次 ${fmtDate(lastQuiz.date)} · ${lastQuiz.score}/${lastQuiz.total}</span>`:''}</div>
     <table><thead><tr><th>日期</th><th>类型</th><th>题量</th><th>得分</th><th>正确率</th></tr></thead>
     <tbody>${quizRows || '<tr><td colspan="5" class="muted" style="text-align:center;padding:24px">暂无测验记录，去测验中心试试吧</td></tr>'}</tbody></table>
   </div>`;
@@ -1463,15 +1656,21 @@ function toggleStar(kind, id){
 }
 function deleteWord(id){
   const w = DB.words.find(x=>x.id===id); if(!w) return;
-  if(!confirm('删除单词「'+w.term+'」？该操作不可恢复。')) return;
-  DB.words = DB.words.filter(x=>x.id!==id); saveDB(); updateTop();
+  if(!confirm('将单词「'+w.term+'」移入回收站？\n可在「数据管理 → 回收站」中恢复。')) return;
+  DB.words = DB.words.filter(x=>x.id!==id);
+  pushTrash('word', w);
+  saveDB(); updateTop();
   closeModal(); render();
+  toast('已移入回收站');
 }
 function deleteSent(id){
   const s = DB.sentences.find(x=>x.id===id); if(!s) return;
-  if(!confirm('删除这个句子？该操作不可恢复。')) return;
-  DB.sentences = DB.sentences.filter(x=>x.id!==id); saveDB(); updateTop();
+  if(!confirm('将这句移入回收站？\n可在「数据管理 → 回收站」中恢复。')) return;
+  DB.sentences = DB.sentences.filter(x=>x.id!==id);
+  pushTrash('sent', s);
+  saveDB(); updateTop();
   closeModal(); render();
+  toast('已移入回收站');
 }
 function openWordDetail(id){
   const w = DB.words.find(x=>x.id===id); if(!w) return;
@@ -1658,8 +1857,10 @@ function renderSentences(){
       <div style="margin-top:16px"><button class="btn" onclick="switchView('data')">前往导入</button></div></div></div></div>`;
     return;
   }
+  const dueS = dueSentences().length;
   const rows = DB.sentences.map(s=>{
-    const stars = [0,1,2].map(i=>`<span style="color:${i<s.mastery?'var(--brand)':'#dde4ec'}">★</span>`).join('');
+    const dots = [0,1,2,3,4].map(i=>`<span class="${i<(s.mastery||0)?'on':'off'}">●</span>`).join('');
+    const when = s.nextReviewAt>Date.now() ? ('下次 '+fmtDate(s.nextReviewAt).slice(5)) : (s.lastReviewAt?'待复习':'新句');
     return `<tr class="row-hover">
       <td style="width:7%"><button class="icon-btn" data-say="${esc(s.en)}" onclick="speakEl(this)" title="朗读整句"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7 6.6 8.3H3.4v7.4h3.2L11 19.3z"/><path d="M15.6 8.6a4.8 4.8 0 0 1 0 6.8"/><path d="M18.6 5.6a9 9 0 0 1 0 12.8"/></svg></button></td>
       <td>
@@ -1668,21 +1869,23 @@ function renderSentences(){
         ${s.notes?`<div class="muted" style="font-size:12px;margin-top:6px">${esc(s.notes)}</div>`:''}
       </td>
       <td style="width:100px">${s.scene?`<span class="scene-chip">${esc(s.scene)}</span>`:'—'}</td>
-      <td class="num" style="width:70px">${stars}</td>
+      <td style="width:120px"><span class="mastery-dots">${dots}</span><br><span class="muted" style="font-size:11px">${when}</span></td>
       <td style="white-space:nowrap;width:170px">
         <button class="mini-btn ${s.starred?'on':''}" onclick="toggleStar('sent','${s.id}')" title="收藏">${s.starred?'★':'☆'}</button>
         <button class="mini-btn" onclick="openSentEdit('${s.id}')" title="编辑">✎</button>
         <button class="mini-btn" onclick="deleteSent('${s.id}')" title="删除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6 7v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7"/><path d="M10 11v5M14 11v5"/></svg></button>
-        <button class="btn ghost sm" onclick="toggleSent('${s.id}')">${s.mastery>=2?'取消掌握':'标记掌握'}</button>
+        <button class="btn ghost sm" onclick="toggleSent('${s.id}')">${s.mastery>=4?'取消掌握':'标记掌握'}</button>
       </td>
     </tr>`;
   }).join('');
   root.innerHTML = `
   <div class="filter-bar">
+    <button class="btn gold" onclick="startSentReview()">句子复习${dueS?` (${dueS})`:''}</button>
+    <button class="btn ghost" onclick="startSentQuiz('dictation')">句子听写</button>
     <button class="btn ghost" onclick="sentHide=!sentHide;renderSentences()">${sentHide?'显示全部译文':'隐藏译文（自测）'}</button>
     <button class="btn ghost" onclick="toggleHoverDict()">${DB.settings.hoverDict?'悬停查词：开':'悬停查词：关'}</button>
     <button class="btn ghost" onclick="exportSentencesCSV()">导出句子</button>
-    <span class="muted" style="font-size:12px">提示：点击喇叭图标可朗读整句；把鼠标滑到任意英文单词上即可查看词义（词组会整段识别）。</span>
+    <span class="muted" style="font-size:12px">共 ${DB.sentences.length} 句 · 到期 ${dueS} 句</span>
   </div>
   <div class="card"><table>
     <thead><tr><th>朗读</th><th>句子</th><th>场景</th><th>掌握度</th><th>操作</th></tr></thead>
@@ -1690,7 +1893,8 @@ function renderSentences(){
 }
 function toggleSent(id){
   const s = DB.sentences.find(x=>x.id===id); if(!s) return;
-  s.mastery = s.mastery>=2 ? 0 : 2;
+  s.mastery = (s.mastery||0)>=4 ? 0 : 5;
+  s.level = s.mastery;
   saveDB(); renderSentences();
 }
 
@@ -1698,17 +1902,20 @@ function toggleSent(id){
 let quiz = null;
 function renderQuizHome(){
   const root = document.getElementById('viewRoot');
-  if(DB.words.length<4){
+  if(DB.words.length===0 && DB.sentences.length===0){
     root.innerHTML = `<div class="card"><div class="card-body"><div class="empty">
-      <div class="big">✏️</div><p>词库中至少需要 4 个单词才能生成测验。</p></div></div></div>`;
+      <div class="big">✏️</div><p>词库与句库都是空的，请先在「数据管理」中导入数据。</p></div></div></div>`;
     return;
   }
+  const dueS = dueSentences().length;
+  const canWord = DB.words.length>0, canSent = DB.sentences.length>0;
   root.innerHTML = `
   <div class="card"><div class="card-head"><h3>开始一次测验</h3></div>
   <div class="card-body">
     <div class="quiz-types">
       <div class="qt"><div class="qt-h">综合测验</div><div class="qt-d">英译中选择、中译英选择、单词拼写混合出题，覆盖三种记忆路径。</div></div>
       <div class="qt"><div class="qt-h">听写测验</div><div class="qt-d">听发音写下单词，自动优先抽查薄弱词与错题本。</div></div>
+      <div class="qt"><div class="qt-h">句子练习</div><div class="qt-d">关键词填空 + 整句听写，按句记录复习间隔，练的是整句输出。</div></div>
       <div class="qt"><div class="qt-h">复习到期</div><div class="qt-d">按记忆曲线安排：答对延长间隔，答错缩短间隔并记入错题本。</div></div>
     </div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:20px">
@@ -1716,14 +1923,37 @@ function renderQuizHome(){
       <select id="quizCount" style="width:100px">
         <option value="5">5 题</option><option value="10" selected>10 题</option><option value="15">15 题</option><option value="20">20 题</option>
       </select>
-      <button class="btn gold" onclick="startQuiz()">综合测验</button>
-      <button class="btn ghost" onclick="startDictation()">听写测验</button>
-      <button class="btn ghost" onclick="startReview()">复习到期单词</button>
+      <button class="btn gold" onclick="startQuiz()" ${canWord?'':'disabled'}>综合测验</button>
+      <button class="btn ghost" onclick="startDictation()" ${canWord?'':'disabled'}>听写测验</button>
+      <button class="btn ghost" onclick="startSentQuiz('mix')" ${canSent?'':'disabled'}>句子练习</button>
+      <button class="btn ghost" onclick="startReview()" ${canWord?'':'disabled'}>复习到期单词</button>
     </div>
+    <p class="muted" style="font-size:12px;margin-top:16px;line-height:1.8">
+      当前有 <b class="num">${DB.words.length}</b> 个单词、<b class="num">${DB.sentences.length}</b> 个句子${dueS?`，其中 <b class="num">${dueS}</b> 个句子已到期`:'，暂无到期句子'}。
+      句子练习会把结果写回该句的复习间隔，和单词用的是同一套记忆曲线。</p>
   </div></div>
+
+  <div class="card">
+    <div class="card-head"><h3>复习间隔是怎么排的</h3><span class="muted" style="font-size:12px">单词与句子共用同一条曲线</span></div>
+    <div class="card-body">
+      <div class="ladder">
+        <span class="ld">当天</span><span class="la">→</span>
+        <span class="ld">1 天</span><span class="la">→</span>
+        <span class="ld">2 天</span><span class="la">→</span>
+        <span class="ld">4 天</span><span class="la">→</span>
+        <span class="ld">7 天</span><span class="la">→</span>
+        <span class="ld">15 天</span><span class="la">→</span>
+        <span class="ld">30 天</span>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:14px;line-height:1.9">
+        每答对一次进一档，下次复习时间按上表往后推；答错直接回到「当天」，10 分钟后再考；选「模糊」则 12 小时后重来。
+        单词与句子各自独立计算，互不影响。</p>
+    </div>
+  </div>
+
   ${DB.quizLog.length?`<div class="card"><div class="card-head"><h3>历史成绩</h3></div>
     <table><thead><tr><th>日期</th><th>类型</th><th>题量</th><th>得分</th><th>正确率</th></tr></thead><tbody>
-    ${DB.quizLog.slice(0,10).map(q=>`<tr class="row-hover"><td>${fmtDate(q.date)}</td><td>${q.mode==='dictation'?'听写':'综合'}</td><td class="num">${q.total}</td><td class="num">${q.score}</td><td class="num" style="color:${q.score/q.total>=0.6?'var(--green)':'var(--red)'}">${Math.round(q.score/q.total*100)}%</td></tr>`).join('')}
+    ${DB.quizLog.slice(0,10).map(q=>`<tr class="row-hover"><td>${fmtDate(q.date)}</td><td>${modeLabel(q.mode)}</td><td class="num">${q.total}</td><td class="num">${q.score}</td><td class="num" style="color:${q.score/q.total>=0.6?'var(--green)':'var(--red)'}">${Math.round(q.score/q.total*100)}%</td></tr>`).join('')}
     </tbody></table></div>`:''}`;
 }
 function getCount(){
@@ -1737,6 +1967,7 @@ function quizPool(n){
   return shuffle([...pickN(weak, Math.max(n*2, n)), ...rest]).slice(0,n);
 }
 function startQuiz(){
+  if(!DB.words.length){ toast('词库为空，请先导入单词'); return; }
   const n = Math.min(getCount(), DB.words.length);
   const words = quizPool(n);
   const qs = words.map(w=>{
@@ -1751,10 +1982,125 @@ function startQuiz(){
   renderQuizQ();
 }
 function startDictation(){
+  if(!DB.words.length){ toast('词库为空，请先导入单词'); return; }
   const n = Math.min(getCount(), DB.words.length);
   const words = quizPool(n);
   quiz = { qs: words.map(w=>({type:'dictation', w, hint:false})), idx:0, score:0, answered:false, mode:'dictation' };
   renderQuizQ();
+}
+
+/* ================= 句子测验 ================= */
+function modeLabel(m){
+  return m==='dictation' ? '听写' : m==='sentdict' ? '句子听写' : m==='sentfill' ? '句子填空'
+       : m==='sentmix' ? '句子复习' : m==='sentfail' ? '句子练习' : '综合';
+}
+function sentWords(s){ return String(s.en||'').match(/[A-Za-z][A-Za-z'-]*/g) || []; }
+/* 挑一个「值得挖空」的词：优先词库里有的，其次最长的 */
+function pickKeyWord(s){
+  const ws = sentWords(s).filter(w=>w.length>=4);
+  if(!ws.length) return '';
+  const libs = new Set(DB.words.map(w=>String(w.term||'').toLowerCase()));
+  const sorted = [...ws].sort((a,b)=>b.length-a.length);
+  return sorted.find(w=>libs.has(w.toLowerCase())) || sorted[0];
+}
+function blankOut(en, word){
+  if(!word) return en;
+  const safe = String(word).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re = new RegExp('\\b'+safe+'\\b','i');
+  return re.test(en) ? en.replace(re,'______') : en;
+}
+function sentHintText(en){
+  return String(en||'').split(/\s+/).map(w=>{
+    const letters = w.replace(/[^A-Za-z]/g,'');
+    if(!letters) return w;
+    return letters[0] + '_'.repeat(Math.max(0, letters.length-1));
+  }).join(' ');
+}
+function normSent(t){
+  return String(t||'').toLowerCase()
+    .replace(/[.,!?;:"'’‘“”()\[\]{}—–\-]/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+/* 词级最长公共子序列占比，长句允许少量出入 */
+function sentSim(a, b){
+  const A = normSent(a).split(' ').filter(Boolean);
+  const B = normSent(b).split(' ').filter(Boolean);
+  if(!A.length || !B.length) return 0;
+  const dp = Array.from({length:A.length+1}, ()=>new Array(B.length+1).fill(0));
+  for(let i=1;i<=A.length;i++){
+    for(let j=1;j<=B.length;j++){
+      dp[i][j] = A[i-1]===B[j-1] ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j], dp[i][j-1]);
+    }
+  }
+  return dp[A.length][B.length] / Math.max(A.length, B.length);
+}
+function sentQuizPool(n){
+  const due = dueSentences();
+  const dueIds = new Set(due.map(s=>s.id));
+  const rest = shuffle(DB.sentences.filter(s=>!dueIds.has(s.id))).sort((a,b)=>(a.level||0)-(b.level||0));
+  return [...shuffle(due), ...rest].slice(0, n);
+}
+function startSentQuiz(mode, n){
+  if(!DB.sentences.length){ toast('句库为空，请先在数据管理页导入句子'); return; }
+  n = Math.min(n || Math.min(10, DB.sentences.length), DB.sentences.length);
+  const qs = sentQuizPool(n).map(s=>{
+    if(mode==='dictation') return { type:'sentdict', s };
+    const w = pickKeyWord(s);
+    if(mode==='fill') return w ? { type:'sentfill', s, word:w } : { type:'sentdict', s };
+    if(Math.random()<0.5 && w) return { type:'sentfill', s, word:w };
+    return { type:'sentdict', s };
+  });
+  quiz = { qs, idx:0, score:0, answered:false,
+           mode: mode==='dictation' ? 'sentdict' : mode==='fill' ? 'sentfill' : 'sentmix' };
+  renderQuizQ();
+}
+function startSentReview(){
+  if(!DB.sentences.length){ toast('句库为空，请先在数据管理页导入句子'); return; }
+  const due = dueSentences().length;
+  startSentQuiz('mix', due>0 ? Math.min(due,30) : Math.min(10, DB.sentences.length));
+}
+function sentFeedbackHTML(ok, s, msg){
+  return `<div class="sent-fb ${ok?'ok':'bad'}">
+    <div class="sfb-h">${esc(msg)}</div>
+    <div class="sfb-en" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">${esc(s.en)}
+      <button class="icon-btn" data-say="${esc(s.en)}" onclick="speakEl(this)" title="朗读整句"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7 6.6 8.3H3.4v7.4h3.2L11 19.3z"/><path d="M15.6 8.6a4.8 4.8 0 0 1 0 6.8"/><path d="M18.6 5.6a9 9 0 0 1 0 12.8"/></svg></button>
+    </div>
+    ${s.zh?`<div class="sfb-zh">${esc(s.zh)}</div>`:''}
+  </div>`;
+}
+function submitSentFill(e){
+  e.preventDefault();
+  if(quiz.answered) return;
+  const q = quiz.qs[quiz.idx];
+  const inp = document.getElementById('spellInput');
+  if(!inp) return;
+  const val = (inp.value||'').trim();
+  if(!val) return;
+  quiz.answered = true;
+  const ok = val.toLowerCase().replace(/\s+/g,' ') === String(q.word).toLowerCase();
+  inp.disabled = true;
+  inp.style.borderColor = ok ? 'var(--green)' : 'var(--red)';
+  inp.insertAdjacentHTML('afterend', sentFeedbackHTML(ok, q.s, ok ? '回答正确' : '正确答案是 '+q.word));
+  if(ok){ quiz.score++; schedule(q.s, 1); } else schedule(q.s, -1);
+  saveDB(); updateTop(); showNext();
+}
+function submitSentDict(e){
+  e.preventDefault();
+  if(quiz.answered) return;
+  const q = quiz.qs[quiz.idx];
+  const inp = document.getElementById('spellInput');
+  if(!inp) return;
+  const val = (inp.value||'').trim();
+  if(!val) return;
+  quiz.answered = true;
+  const sim = sentSim(val, q.s.en);
+  const ok = sim >= 0.85;
+  inp.disabled = true;
+  inp.style.borderColor = ok ? 'var(--green)' : 'var(--red)';
+  inp.insertAdjacentHTML('afterend', sentFeedbackHTML(ok, q.s,
+    ok ? ('回答正确 · 匹配 '+Math.round(sim*100)+'%') : ('匹配 '+Math.round(sim*100)+'% · 原文如下')));
+  if(ok){ quiz.score++; schedule(q.s, 1); } else schedule(q.s, -1);
+  saveDB(); updateTop(); showNext();
 }
 function renderQuizQ(){
   const root = document.getElementById('viewRoot');
@@ -1776,6 +2122,27 @@ function renderQuizQ(){
       <div class="muted" style="margin-bottom:14px">请拼写对应的英文单词（${q.w.term.length} 个字母）<br><span style="letter-spacing:3px;font-family:Georgia,serif">${hint}</span></div>
       <form onsubmit="submitSpell(event)"><input type="text" class="spell-input" id="spellInput" autocomplete="off" placeholder="输入英文并回车">
       <div style="text-align:center;margin-top:14px"><button class="btn" type="submit">提交答案</button></div></form>`;
+  } else if(q.type==='sentfill'){
+    const blanked = blankOut(q.s.en, q.word);
+    body = `<div class="quiz-q" style="font-family:inherit;font-size:17.5px;line-height:1.75">${esc(blanked)}</div>
+      <div class="muted" style="margin-bottom:16px">${esc(q.s.zh||'（此句暂无译文）')}</div>
+      <div class="muted" style="margin-bottom:12px;font-size:12.5px">请填入空缺处的英文（${q.word.replace(/[^A-Za-z]/g,'').length} 个字母）</div>
+      <form onsubmit="submitSentFill(event)"><input type="text" class="spell-input" id="spellInput" autocomplete="off" placeholder="输入单词，回车提交">
+      <div style="text-align:center;margin-top:14px"><button class="btn" type="submit">提交答案</button></div></form>`;
+  } else if(q.type==='sentdict'){
+    body = `<div class="dictation-box">
+        <div class="muted" style="margin-bottom:10px">听整句，写出你听到的内容（标点与大小写不计）</div>
+        <button class="btn gold" style="font-size:15px;padding:12px 30px" data-say="${esc(q.s.en)}" onclick="speakEl(this)">播放整句</button>
+        <div style="font-size:14px;color:var(--muted);margin:18px 0 4px;line-height:1.75">${esc(q.s.zh||'')}</div>
+        <form onsubmit="submitSentDict(event)" style="margin-top:12px">
+          <input type="text" class="spell-input" id="spellInput" autocomplete="off" placeholder="写出完整句子并回车" style="max-width:580px">
+          <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
+            <button class="btn" type="submit">提交答案</button>
+            <button class="btn ghost" type="button" onclick="quiz.qs[quiz.idx].hint=true;renderQuizQ()">显示提示</button>
+          </div>
+        </form>
+        ${q.hint?`<div class="muted" style="margin-top:14px;font-family:Consolas,monospace;letter-spacing:1px;line-height:1.9">${esc(sentHintText(q.s.en))}</div>`:''}
+      </div>`;
   } else {
     body = `<div class="dictation-box">
         <div class="muted" style="margin-bottom:10px">听发音，写出对应单词</div>
@@ -1793,7 +2160,7 @@ function renderQuizQ(){
   }
   root.innerHTML = `
   <div class="card"><div class="card-body">
-    <div class="quiz-meta"><span>${quiz.mode==='dictation'?'听写测验':'综合测验'} · 第 <b class="num">${quiz.idx+1}</b> / ${quiz.qs.length} 题</span><span>当前得分 <b class="num">${quiz.score}</b></span></div>
+    <div class="quiz-meta"><span>${modeLabel(quiz.mode)} · 第 <b class="num">${quiz.idx+1}</b> / ${quiz.qs.length} 题</span><span>当前得分 <b class="num">${quiz.score}</b></span></div>
     ${body}
     <div id="quizNext" style="margin-top:16px;text-align:right;display:none">
       <button class="btn gold" onclick="nextQ()">下一题 →</button>
@@ -1802,6 +2169,7 @@ function renderQuizQ(){
   </div></div>`;
   const si = document.getElementById('spellInput'); if(si) si.focus();
   if(q.type==='dictation' && DB.settings.autoSpeak) setTimeout(()=>speak(q.w.term), 300);
+  if(q.type==='sentdict' && DB.settings.autoSpeak) setTimeout(()=>speak(q.s.en), 300);
 }
 function answerOpt(i){
   if(quiz.answered) return;
@@ -1842,18 +2210,25 @@ function renderQuizResult(){
   const pct = Math.round(quiz.score/quiz.qs.length*100);
   const ringColor = pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
   const mode = quiz.mode;
+  const again = mode==='dictation' ? 'startDictation()'
+              : mode==='sentdict' ? "startSentQuiz('dictation')"
+              : mode==='sentfill' ? "startSentQuiz('fill')"
+              : mode==='sentmix' ? 'startSentReview()'
+              : 'startQuiz()';
   DB.quizLog.unshift({date:Date.now(), total:quiz.qs.length, score:quiz.score, mode:mode});
   DB.quizLog = DB.quizLog.slice(0,50);
   saveDB(); updateTop();
   root.innerHTML = `
   <div class="card"><div class="card-body" style="text-align:center;padding:44px">
     <div class="score-ring" style="border-color:${ringColor};color:${ringColor}">${pct}%</div>
-    <div style="font-size:17px;font-weight:600;margin-bottom:6px">${mode==='dictation'?'听写':'综合'}测验完成！</div>
+    <div style="font-size:17px;font-weight:600;margin-bottom:6px">测验完成 · ${modeLabel(mode)}</div>
     <p class="muted">得分 ${quiz.score} / ${quiz.qs.length} ${pct>=80?'· 表现优秀':pct>=60?'· 继续加油':'· 建议先复习卡片再测'}</p>
     <div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <button class="btn gold" onclick="${mode==='dictation'?'startDictation()':'startQuiz()'}">再来一次</button>
+      <button class="btn gold" onclick="${again}">再来一次</button>
       <button class="btn ghost" onclick="renderQuizHome()">返回测验中心</button>
-      <button class="btn ghost" onclick="startReview()">复习到期/错题单词</button>
+      ${String(mode||'').indexOf('sent')===0
+        ? '<button class="btn ghost" onclick="startSentReview()">继续练句子</button>'
+        : '<button class="btn ghost" onclick="startReview()">复习到期/错题单词</button>'}
     </div>
   </div></div>`;
   quiz = null;
@@ -1864,8 +2239,53 @@ function renderData(){
   const root = document.getElementById('viewRoot');
   const st = DB.settings;
   const localTTS = hasLocalTTS();
+  pruneTrash();
+  const snaps = loadSnaps();
+  const snapRows = snaps.length ? `<table><thead><tr><th>时间</th><th>说明</th><th>内容</th><th style="width:150px">操作</th></tr></thead><tbody>${
+    snaps.map((s,i)=>`<tr class="row-hover">
+      <td class="num" style="white-space:nowrap">${fmtDateTime(s.at)}</td>
+      <td>${esc(s.label||'自动')}</td>
+      <td class="num muted">${s.wc||0} 词 / ${s.sc||0} 句</td>
+      <td style="white-space:nowrap">
+        <button class="btn ghost sm" onclick="rollbackSnap(${i})">回滚</button>
+        <button class="mini-btn" onclick="delSnap(${i})" title="删除这份快照">×</button>
+      </td></tr>`).join('')
+  }</tbody></table>` : `<p class="muted" style="font-size:12px">暂无快照。导入数据、清空数据或回滚前会自动生成一份。</p>`;
+  const trashRows = (DB.trash||[]).length ? `<table><thead><tr><th style="width:80px">类型</th><th>内容</th><th style="width:150px">删除时间</th><th style="width:170px">操作</th></tr></thead><tbody>${
+    DB.trash.map((t,i)=>{
+      const it = t.item||{};
+      const main = t.kind==='word' ? (it.term||'') : (it.en||'');
+      const sub  = t.kind==='word' ? (it.translation||'') : (it.zh||'');
+      return `<tr class="row-hover">
+        <td>${t.kind==='word'?'<span class="tag">单词</span>':'<span class="tag gold">句子</span>'}</td>
+        <td><b>${esc(String(main).slice(0,60))}</b>${sub?`<div class="muted" style="font-size:12px;margin-top:2px">${esc(String(sub).slice(0,60))}</div>`:''}</td>
+        <td class="num muted" style="white-space:nowrap">${fmtDateTime(t.at)}</td>
+        <td style="white-space:nowrap">
+          <button class="btn ghost sm" onclick="restoreTrash(${i})">恢复</button>
+          <button class="mini-btn" onclick="purgeTrash(${i})" title="彻底删除">×</button>
+        </td></tr>`;
+    }).join('')
+  }</tbody></table>` : `<div class="card-body"><p class="muted" style="font-size:12px">回收站是空的。删除的单词和句子会先放进这里，30 天内都可以恢复。</p></div>`;
   root.innerHTML = `
   <div id="importMsg" class="msg"></div>
+
+  <div class="card">
+    <div class="card-head"><h3>学习目标</h3><span class="muted" style="font-size:12px">达标后总览页的进度环会转成绿色</span></div>
+    <div class="card-body">
+      <div class="setting-row">
+        <span class="lab">每日目标</span>
+        <select onchange="setSetting('dailyGoal', Number(this.value)); renderData()">
+          <option value="10" ${st.dailyGoal==10?'selected':''}>10 次 / 天（轻量）</option>
+          <option value="20" ${st.dailyGoal==20?'selected':''}>20 次 / 天</option>
+          <option value="30" ${st.dailyGoal==30?'selected':''}>30 次 / 天（推荐）</option>
+          <option value="50" ${st.dailyGoal==50?'selected':''}>50 次 / 天</option>
+          <option value="80" ${st.dailyGoal==80?'selected':''}>80 次 / 天（冲刺）</option>
+        </select>
+        <span class="muted" style="font-size:12px">今日已完成 <b class="num">${DB.studyLog[todayKey()]||0}</b> 次</span>
+      </div>
+      <p class="muted" style="font-size:12px;line-height:1.85">「一次」= 一次学习判定：卡片记忆里点一次「认识 / 模糊 / 不认识」、测验里答一道题、句子复习判定一次，都各算一次。30 次大约相当于 15–20 分钟。</p>
+    </div>
+  </div>
 
   <div class="card">
     <div class="card-head"><h3>发音设置</h3>
@@ -1995,11 +2415,25 @@ function renderData(){
   </div>
 
   <div class="card">
-    <div class="card-head"><h3>备份与恢复</h3></div>
-    <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn ghost" onclick="exportAll()">导出全部数据（含学习进度）</button>
-      <button class="btn danger" onclick="clearAll()">清空全部数据</button>
+    <div class="card-head"><h3>备份与恢复</h3><button class="btn ghost sm" onclick="snapManual()">立即创建快照</button></div>
+    <div class="card-body">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+        <button class="btn ghost" onclick="exportAll()">导出全部数据（含学习进度）</button>
+        <button class="btn danger" onclick="clearAll()">清空全部数据</button>
+      </div>
+      <div class="sb-title" style="margin-bottom:10px"><span>自动快照</span><span style="font-size:11px">导入 / 清空 / 回滚前自动创建 · 最多保留 ${SNAP_MAX} 份</span></div>
+      ${snapRows}
     </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>回收站</h3>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="muted" style="font-size:12px">${(DB.trash||[]).length} 项 · 保留 30 天</span>
+        ${(DB.trash||[]).length?'<button class="btn ghost sm" onclick="emptyTrash()">清空回收站</button>':''}
+      </div>
+    </div>
+    ${trashRows}
   </div>
 
   <div class="card">
@@ -2196,12 +2630,125 @@ function download(filename, text, mime){
   setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
 }
 function exportAll(){ download('tradelingo-backup-'+fmtDate(Date.now())+'.json', JSON.stringify(DB,null,2)); }
-function clearAll(){
-  if(!confirm('确定要清空全部单词、句子与学习记录吗？此操作不可恢复，建议先导出备份。')) return;
-  if(!confirm('再次确认：真的要清空吗？')) return;
-  DB = emptyDB(); saveDB(); updateTop();
+
+/* ================= 回收站 ================= */
+function pushTrash(kind, item){
+  if(!Array.isArray(DB.trash)) DB.trash = [];
+  try{ DB.trash.unshift({ kind, item: JSON.parse(JSON.stringify(item)), at: Date.now() }); }catch(e){}
+  pruneTrash();
+}
+function pruneTrash(){
+  const cut = Date.now() - 30*86400000;
+  DB.trash = (DB.trash||[]).filter(t=>t && t.at>cut).slice(0,200);
+}
+function restoreTrash(i){
+  const t = DB.trash[i]; if(!t) return;
+  const it = t.item || {};
+  if(t.kind==='word'){
+    if(DB.words.some(w=>w.id===it.id)) it.id = uid('w_');
+    DB.words.unshift(it);
+  }else{
+    if(DB.sentences.some(s=>s.id===it.id)) it.id = uid('s_');
+    DB.sentences.unshift(it);
+  }
+  DB.trash.splice(i,1);
+  migrate(); saveDB(); updateTop(); render();
+  toast('已从回收站恢复');
+}
+function purgeTrash(i){
+  const t = DB.trash[i]; if(!t) return;
+  const name = t.kind==='word' ? (t.item.term||'') : (t.item.en||'');
+  if(!confirm('彻底删除「'+name+'」？删除后无法恢复。')) return;
+  DB.trash.splice(i,1); saveDB(); render();
+  toast('已彻底删除');
+}
+function emptyTrash(){
+  if(!DB.trash.length) return;
+  if(!confirm('清空回收站中的 '+DB.trash.length+' 项？删除后无法恢复。')) return;
+  DB.trash = []; saveDB(); render();
+  toast('回收站已清空');
+}
+
+/* ================= 自动快照 ================= */
+const SNAP_KEY = 'tradelingo_snap_v1';
+const SNAP_MAX = 3, SNAP_BYTES = 2200000;
+function loadSnaps(){
+  try{ const a = JSON.parse(localStorage.getItem(SNAP_KEY)||'[]'); return Array.isArray(a)?a:[]; }
+  catch(e){ return []; }
+}
+function writeSnaps(arr){
+  try{ localStorage.setItem(SNAP_KEY, JSON.stringify(arr)); return true; }
+  catch(e){ return false; }
+}
+/* 在导入、清空、回滚前调用，保存「当前状态」。体积超标时自动放弃，不阻断主流程 */
+function makeSnapshot(label){
+  try{
+    const one = { at: Date.now(), label: label||'自动', wc: DB.words.length, sc: DB.sentences.length,
+                  words: DB.words, sentences: DB.sentences };
+    if(JSON.stringify(one).length > SNAP_BYTES) return { ok:false, reason:'too-big' };
+    const snaps = loadSnaps();
+    snaps.unshift(one);
+    const kept = snaps.slice(0, SNAP_MAX);
+    if(!writeSnaps(kept)){
+      if(!writeSnaps([kept[0]])) return { ok:false, reason:'quota' };
+      return { ok:true, n:1 };
+    }
+    return { ok:true, n:kept.length };
+  }catch(e){ return { ok:false, reason:'error' }; }
+}
+function snapManual(){
+  const r = makeSnapshot('手动');
+  toast(r.ok ? '已创建快照' : (r.reason==='too-big' ? '词库过大，无法创建快照，请用「导出全部数据」备份' : '快照创建失败，浏览器存储空间可能已满'));
   renderData();
-  importMsg(true,'已清空全部数据。');
+}
+function rollbackSnap(i){
+  const s = loadSnaps()[i];
+  if(!s) return;
+  if(!confirm('回滚到 '+fmtDate(s.at)+' 的快照？\n当前词库与句库将被替换为快照内的数据。')) return;
+  makeSnapshot('回滚前');
+  DB.words = JSON.parse(JSON.stringify(s.words||[]));
+  DB.sentences = JSON.parse(JSON.stringify(s.sentences||[]));
+  migrate(); saveDB(); updateTop();
+  if(currentView==='data') renderData(); else render();
+  toast('已回滚到 '+fmtDate(s.at)+' 的快照');
+}
+function delSnap(i){
+  const snaps = loadSnaps();
+  if(!snaps[i]) return;
+  snaps.splice(i,1); writeSnaps(snaps); renderData(); toast('快照已删除');
+}
+
+/* 清空需要手动输入「清空」二字，避免误触 */
+function clearAll(){ openClearModal(); }
+function openClearModal(){
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-head"><h3>清空全部数据</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+      <div class="modal-body">
+        <p style="font-size:13px;line-height:1.85;margin-bottom:16px">
+          将删除 <b>${DB.words.length}</b> 个单词、<b>${DB.sentences.length}</b> 个句子，以及全部学习进度与测验记录。<br>
+          系统会先自动创建一份快照，可在「备份与恢复」中回滚。</p>
+        <div class="form-row">
+          <div class="k">请输入 <b>清空</b> 两个字确认：</div>
+          <input type="text" id="clearConfirmInput" placeholder="清空" autocomplete="off">
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+          <button class="btn ghost" onclick="closeModal()">取消</button>
+          <button class="btn danger" onclick="doClearAll()">确认清空</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  const i = document.getElementById('clearConfirmInput'); if(i) i.focus();
+}
+function doClearAll(){
+  const inp = document.getElementById('clearConfirmInput');
+  if(!inp || inp.value.trim() !== '清空'){ toast('请输入「清空」两个字确认'); if(inp) inp.focus(); return; }
+  makeSnapshot('清空前');
+  DB = emptyDB(); saveDB(); closeModal(); updateTop();
+  renderData();
+  importMsg(true, '已清空。如需找回，可在「备份与恢复 → 自动快照」中回滚。');
 }
 function downloadTemplate(){
   download('tradelingo-template.json', JSON.stringify({
