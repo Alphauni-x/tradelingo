@@ -199,7 +199,7 @@
       <button class="nav-item" data-view="quiz" onclick="switchView('quiz')"><span class="ico">✏️</span><span class="txt">测验中心</span></button>
       <button class="nav-item" data-view="data" onclick="switchView('data')"><span class="ico">🗂️</span><span class="txt">数据管理</span></button>
     </nav>
-    <div class="side-footer">v1.4 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
+    <div class="side-footer">v1.5 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
   </aside>
 
   <div class="main">
@@ -930,68 +930,299 @@ document.addEventListener('mouseout', e=>{
 window.addEventListener('scroll', hideDictPop, true);
 window.addEventListener('resize', hideDictPop);
 
-/* ================= 导入解析（宽容匹配 AI 输出） ================= */
-function pick(o, keys){ for(const k of keys){ if(o[k]!=null && String(o[k]).trim()!=='') return o[k]; } return ''; }
+/* ================= 导入解析（宽容处理 AI 输出 / Excel / 纯文本） ================= */
+/* 字段别名表：中英文都认，AI 输出与 Excel 表头都能直接吃 */
+const K = {
+  term:['term','word','english','en','headword','phrase','expression','单词','英文','词汇','词条','英文单词','短语','词组'],
+  phonetic:['phonetic','phonetic_en','ipa','pronunciation','音标','读音'],
+  pos:['pos','partOfSpeech','part_of_speech','type','词性','词类'],
+  translation:['translation','zh','chinese','meaning','cn','trans','释义','中文','中文释义','翻译','意思','汉语'],
+  definition:['definition','explain','explanation','note','desc','description','详解','解释','说明','注释'],
+  exampleEn:['exampleEn','example','example_en','example_sentence','sentence','例句','英文例句'],
+  exampleZh:['exampleZh','example_zh','example_cn','exampleCn','例句翻译','例句译文','例句中文'],
+  tags:['tags','tag','labels','label','category','标签','分类','类别'],
+  level:['level','mastery','掌握等级','等级'],
+  right:['right','correct','rightCount','答对'],
+  wrong:['wrong','incorrect','wrongCount','答错'],
+  starred:['starred','star','favorite','收藏','生词本'],
+  wrongBook:['wrongBook','wrongbook','错题'],
+  addedAt:['addedAt','createdAt','date','加入时间','添加时间'],
+  lastReviewAt:['lastReviewAt','lastReview','上次复习'],
+  nextReviewAt:['nextReviewAt','nextReview','下次复习'],
+  en:['en','english','sentence','text','english_sentence','英文','英文句子','句子','原句'],
+  zh:['zh','chinese','cn','translation','中文','翻译','译文','中文翻译'],
+  scene:['scene','scenario','category','type','场景','情境','分类'],
+  notes:['notes','note','tip','language_point','语言点','备注','提示']
+};
+/* 值可能是字符串、数字、数组，或 {zh:'…'} 这样的嵌套对象 */
+function strFrom(v){
+  if(v==null) return '';
+  if(typeof v==='string') return v;
+  if(typeof v==='number'||typeof v==='boolean') return String(v);
+  if(Array.isArray(v)) return v.map(strFrom).filter(Boolean).join('；');
+  if(typeof v==='object'){
+    const inner = ['zh','cn','chinese','translation','meaning','text','value','name','content','label'];
+    for(const k of inner){ if(v[k]!=null && String(v[k]).trim()!=='') return strFrom(v[k]); }
+  }
+  return '';
+}
+function pick(o, keys){
+  if(!o || typeof o!=='object') return '';
+  for(const k of keys){
+    if(o[k]==null) continue;
+    const s = strFrom(o[k]);
+    if(String(s).trim()!=='') return s;
+  }
+  return '';
+}
+function numOr(v, d){
+  const s = strFrom(v).trim();
+  if(s==='') return d;
+  const n = parseFloat(s.replace(/[^0-9.\-]/g,''));
+  return isFinite(n) ? n : d;
+}
+function boolOr(v, d){
+  const s = strFrom(v).trim().toLowerCase();
+  if(s==='') return d;
+  if(['true','1','yes','y','是','已','✓','★'].indexOf(s)>=0) return true;
+  if(['false','0','no','n','否','×'].indexOf(s)>=0) return false;
+  return d;
+}
+/* 去 BOM、去 markdown 代码块、截取最外层 {...} / [...] */
+function cleanText(raw){
+  let s = String(raw==null?'':raw).replace(/\uFEFF/g,'').trim();
+  s = s.replace(/^```[A-Za-z0-9_-]*[ \t]*\r?\n?/,'').replace(/\r?\n?```\s*$/,'').trim();
+  return s;
+}
+function sliceOuter(s){
+  const i = s.search(/[[{]/);
+  if(i<0) return s;
+  const open = s[i], close = open==='{' ? '}' : ']';
+  const j = s.lastIndexOf(close);
+  return j>i ? s.slice(i,j+1) : s.slice(i);
+}
+function tryJSON(text){
+  const s = cleanText(text);
+  for(const c of [s, sliceOuter(s)]){
+    if(!c) continue;
+    try{ return JSON.parse(c); }catch(e){}
+  }
+  return undefined;
+}
+/* 在一层层的容器里找 words / sentences */
+const WRAP = ['data','result','payload','response','content','json','dataset','body','records','value','list','items'];
+function arrFrom(o, keys, entryKeys){
+  for(const k of keys){
+    const v = o[k];
+    if(Array.isArray(v)) return v;
+    /* 兼容 {"words": {单条记录}} 这种写法 */
+    if(v && typeof v==='object' && entryKeys && pick(v, entryKeys)) return [v];
+  }
+  return null;
+}
+function guessBySample(arr){
+  const o = arr.filter(x=>x && typeof x==='object')[0];
+  if(!o) return null;
+  const strict = pick(o, ['term','word','headword','phrase','expression','单词','词汇','英文单词','词条','词组']);
+  if(strict && /[A-Za-z]/.test(strict)) return { words:arr, sentences:[] };
+  const sent = pick(o, ['en','sentence','text','english','句子','英文句子','英文']);
+  if(sent && /[A-Za-z]/.test(sent)) return { words:[], sentences:arr };
+  return null;
+}
+function collectEntries(src, depth){
+  if(!src || typeof src!=='object' || depth>4) return null;
+  const w = arrFrom(src, ['words','vocabulary','wordList','wordlist','vocab','单词','单词表','词汇','词表'], K.term);
+  const s = arrFrom(src, ['sentences','phrases','sentenceList','sentencelist','句子','句表'], K.en);
+  if(w || s) return { words:w||[], sentences:s||[], meta: src.meta || src.info || {} };
+  for(const k of Object.keys(src)){
+    const v = src[k];
+    if(Array.isArray(v) && v.length){ const g = guessBySample(v); if(g){ g.meta = src.meta || src.info || {}; return g; } }
+  }
+  for(const k of WRAP.concat(Object.keys(src))){
+    const v = src[k];
+    if(v && typeof v==='object' && !Array.isArray(v)){
+      const r = collectEntries(v, depth+1);
+      if(r) return r;
+    }
+  }
+  return null;
+}
+/* 纯文本 / CSV / TSV 兜底：英文 + 中文成对行 */
+const LOOSE_ALIAS = {
+  'term':'term','单词':'term','英文':'term','词汇':'term','词条':'term','词组':'term','短语':'term','word':'term','english':'term',
+  'phonetic':'phonetic','音标':'phonetic','ipa':'phonetic','读音':'phonetic',
+  'pos':'pos','词性':'pos',
+  'translation':'translation','释义':'translation','中文':'translation','翻译':'translation','意思':'translation','中文释义':'translation','meaning':'translation','chinese':'translation',
+  'definition':'definition','详解':'definition','解释':'definition','说明':'definition','注释':'definition','note':'definition',
+  'exampleen':'exampleEn','example':'exampleEn','例句':'exampleEn','英文例句':'exampleEn',
+  'examplezh':'exampleZh','例句翻译':'exampleZh','例句译文':'exampleZh','例句中文':'exampleZh',
+  'tags':'tags','标签':'tags','分类':'tags','类别':'tags'
+};
+function splitCsvLine(line){
+  const out=[]; let cur=''; let q=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){ if(q && line[i+1]==='"'){ cur+='"'; i++; } else q=!q; }
+    else if(c===',' && !q){ out.push(cur); cur=''; }
+    else cur+=c;
+  }
+  out.push(cur);
+  return out;
+}
+function cellKind(s){
+  if(/^\/.+\/$/.test(s) || /[ˈˌː]/.test(s)) return 'phonetic';
+  if(/^(n|v|vt|vi|adj|adv|prep|conj|pron|num|art|abbr|int|phr)\.?$/i.test(s)) return 'pos';
+  if(/[\u4e00-\u9fa5]/.test(s)) return 'zh';
+  if(/[A-Za-z]/.test(s) && s.split(/\s+/).length>=4) return 'example';
+  return 'other';
+}
+function textToRaw(text){
+  const lines = String(text==null?'':text).replace(/\uFEFF/g,'').split(/\r?\n/);
+  const words=[], sentences=[];
+  let header=null;
+  lines.forEach(line0=>{
+    const line = line0.trim();
+    if(!line || line[0]==='#') return;
+    let sep = null;
+    if(line.indexOf('\t')>=0) sep='\t';
+    else if(line.indexOf('|')>=0) sep='|';
+    else if(line.indexOf(',')>=0) sep=',';
+    else if(line.indexOf('：')>=0) sep='：';
+    else if(line.indexOf('=')>=0) sep='=';
+    else if(/\s{2,}/.test(line)) sep='ws';
+    let cells;
+    if(!sep) cells=[line];
+    else if(sep==='ws') cells=line.split(/\s{2,}/);
+    else if(sep===',') cells=splitCsvLine(line);
+    else cells=line.split(sep);
+    cells = cells.map(c=>String(c).trim().replace(/^["'“”]+|["'“”]+$/g,''));
+    if(!header){
+      const map = cells.map(c=>LOOSE_ALIAS[c.toLowerCase()] || LOOSE_ALIAS[c] || null);
+      if(map.indexOf('term')>=0 && map.filter(Boolean).length>=2){ header = map; return; }
+    }
+    if(header){
+      const o = {};
+      cells.forEach((c,i)=>{ if(header[i] && c) o[header[i]] = c; });
+      if(o.term && /[A-Za-z]/.test(o.term)) words.push(o);
+      return;
+    }
+    if(cells.length===1){
+      const s = cells[0];
+      if(/[{}\[\]<>]/.test(s)) return;      /* 疑似 JSON / 标记片段，不当词条 */
+      if(!/[A-Za-z]/.test(s)) return;
+      if(s.split(/\s+/).length>=6) sentences.push({ en:s });
+      else words.push({ term:s });
+      return;
+    }
+    if(!/[A-Za-z]/.test(cells[0])) return;
+    const o = { term:cells[0] };
+    cells.slice(1).forEach(c=>{
+      if(!c) return;
+      const k = cellKind(c);
+      if(k==='phonetic'){ if(!o.phonetic) o.phonetic=c; }
+      else if(k==='pos'){ if(!o.pos) o.pos=c; }
+      else if(k==='example'){ if(!o.exampleEn) o.exampleEn=c; else if(!o.exampleZh) o.exampleZh=c; }
+      else if(k==='zh'){ if(!o.translation) o.translation=c; else if(!o.exampleZh) o.exampleZh=c; else if(!o.definition) o.definition=c; }
+      else if(!o.definition) o.definition=c;
+    });
+    words.push(o);
+  });
+  return { words, sentences, meta:{ title:'文本 / CSV 导入', category:'—', source:'纯文本解析', _loose:true } };
+}
+function blankWord(term){
+  return { id:uid('w_'), term:term, phonetic:'', pos:'', translation:'', definition:'',
+    exampleEn:'', exampleZh:'', tags:[], mastery:0, level:0, starred:false, wrongBook:false,
+    right:0, wrong:0, addedAt:Date.now(), lastReviewAt:0, nextReviewAt:0 };
+}
+function entryToWord(w){
+  if(w==null) return null;
+  if(typeof w==='string'){ const t=w.trim(); return /[A-Za-z]/.test(t) ? blankWord(t) : null; }
+  if(typeof w!=='object') return null;
+  const term = String(pick(w, K.term)).trim();
+  if(!term) return null;
+  const o = blankWord(term);
+  o.phonetic = String(pick(w, K.phonetic)).trim();
+  o.pos = String(pick(w, K.pos)).trim();
+  o.translation = String(pick(w, K.translation)).trim();
+  o.definition = String(pick(w, K.definition)).trim();
+  o.exampleEn = String(pick(w, K.exampleEn)).trim();
+  o.exampleZh = String(pick(w, K.exampleZh)).trim();
+  let tags = pick(w, K.tags);
+  if(tags) o.tags = String(tags).split(/[,，;；\/、|]+/).map(s=>s.trim()).filter(Boolean);
+  /* 备份回导：保留学习进度 */
+  const lv = Math.max(0, Math.min(6, Math.round(numOr(pick(w, K.level), 0))));
+  o.level = lv; o.mastery = Math.min(5, lv);
+  o.right = Math.max(0, Math.round(numOr(pick(w, K.right), 0)));
+  o.wrong = Math.max(0, Math.round(numOr(pick(w, K.wrong), 0)));
+  o.starred = boolOr(pick(w, K.starred), false);
+  o.wrongBook = boolOr(pick(w, K.wrongBook), false);
+  o.addedAt = numOr(pick(w, K.addedAt), 0) || Date.now();
+  o.lastReviewAt = Math.max(0, numOr(pick(w, K.lastReviewAt), 0));
+  o.nextReviewAt = Math.max(0, numOr(pick(w, K.nextReviewAt), 0));
+  return o;
+}
+function entryToSentence(s){
+  if(s==null) return null;
+  if(typeof s==='string'){ const t=s.trim(); return /[A-Za-z]/.test(t) ? { id:uid('s_'), en:t, zh:'', scene:'', notes:'', mastery:0, starred:false, addedAt:Date.now() } : null; }
+  if(typeof s!=='object') return null;
+  const en = String(pick(s, K.en)).trim();
+  if(!en) return null;
+  return { id:uid('s_'), en:en,
+    zh: String(pick(s, K.zh)).trim(),
+    scene: String(pick(s, K.scene)).trim(),
+    notes: String(pick(s, K.notes)).trim(),
+    mastery: Math.max(0, Math.min(2, Math.round(numOr(pick(s, K.level), 0)))),
+    starred: boolOr(pick(s, K.starred), false),
+    addedAt: numOr(pick(s, K.addedAt), 0) || Date.now() };
+}
 function normalizeImport(json){
+  if(json==null) throw new Error('没有可导入的内容');
   let src = json;
-  if(Array.isArray(json)) src = { words: json };
-  if(!src || typeof src!=='object') throw new Error('数据格式不正确：应为 JSON 对象或数组');
-  const meta = src.meta || src.info || {};
-  const wRaw = src.words || src.vocabulary || src.wordList || [];
-  const sRaw = src.sentences || src.phrases || src.sentenceList || [];
-  if(!Array.isArray(wRaw) && !Array.isArray(sRaw)) throw new Error('未找到 words 或 sentences 数组');
+  if(typeof src==='string') src = tryJSON(src);
+  if(src==null) throw new Error('内容不是合法的 JSON');
+  if(Array.isArray(src)){
+    const g = guessBySample(src);
+    src = g ? { words:g.words, sentences:g.sentences, meta:{} } : { words:src, sentences:[], meta:{} };
+  }
+  const got = collectEntries(src, 0);
+  if(!got) throw new Error('没找到单词或句子列表（支持的键名：words / sentences / vocabulary / phrases）');
+  const meta = got.meta || {};
   const words = [], sentences = [];
-  wRaw.forEach(w=>{
-    if(!w || typeof w!=='object') return;
-    const term = String(pick(w,['term','word','english','en','headword'])).trim();
-    if(!term) return;
-    let tags = pick(w,['tags','tag','labels']);
-    if(typeof tags==='string') tags = tags.split(/[,，;；\/、\s]+/).filter(Boolean);
-    if(!Array.isArray(tags)) tags=[];
-    words.push({
-      id: uid('w_'), term: term,
-      phonetic: String(pick(w,['phonetic','phonetic_en','ipa'])),
-      pos: String(pick(w,['pos','partOfSpeech','type'])),
-      translation: String(pick(w,['translation','zh','chinese','meaning','cn'])),
-      definition: String(pick(w,['definition','explain','note','desc'])),
-      exampleEn: String(pick(w,['exampleEn','example','example_en','sentence'])),
-      exampleZh: String(pick(w,['exampleZh','example_zh','example_cn'])),
-      tags: tags.map(String),
-      mastery:0, level:0, starred:false, wrongBook:false,
-      right:0, wrong:0, addedAt:Date.now(), lastReviewAt:0, nextReviewAt:0
-    });
-  });
-  sRaw.forEach(s=>{
-    if(!s || typeof s!=='object') return;
-    const en = String(pick(s,['en','english','sentence','text'])).trim();
-    if(!en) return;
-    sentences.push({
-      id: uid('s_'), en: en,
-      zh: String(pick(s,['zh','chinese','cn','translation'])),
-      scene: String(pick(s,['scene','scenario','category','type'])),
-      notes: String(pick(s,['notes','note','tip'])),
-      mastery:0, starred:false, addedAt:Date.now()
-    });
-  });
-  return { words, sentences, meta };
+  let rawCount = 0, bad = 0;
+  got.words.forEach(w=>{ rawCount++; const x = entryToWord(w); if(x) words.push(x); else bad++; });
+  got.sentences.forEach(s=>{ rawCount++; const x = entryToSentence(s); if(x) sentences.push(x); else bad++; });
+  const total = words.length + sentences.length;
+  let hint = '';
+  if(total===0){
+    hint = rawCount
+      ? ('识别到 '+rawCount+' 条记录，但都缺少英文单词字段（term / word / 单词）')
+      : (meta._loose ? '没有找到「英文 + 中文」的成对行' : '单词与句子列表都是空的');
+  }
+  return { words, sentences, meta, hint, rawCount, bad };
 }
 function applyImport(parsed){
-  const exist = new Set(DB.words.map(w=>w.term.toLowerCase()));
-  let nw=0, dup=0;
+  const meta = parsed.meta || {};
+  const exist = new Set(DB.words.map(w=>String(w.term||'').toLowerCase()));
+  let nw=0, dup=0, withProgress=0;
   parsed.words.forEach(w=>{
-    if(exist.has(w.term.toLowerCase())){ dup++; return; }
-    DB.words.push(w); exist.add(w.term.toLowerCase()); nw++;
+    const k = String(w.term||'').toLowerCase();
+    if(!k) return;
+    if(exist.has(k)){ dup++; return; }
+    DB.words.push(w); exist.add(k); nw++;
+    if((w.level||0)>0 || (w.right||0)>0 || (w.wrong||0)>0 || w.starred || w.wrongBook) withProgress++;
   });
-  const existS = new Set(DB.sentences.map(s=>s.en.toLowerCase()));
-  let ns=0;
+  const existS = new Set(DB.sentences.map(s=>String(s.en||'').toLowerCase()));
+  let ns=0, dupS=0;
   parsed.sentences.forEach(s=>{
-    if(existS.has(s.en.toLowerCase())) return;
-    DB.sentences.push(s); existS.add(s.en.toLowerCase()); ns++;
+    const k = String(s.en||'').toLowerCase();
+    if(!k) return;
+    if(existS.has(k)){ dupS++; return; }
+    DB.sentences.push(s); existS.add(k); ns++;
   });
-  DB.imports.unshift({ id:uid('i_'), title: parsed.meta.title||'未命名批次', category: parsed.meta.category||'—',
-    source: parsed.meta.source||'—', date: Date.now(), words:nw, sentences:ns, duplicates:dup });
+  DB.imports.unshift({ id:uid('i_'), title: meta.title||'未命名批次', category: meta.category||'—',
+    source: meta.source||'—', date: Date.now(), words:nw, sentences:ns, duplicates:dup+dupS });
   saveDB();
-  return {nw, ns, dup};
+  return {nw, ns, dup, dupS, withProgress};
 }
 
 /* ================= 学习调度（间隔重复） ================= */
@@ -1654,18 +1885,21 @@ function renderData(){
     </div>
     <div class="card-body">
       <p class="muted" style="margin-bottom:14px;line-height:1.8">
-        将 AI 根据图片 / 文档 / Excel 提取整理后的 JSON 文件导入。<br>
+        将 AI 根据图片 / 文档 / Excel 提取整理的数据导入。<br>
         数据规范请参阅项目内文档 <b>《AI数据制作指南.md》</b>，把该文档连同素材一并发给 AI 即可获得符合规范的 JSON。</p>
       <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
         <div style="font-size:26px;margin-bottom:8px">📥</div>
-        点击选择 <b>.json</b> 文件，或拖拽文件到此处
-        <input type="file" id="fileInput" accept=".json,.txt" style="display:none" onchange="handleFile(this.files[0])">
+        点击选择 <b>.json / .csv / .txt</b> 文件，或拖拽文件到此处
+        <input type="file" id="fileInput" accept=".json,.txt,.csv,.tsv,.md" style="display:none" onchange="handleFile(this.files[0])">
       </div>
       <div style="margin-top:16px">
-        <div class="muted" style="margin-bottom:6px;font-size:12px">或直接粘贴 JSON 文本：</div>
-        <textarea class="code" id="pasteArea" placeholder='{"meta":{"title":"..."},"words":[...],"sentences":[...]}'></textarea>
+        <div class="muted" style="margin-bottom:6px;font-size:12px">或直接粘贴 JSON / 词表文本：</div>
+        <textarea class="code" id="pasteArea" placeholder='支持：{&quot;words&quot;:[...]} / 裸数组 / 带 &#96;&#96;&#96;json 代码块 / 带 BOM 的文件 / 中文键名 / CSV 两列表&#10;例：Ocean Freight,海运费'></textarea>
         <div style="margin-top:10px"><button class="btn" onclick="importPaste()">导入粘贴内容</button></div>
       </div>
+      <p class="muted" style="font-size:12px;margin-top:14px;line-height:1.9">
+        <b>容错说明</b>：自动去除 BOM 与 &#96;&#96;&#96;json 代码块；识别 <code>words</code> / <code>vocabulary</code> / 嵌套 <code>data.words</code>；字段名支持中英文（term / word / 单词，translation / 释义 / 中文）；支持 Excel 另存的 CSV 两列表；<b>导入自己导出的备份会保留学习进度</b>。
+      </p>
     </div>
   </div>
 
@@ -1870,26 +2104,60 @@ function importMsg(ok, text){
   el.textContent = text;
   try{ el.scrollIntoView({behavior:'smooth', block:'nearest'}); }catch(e){}
 }
+/* 统一的输入解析：先按 JSON 解析（自动去 BOM / 代码块 / 外层包装），失败再按文本行解析 */
+function parseImportText(text){
+  const s = cleanText(text);
+  const j = tryJSON(s);
+  if(j!==undefined) return j;
+  /* 看着像 JSON 却解析不了：直接报错，别把它当词表吞掉 */
+  if(/^[{[]/.test(s)){
+    let msg = '';
+    try{ JSON.parse(sliceOuter(s)); }catch(e){ msg = e.message; }
+    throw new Error('JSON 格式有误' + (msg ? '（' + msg + '）' : '：请检查逗号、引号与括号是否配对'));
+  }
+  return textToRaw(s);
+}
 function handleFile(f){
   if(!f) return;
+  const name = String(f.name||'');
+  if(/\.(xlsx|xls|xlsm)$/i.test(name)){
+    importMsg(false, '暂不支持 Excel 原文件：请在 Excel 中「另存为 CSV（UTF-8）」后再导入，或让 AI 直接输出 JSON。');
+    return;
+  }
+  if(f.size > 5*1024*1024){ importMsg(false, '文件超过 5MB，请拆分后再导入。'); return; }
   const reader = new FileReader();
   reader.onload = ()=>{
-    try{ doImport(JSON.parse(reader.result)); }
-    catch(e){ importMsg(false, '导入失败：'+e.message+'（请确认是合法 JSON，且包含 words / sentences 数组）'); }
+    let data;
+    try{ data = parseImportText(reader.result); }
+    catch(e){ importMsg(false, '导入失败：'+e.message); return; }
+    doImport(data);
   };
+  reader.onerror = ()=>{ importMsg(false, '读取文件失败，请重试或改用「粘贴 JSON」。'); };
   reader.readAsText(f,'UTF-8');
 }
 function importPaste(){
-  try{ doImport(JSON.parse(document.getElementById('pasteArea').value)); }
-  catch(e){ importMsg(false, '导入失败：'+e.message); }
+  const el = document.getElementById('pasteArea');
+  const text = ((el && el.value) || '').trim();
+  if(!text){ importMsg(false, '请先粘贴 JSON 或词表内容'); return; }
+  let data;
+  try{ data = parseImportText(text); }
+  catch(e){ importMsg(false, '导入失败：'+e.message); return; }
+  doImport(data);
 }
-function doImport(json){
+function doImport(input){
   try{
-    const parsed = normalizeImport(json);
-    if(parsed.words.length+parsed.sentences.length===0){ importMsg(false,'导入失败：未解析到有效的单词或句子条目'); return; }
+    const parsed = normalizeImport(input);
+    if(parsed.words.length+parsed.sentences.length===0){
+      importMsg(false, '导入失败：' + (parsed.hint || '未解析到有效的单词或句子条目'));
+      return;
+    }
     const r = applyImport(parsed);
     renderData(); updateTop();
-    importMsg(true, `✅ 导入成功：新增 ${r.nw} 个单词、${r.ns} 个句子${r.dup?`，自动去重 ${r.dup} 个重复单词`:''}`);
+    let m = `✅ 导入成功：新增 ${r.nw} 个单词、${r.ns} 个句子`;
+    const skip = r.dup + r.dupS;
+    if(skip) m += `；跳过 ${skip} 个已存在的条目`;
+    if(r.withProgress) m += `；已保留 ${r.withProgress} 个词的学习进度`;
+    importMsg(true, m);
   }catch(e){ importMsg(false, '导入失败：'+e.message); }
 }
 function download(filename, text, mime){
