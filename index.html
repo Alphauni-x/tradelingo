@@ -63,7 +63,7 @@
   .btn.danger{background:#fff;color:var(--red);border-color:#f3d4d4;box-shadow:none;}
   .btn.danger:hover{background:#fef2f2;border-color:#e9b4b4;color:#b91c1c;}
   .btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
-  .tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;background:var(--line2);color:#475569;margin:2px 4px 2px 0;font-weight:500;}
+  .tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;background:var(--line2);color:#475569;margin:2px 4px 2px 0;font-weight:500;white-space:nowrap;}
   .tag.gold{background:var(--brand-soft);color:var(--brand2);}
   .muted{color:var(--muted);}
   .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
@@ -160,6 +160,7 @@
   .filter-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px;}
   .filter-bar input{max-width:230px;}
   .filter-bar select{width:auto;min-width:120px;}
+  .pager{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line2);}
   .word-term{font-weight:600;color:var(--navy);font-size:14px;letter-spacing:-.01em;}
   .word-phon{color:var(--faint);font-size:12px;font-family:var(--font);font-variant-numeric:tabular-nums;}
   .pos-chip{display:inline-block;font-size:10.5px;color:var(--brand2);background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:5px;padding:1px 6px;margin-right:6px;font-weight:600;}
@@ -337,7 +338,7 @@ function toast(msg){
 
 /* ================= 数据层 ================= */
 function emptyDB(){ return { words:[], sentences:[], imports:[], quizLog:[], studyLog:{}, trash:[],
-  settings:{ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30 } }; }
+  settings:{ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30, pageSize:20 } }; }
 function loadDB(){
   try{ const raw = localStorage.getItem(STORE_KEY); if(!raw) return emptyDB();
     return Object.assign(emptyDB(), JSON.parse(raw));
@@ -347,10 +348,11 @@ function saveDB(){ invalidateDictIndex(); try{ localStorage.setItem(STORE_KEY, J
 let DB = loadDB();
 /* 兼容旧版本数据 */
 function migrate(){
-  DB.settings = Object.assign({ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30 }, DB.settings||{});
+  DB.settings = Object.assign({ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30, pageSize:20 }, DB.settings||{});
   if(!DB.studyLog) DB.studyLog = {};
   if(!Array.isArray(DB.trash)) DB.trash = [];
   if(!(DB.settings.dailyGoal>0)) DB.settings.dailyGoal = 30;
+  if(DB.settings.pageSize==null) DB.settings.pageSize = 20;
   DB.words.forEach(w=>{
     if(w.starred==null) w.starred=false;
     if(w.wrongBook==null) w.wrongBook=false;
@@ -1575,7 +1577,7 @@ function renderDashboard(){
 }
 
 /* ================= 单词学习 ================= */
-let wordFilter = { q:'', tag:'全部', scope:'全部', mode:'list' };
+let wordFilter = { q:'', tag:'全部', scope:'全部', mode:'list', page:1 };
 let flash = null;
 
 function renderWords(){
@@ -1588,7 +1590,8 @@ function renderWords(){
   }
   if(wordFilter.mode==='flash' && flash){ renderFlash(); return; }
   const tags = ['全部', ...uniq(DB.words.flatMap(w=>w.tags))];
-  const list = filteredWords();
+  const all = filteredWords();
+  const list = pageSlice(all);
   const rows = list.map(w=>{
     const dots = [0,1,2,3,4].map(i=>`<span class="${i<w.mastery?'on':'off'}">●</span>`).join('');
     const when = w.nextReviewAt>Date.now() ? ('下次复习 '+fmtDate(w.nextReviewAt)) : (w.lastReviewAt?'待复习':'新词');
@@ -1615,14 +1618,14 @@ function renderWords(){
   }).join('');
   root.innerHTML = `
   <div class="filter-bar">
-    <input type="text" placeholder="搜索单词或释义…" value="${esc(wordFilter.q)}" oninput="wordFilter.q=this.value;renderWordsDebounced()">
-    <select onchange="wordFilter.tag=this.value;renderWords()">
+    <input type="text" placeholder="搜索单词或释义…" value="${esc(wordFilter.q)}" oninput="wordFilter.q=this.value;wordFilter.page=1;renderWordsDebounced()">
+    <select onchange="wordFilter.tag=this.value;wordFilter.page=1;renderWords()">
       ${tags.map(t=>`<option ${t===wordFilter.tag?'selected':''}>${esc(t)}</option>`).join('')}
     </select>
-    <select onchange="wordFilter.scope=this.value;renderWords()">
+    <select onchange="wordFilter.scope=this.value;wordFilter.page=1;renderWords()">
       ${['全部','未掌握','待复习','生词本','错题本'].map(t=>`<option ${t===wordFilter.scope?'selected':''}>${esc(t)}</option>`).join('')}
     </select>
-    <span class="muted" style="font-size:12px">共 ${list.length} 条</span>
+    <span class="muted" style="font-size:12px">共 ${all.length} 条</span>
     <span style="flex:1"></span>
     <button class="btn ghost" onclick="exportFilteredWords()">导出当前列表</button>
     <button class="btn gold" onclick="startFlash()">卡片记忆</button>
@@ -1631,9 +1634,52 @@ function renderWords(){
   <div class="card"><table>
     <thead><tr><th style="width:30%">单词</th><th style="width:28%">释义</th><th>标签</th><th style="width:150px">掌握 / 复习</th><th style="width:110px">操作</th></tr></thead>
     <tbody>${rows || '<tr><td colspan="5" class="muted" style="text-align:center;padding:30px">无匹配结果</td></tr>'}</tbody>
-  </table></div>`;
+  </table>${all.length ? pagerHTML(all.length) : ''}</div>`;
 }
 let _wt=null; function renderWordsDebounced(){ clearTimeout(_wt); _wt=setTimeout(renderWords,250); }
+
+/* ================= 分页 ================= */
+function pageSize(){ const n = Number(DB.settings.pageSize); return n>0 ? n : 0; }
+function pageSlice(list){
+  const per = pageSize();
+  if(!per){ wordFilter.page = 1; return list; }
+  const pages = Math.max(1, Math.ceil(list.length/per));
+  wordFilter.page = Math.max(1, Math.min(pages, wordFilter.page||1));
+  const s = (wordFilter.page-1)*per;
+  return list.slice(s, s+per);
+}
+function pagerHTML(total){
+  const per = pageSize();
+  if(!per) return `<div class="pager"><span class="muted" style="font-size:12px">共 ${total} 条 · 已显示全部</span></div>`;
+  const pages = Math.max(1, Math.ceil(total/per));
+  const cur = Math.max(1, Math.min(pages, wordFilter.page||1));
+  const from = total ? (cur-1)*per+1 : 0;
+  const to = Math.min(total, cur*per);
+  return `<div class="pager">
+    <span class="muted" style="font-size:12px">第 ${from}–${to} 条 / 共 ${total} 条</span>
+    <span style="flex:1"></span>
+    <span class="muted" style="font-size:12px">每页</span>
+    <select onchange="setPageSize(this.value)" style="width:auto;min-width:88px;padding:6px 28px 6px 10px;font-size:12.5px">
+      ${[20,50,100].map(n=>`<option value="${n}"${per===n?' selected':''}>${n} 条</option>`).join('')}
+      <option value="0"${per===0?' selected':''}>全部</option>
+    </select>
+    <button class="btn ghost sm" onclick="goPage(-1)"${cur<=1?' disabled':''}>上一页</button>
+    <span class="num" style="font-size:12.5px;color:var(--navy3);min-width:54px;text-align:center">${cur} / ${pages}</span>
+    <button class="btn ghost sm" onclick="goPage(1)"${cur>=pages?' disabled':''}>下一页</button>
+  </div>`;
+}
+function goPage(d){
+  wordFilter.page = Math.max(1, (wordFilter.page||1)+d);
+  renderWords();
+  const bar = document.querySelector('#viewRoot .filter-bar');
+  if(bar) window.scrollTo({ top: Math.max(0, bar.getBoundingClientRect().top + window.scrollY - 74), behavior:'smooth' });
+}
+function setPageSize(v){
+  DB.settings.pageSize = parseInt(v,10) || 0;
+  saveDB();
+  wordFilter.page = 1;
+  renderWords();
+}
 /* 当前筛选条件下的单词列表（供渲染与导出共用） */
 function filteredWords(){
   const q = wordFilter.q.toLowerCase();
