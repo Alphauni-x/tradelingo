@@ -297,7 +297,7 @@
       <button class="nav-item" data-view="quiz" onclick="switchView('quiz')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span><span class="txt">测验中心</span></button>
       <button class="nav-item" data-view="data" onclick="switchView('data')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span><span class="txt">数据管理</span></button>
     </nav>
-    <div class="side-footer">v2.1 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
+    <div class="side-footer">v2.2 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
   </aside>
 
   <div class="main">
@@ -370,8 +370,18 @@ function migrate(){
 }
 
 /* ================= 发音模块 ================= */
-let _audioEl = null, _onlineDisabled = false;
+let _audioEl = null, _onlineDisabled = false, _ttsDisabled = false, _speakSeq = 0, _onlineTimer = null, _voicesWarmed = false;
 function hasLocalTTS(){ return typeof window!=='undefined' && 'speechSynthesis' in window; }
+/* Chrome 首次 getVoices() 常返回空数组，需要等 voiceschanged */
+function warmUpVoices(){
+  if(!hasLocalTTS() || _voicesWarmed) return;
+  try{
+    if((speechSynthesis.getVoices()||[]).length){ _voicesWarmed = true; return; }
+    const fire = ()=>{ _voicesWarmed = true; };
+    if(speechSynthesis.addEventListener) speechSynthesis.addEventListener('voiceschanged', fire, {once:true});
+    else speechSynthesis.onvoiceschanged = fire;
+  }catch(e){}
+}
 function pickVoice(lang){
   if(!hasLocalTTS()) return null;
   let vs = [];
@@ -381,41 +391,119 @@ function pickVoice(lang){
       || vs.find(v=>norm(v.lang).startsWith(lang.slice(0,2)))
       || null;
 }
-function speakLocal(text){
-  if(!hasLocalTTS()){ toast('当前浏览器不支持本地语音合成'); return; }
+function speakLocal(text, onFail){
+  if(!hasLocalTTS()){ if(onFail) onFail('unsupported'); return; }
   try{
-    speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = DB.settings.accent==='uk' ? 'en-GB' : 'en-US';
-    u.rate = DB.settings.rate; u.pitch = 1; u.volume = 1;
+    u.rate = Math.max(0.5, Math.min(2, Number(DB.settings.rate)||1));
+    u.pitch = 1; u.volume = 1;
     const v = pickVoice(u.lang); if(v) u.voice = v;
+    let fired = false;
+    u.onerror = (ev)=>{
+      if(fired) return; fired = true;
+      const k = ev && ev.error;
+      if(k==='canceled' || k==='interrupted') return;   /* 我们自己打断的，不算失败 */
+      if(onFail) onFail(k || 'error');
+    };
+    try{ speechSynthesis.cancel(); }catch(e){}
+    try{ speechSynthesis.resume(); }catch(e){}           /* Chrome 长时间闲置后会挂起 */
     speechSynthesis.speak(u);
-  }catch(e){ console.warn(e); }
+    warmUpVoices();
+  }catch(e){ if(onFail) onFail(e.message || 'error'); }
 }
-function speakOnline(text, onFail){
+/* 判断是否整句：有道 dictvoice 是词典发音，只覆盖词条，整句一定 500 */
+function isSentenceLike(text){
+  const t = String(text||'').trim();
+  if(!t) return false;
+  const words = t.split(/\s+/).filter(Boolean);
+  return words.length > 3 || t.length > 34 || /[.!?;:。！？；]/.test(t);
+}
+/* 单次在线播放尝试（传完整 URL，便于不同音源复用） */
+function playUrl(url, onOk, onFail){
+  const seq = ++_speakSeq;
+  let done = false;
+  const finish = (ok, why)=>{
+    if(done || seq!==_speakSeq) return;
+    done = true;
+    clearTimeout(_onlineTimer);
+    if(ok){ if(onOk) onOk(); } else if(onFail) onFail(why || 'error');
+  };
   try{
-    if(typeof Audio==='undefined'){ if(onFail) onFail(); return; }
-    if(!_audioEl) _audioEl = new Audio();
-    const type = DB.settings.accent==='uk' ? 1 : 2;
-    _audioEl.onerror = ()=>{ if(onFail) onFail(); };
-    _audioEl.src = 'https://dict.youdao.com/dictvoice?audio='+encodeURIComponent(text)+'&type='+type;
+    if(typeof Audio==='undefined'){ finish(false,'no-audio'); return; }
+    if(!_audioEl){ _audioEl = new Audio(); try{ _audioEl.preload = 'auto'; }catch(e){} }
+    try{ _audioEl.pause(); }catch(e){}
+    /* 只有真正开始播放才算成功：oncanplay 之后仍可能被自动播放策略拦下 */
+    _audioEl.onplaying = ()=>finish(true);
+    _audioEl.onerror   = ()=>finish(false,'media');
+    _audioEl.src = url;
+    clearTimeout(_onlineTimer);
+    _onlineTimer = setTimeout(()=>finish(false,'timeout'), 4000);
     const p = _audioEl.play();
-    if(p && p.catch) p.catch(()=>{ if(onFail) onFail(); });
-  }catch(e){ if(onFail) onFail(); }
+    if(p && p.catch) p.catch(err=>{
+      const k = (err && err.name) || '';
+      if(k==='AbortError') return;              /* 连续点击时被新请求打断，忽略 */
+      finish(false, k || 'play');
+    });
+  }catch(e){ finish(false, e.message || 'error'); }
 }
-/* 主发音入口：auto = 在线优先，失败回退本地（5 分钟内不再重试在线） */
+function youdaoUrl(text, type){
+  return 'https://dict.youdao.com/dictvoice?audio='+encodeURIComponent(text)+'&type='+type;
+}
+/* 百度翻译 TTS：支持整句，用来补有道「只收词条」的短板 */
+function baiduUrl(text){
+  const spd = Math.max(1, Math.min(5, Math.round((Number(DB.settings.rate)||1) * 3)));
+  return 'https://fanyi.baidu.com/gettts?lan=en&text='+encodeURIComponent(text)+'&spd='+spd+'&source=web';
+}
+function hardFail(why){ return why==='timeout' || why==='no-audio' || why==='NotAllowedError'; }
+/* 在线：有道主口音 → 有道另一口音 → 百度 TTS
+   整句只有百度支持，跳过有道可直接省两次失败请求 */
+function speakOnline(text, onFail, onOk){
+  const primary = DB.settings.accent==='uk' ? 1 : 2;
+  const alt = primary===1 ? 2 : 1;
+  if(isSentenceLike(text)){ playUrl(baiduUrl(text), onOk, onFail); return; }
+  playUrl(youdaoUrl(text, primary), onOk, (why)=>{
+    if(hardFail(why)){ if(onFail) onFail(why); return; }
+    playUrl(youdaoUrl(text, alt), onOk, (why2)=>{
+      if(hardFail(why2)){ if(onFail) onFail(why2); return; }
+      playUrl(baiduUrl(text), onOk, onFail);
+    });
+  });
+}
+/* 主入口：任何情况都要给声音或给原因，不能静默没声 */
 function speak(text){
   if(!text) return;
   text = String(text).trim();
+  if(!text) return;
   const eng = DB.settings.engine;
-  if(eng==='local'){ speakLocal(text); return; }
-  if(eng==='online'){ speakOnline(text, ()=>toast('在线发音失败，请检查网络或改用本地语音')); return; }
+  const toLocal = (why)=>{
+    /* NotAllowedError 是浏览器自动播放策略（无用户手势），不是音源坏了，不该封禁在线 5 分钟 */
+    const noGesture = why === 'NotAllowedError';
+    const first = !_onlineDisabled;
+    if(eng!=='online' && !noGesture){
+      _onlineDisabled = true;
+      setTimeout(()=>{ _onlineDisabled = false; }, 5*60*1000);
+    }
+    if(hasLocalTTS()){
+      if(eng==='online') toast('在线音源没有这条音频，已改用本地语音');
+      else if(first && !noGesture) toast('在线发音不可用，已切换本地语音');
+      speakLocal(text, (e)=>toast('本地语音也失败了'+(e?('（'+e+'）'):'')+'，可在设置里检查音色'));
+    }else{
+      toast(noGesture ? '浏览器拦截了自动播放，点一下页面再试' : ('在线发音失败，且当前浏览器不支持本地语音'+(why?('（'+why+'）'):'')));
+    }
+  };
+  /* 整句：在线音源必然失败，直接用本地，不打扰用户 */
+  if(eng!=='local' && isSentenceLike(text) && hasLocalTTS()){
+    speakLocal(text, (e)=>toast('本地发音失败'+(e?('（'+e+'）'):'')+'，可在设置里检查音色'));
+    return;
+  }
+  if(eng==='local'){
+    speakLocal(text, (e)=>toast('本地发音失败'+(e?('（'+e+'）'):'')+'，可在设置里改用在线发音'));
+    return;
+  }
+  if(eng==='online'){ speakOnline(text, toLocal); return; }
   if(_onlineDisabled){ speakLocal(text); return; }
-  speakOnline(text, ()=>{
-    _onlineDisabled = true;
-    setTimeout(()=>{ _onlineDisabled=false; }, 5*60*1000);
-    speakLocal(text);
-  });
+  speakOnline(text, toLocal);
 }
 function speakEl(el){
   if(!el) return;
@@ -423,6 +511,29 @@ function speakEl(el){
   speak(el.getAttribute('data-say'));
 }
 function previewVoice(){ speak('Bill of Lading'); }
+/* 发音自检：分别测本地音色与在线音源，把结果直接写在设置页 */
+function diagnoseAudio(){
+  const box = document.getElementById('audioDiag');
+  const lines = [];
+  lines.push('本地语音合成：' + (hasLocalTTS() ? '<b style="color:var(--green)">支持</b>' : '<b style="color:var(--red)">不支持</b>'));
+  if(hasLocalTTS()){
+    let vs = [];
+    try{ vs = speechSynthesis.getVoices()||[]; }catch(e){}
+    const en = vs.filter(v=>/^en/i.test(v.lang||''));
+    lines.push('英文音色：' + en.length + ' 个' + (en.length ? '（'+esc(en[0].name)+'）' : '（系统未安装英文语音包）'));
+  }
+  const base = lines.join('　·　');
+  const set = (extra)=>{ if(box) box.innerHTML = base + '　·　' + extra; };
+  set('在线音源：测试中…');
+  const reasons = {
+    timeout:'超时，网络或音源不可达', media:'音源返回错误，可能被网络拦截',
+    'no-audio':'浏览器不支持音频播放', 'NotAllowedError':'被浏览器自动播放策略拦截（先点一下页面再试）'
+  };
+  speakOnline('Bill of Lading',
+    (why)=>set('在线音源：<b style="color:var(--red)">失败</b>（'+(reasons[why]||why)+'）'),
+    ()=>set('在线音源：<b style="color:var(--green)">正常</b>')
+  );
+}
 
 /* ================= 悬停查词（内置常用词库 + 词库 + 在线兜底） =================
    格式：词条|音标|词性|中文释义   （含空格的词组会先整段匹配，如 Bill of Lading） */
@@ -2335,7 +2446,10 @@ function renderData(){
 
   <div class="card">
     <div class="card-head"><h3>发音设置</h3>
-      <button class="btn ghost sm" onclick="previewVoice()">试听 Bill of Lading</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn ghost sm" onclick="previewVoice()">试听 Bill of Lading</button>
+        <button class="btn ghost sm" onclick="diagnoseAudio()">发音自检</button>
+      </div>
     </div>
     <div class="card-body">
       <div class="setting-row">
@@ -2368,6 +2482,9 @@ function renderData(){
       <p style="font-size:12px;margin-top:6px;color:${localTTS?'var(--green)':'var(--orange)'}">
         ${localTTS?'当前浏览器支持本地语音合成，离线也能发音。':'当前浏览器未提供本地语音合成，建议切换到「在线发音」或用 Chrome / Edge 打开。'}
       </p>
+      <p class="muted" style="font-size:12px;margin-top:4px;line-height:1.8">
+        推荐保持「自动」：在线音源失败会自动改用本地语音，不会出现点了没声的情况。若在线偶尔失败，点右侧「发音自检」可看到具体原因。</p>
+      <div id="audioDiag" class="muted" style="font-size:12px;margin-top:10px;line-height:1.9"></div>
     </div>
   </div>
 
