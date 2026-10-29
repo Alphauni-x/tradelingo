@@ -184,6 +184,46 @@
   .grade-btn:active{transform:translateY(0);}
   .g-no{background:var(--red);} .g-mid{background:var(--orange);} .g-yes{background:var(--green);}
 
+  /* ===== 连读模式 ===== */
+  .listen-wrap{display:grid;grid-template-columns:minmax(0,1fr) 296px;gap:16px;align-items:start;}
+  .listen-main{display:flex;flex-direction:column;align-items:center;min-width:0;}
+  .listen-top{width:100%;max-width:660px;display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:12.5px;color:var(--muted);}
+  .listen-bar{flex:1;height:6px;border-radius:99px;background:#e8edf4;overflow:hidden;}
+  .listen-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--brand),#818cf8);transition:width .3s ease;}
+  .listen-card{width:100%;max-width:660px;min-height:298px;background:linear-gradient(168deg,#fff,#fcfdff);border:1px solid #e5eaf1;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:38px 34px;position:relative;box-shadow:0 4px 24px rgba(15,23,42,.06),0 1px 3px rgba(15,23,42,.04);}
+  .listen-term{font-size:38px;font-weight:700;color:var(--navy);letter-spacing:-.025em;line-height:1.22;word-break:break-word;}
+  .listen-phon{margin-top:10px;color:var(--faint);font-size:13.5px;font-variant-numeric:tabular-nums;}
+  .listen-zh{margin-top:18px;font-size:19px;color:var(--text);font-weight:600;letter-spacing:-.01em;line-height:1.6;}
+  .listen-zh.hide{filter:blur(6px);user-select:none;}
+  .listen-idx{position:absolute;top:16px;left:20px;font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums;}
+  .listen-ctrl{display:flex;align-items:center;gap:10px;margin-top:22px;flex-wrap:wrap;justify-content:center;}
+  .listen-play{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;padding:0 24px;border-radius:10px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:0 1px 3px rgba(79,70,229,.3);transition:.14s;min-width:106px;}
+  .listen-play:hover{background:var(--brand2);border-color:var(--brand2);}
+  .listen-play.ghost{background:#fff;color:var(--navy3);border-color:#dfe5ec;box-shadow:none;font-weight:500;}
+  .listen-play.ghost:hover{background:var(--line2);color:var(--navy);}
+  .listen-opts{width:100%;max-width:660px;margin-top:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center;font-size:12.5px;color:var(--muted);}
+  .listen-opts label{display:flex;align-items:center;gap:6px;}
+  .listen-opts select{width:auto;min-width:78px;padding:5px 26px 5px 9px;font-size:12.5px;}
+  .listen-side{position:sticky;top:76px;}
+  .listen-side .card-head{padding:12px 16px;}
+  .listen-side .card-head h3{font-size:13px;}
+  .listen-list{max-height:430px;overflow-y:auto;}
+  .listen-item{display:flex;align-items:baseline;gap:8px;padding:7px 16px;font-size:13px;color:var(--navy3);cursor:pointer;border-left:2px solid transparent;transition:.12s;}
+  .listen-item:hover{background:var(--line2);}
+  .listen-item .n{font-size:10.5px;color:var(--faint);min-width:22px;font-variant-numeric:tabular-nums;text-align:right;flex:none;}
+  .listen-item .t{font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .listen-item.on{background:var(--brand-soft);border-left-color:var(--brand);color:var(--brand2);}
+  .listen-item.on .t{font-weight:600;}
+  .listen-item.done{color:var(--faint);}
+  .listen-item.done .n{font-size:0;}
+  .listen-item.done .n::after{content:"✓";font-size:11px;color:var(--green);}
+  @media(max-width:900px){
+    .listen-wrap{grid-template-columns:1fr;}
+    .listen-side{position:static;order:2;}
+    .listen-list{max-height:240px;}
+    .listen-term{font-size:31px;}
+  }
+
   /* ===== 句子 ===== */
   .sent-en{font-size:15px;color:var(--text);line-height:1.75;}
   .sent-zh{font-size:13px;color:var(--muted);line-height:1.75;margin-top:6px;transition:.2s;}
@@ -297,7 +337,7 @@
       <button class="nav-item" data-view="quiz" onclick="switchView('quiz')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span><span class="txt">测验中心</span></button>
       <button class="nav-item" data-view="data" onclick="switchView('data')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span><span class="txt">数据管理</span></button>
     </nav>
-    <div class="side-footer">v2.2 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
+    <div class="side-footer">v2.3 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
   </aside>
 
   <div class="main">
@@ -391,7 +431,7 @@ function pickVoice(lang){
       || vs.find(v=>norm(v.lang).startsWith(lang.slice(0,2)))
       || null;
 }
-function speakLocal(text, onFail){
+function speakLocal(text, onFail, onEnd){
   if(!hasLocalTTS()){ if(onFail) onFail('unsupported'); return; }
   try{
     const u = new SpeechSynthesisUtterance(text);
@@ -406,6 +446,7 @@ function speakLocal(text, onFail){
       if(k==='canceled' || k==='interrupted') return;   /* 我们自己打断的，不算失败 */
       if(onFail) onFail(k || 'error');
     };
+    u.onend = ()=>{ if(fired) return; fired = true; if(onEnd) onEnd(); };
     try{ speechSynthesis.cancel(); }catch(e){}
     try{ speechSynthesis.resume(); }catch(e){}           /* Chrome 长时间闲置后会挂起 */
     speechSynthesis.speak(u);
@@ -419,8 +460,8 @@ function isSentenceLike(text){
   const words = t.split(/\s+/).filter(Boolean);
   return words.length > 3 || t.length > 34 || /[.!?;:。！？；]/.test(t);
 }
-/* 单次在线播放尝试（传完整 URL，便于不同音源复用） */
-function playUrl(url, onOk, onFail){
+/* 单次在线播放尝试（传完整 URL，便于不同音源复用）。onEnd 在真正播完时触发 */
+function playUrl(url, onOk, onFail, onEnd){
   const seq = ++_speakSeq;
   let done = false;
   const finish = (ok, why)=>{
@@ -436,6 +477,7 @@ function playUrl(url, onOk, onFail){
     /* 只有真正开始播放才算成功：oncanplay 之后仍可能被自动播放策略拦下 */
     _audioEl.onplaying = ()=>finish(true);
     _audioEl.onerror   = ()=>finish(false,'media');
+    _audioEl.onended   = ()=>{ if(seq!==_speakSeq) return; if(onEnd) onEnd(); };
     _audioEl.src = url;
     clearTimeout(_onlineTimer);
     _onlineTimer = setTimeout(()=>finish(false,'timeout'), 4000);
@@ -458,23 +500,28 @@ function baiduUrl(text){
 function hardFail(why){ return why==='timeout' || why==='no-audio' || why==='NotAllowedError'; }
 /* 在线：有道主口音 → 有道另一口音 → 百度 TTS
    整句只有百度支持，跳过有道可直接省两次失败请求 */
-function speakOnline(text, onFail, onOk){
+function speakOnline(text, onFail, onOk, onEnd){
   const primary = DB.settings.accent==='uk' ? 1 : 2;
   const alt = primary===1 ? 2 : 1;
-  if(isSentenceLike(text)){ playUrl(baiduUrl(text), onOk, onFail); return; }
+  if(isSentenceLike(text)){ playUrl(baiduUrl(text), onOk, onFail, onEnd); return; }
   playUrl(youdaoUrl(text, primary), onOk, (why)=>{
     if(hardFail(why)){ if(onFail) onFail(why); return; }
     playUrl(youdaoUrl(text, alt), onOk, (why2)=>{
       if(hardFail(why2)){ if(onFail) onFail(why2); return; }
-      playUrl(baiduUrl(text), onOk, onFail);
-    });
-  });
+      playUrl(baiduUrl(text), onOk, onFail, onEnd);
+    }, onEnd);
+  }, onEnd);
 }
-/* 主入口：任何情况都要给声音或给原因，不能静默没声 */
-function speak(text){
-  if(!text) return;
+/* 主入口：任何情况都要给声音或给原因，不能静默没声
+   onDone(ok) 在「播完」或「确实没声」时回调一次，用于连读自动进入下一个 */
+function speak(text, onDone, opts){
+  if(!text){ if(onDone) onDone(false); return; }
   text = String(text).trim();
-  if(!text) return;
+  if(!text){ if(onDone) onDone(false); return; }
+  const silent = !!(opts && opts.silent);
+  const say = (msg)=>{ if(!silent) toast(msg); };
+  let settled = false;
+  const done = (ok)=>{ if(settled) return; settled = true; if(onDone) onDone(ok); };
   const eng = DB.settings.engine;
   const toLocal = (why)=>{
     /* NotAllowedError 是浏览器自动播放策略（无用户手势），不是音源坏了，不该封禁在线 5 分钟 */
@@ -485,25 +532,31 @@ function speak(text){
       setTimeout(()=>{ _onlineDisabled = false; }, 5*60*1000);
     }
     if(hasLocalTTS()){
-      if(eng==='online') toast('在线音源没有这条音频，已改用本地语音');
-      else if(first && !noGesture) toast('在线发音不可用，已切换本地语音');
-      speakLocal(text, (e)=>toast('本地语音也失败了'+(e?('（'+e+'）'):'')+'，可在设置里检查音色'));
+      if(eng==='online') say('在线音源没有这条音频，已改用本地语音');
+      else if(first && !noGesture) say('在线发音不可用，已切换本地语音');
+      speakLocal(text,
+        (e)=>{ say('本地语音也失败了'+(e?('（'+e+'）'):'')+'，可在设置里检查音色'); done(false); },
+        ()=>done(true));
     }else{
-      toast(noGesture ? '浏览器拦截了自动播放，点一下页面再试' : ('在线发音失败，且当前浏览器不支持本地语音'+(why?('（'+why+'）'):'')));
+      say(noGesture ? '浏览器拦截了自动播放，点一下页面再试' : ('在线发音失败，且当前浏览器不支持本地语音'+(why?('（'+why+'）'):'')));
+      done(false);
     }
   };
   /* 整句：在线音源必然失败，直接用本地，不打扰用户 */
   if(eng!=='local' && isSentenceLike(text) && hasLocalTTS()){
-    speakLocal(text, (e)=>toast('本地发音失败'+(e?('（'+e+'）'):'')+'，可在设置里检查音色'));
+    speakLocal(text, (e)=>{ say('本地发音失败'+(e?('（'+e+'）'):'')+'，可在设置里检查音色'); done(false); }, ()=>done(true));
     return;
   }
   if(eng==='local'){
-    speakLocal(text, (e)=>toast('本地发音失败'+(e?('（'+e+'）'):'')+'，可在设置里改用在线发音'));
+    speakLocal(text, (e)=>{ say('本地发音失败'+(e?('（'+e+'）'):'')+'，可在设置里改用在线发音'); done(false); }, ()=>done(true));
     return;
   }
-  if(eng==='online'){ speakOnline(text, toLocal); return; }
-  if(_onlineDisabled){ speakLocal(text); return; }
-  speakOnline(text, toLocal);
+  if(eng==='online'){ speakOnline(text, toLocal, null, ()=>done(true)); return; }
+  if(_onlineDisabled){
+    speakLocal(text, ()=>done(false), ()=>done(true));
+    return;
+  }
+  speakOnline(text, toLocal, null, ()=>done(true));
 }
 function speakEl(el){
   if(!el) return;
@@ -1480,6 +1533,7 @@ function lowWords(n){ return [...DB.words].sort((a,b)=>(a.level-b.level)||(a.wro
 const TITLES = {dashboard:'学习总览', words:'单词学习', sentences:'句子学习', quiz:'测验中心', data:'数据管理'};
 let currentView = 'dashboard';
 function switchView(v){
+  if(v!=='words' && listen) stopListen(true);
   currentView = v;
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active', b.getAttribute('data-view')===v));
   document.getElementById('viewTitle').textContent = TITLES[v];
@@ -1699,6 +1753,7 @@ function renderWords(){
       <div style="margin-top:16px"><button class="btn" onclick="switchView('data')">前往导入</button></div></div></div></div>`;
     return;
   }
+  if(wordFilter.mode==='listen' && listen){ renderListen(); return; }
   if(wordFilter.mode==='flash' && flash){ renderFlash(); return; }
   const tags = ['全部', ...uniq(DB.words.flatMap(w=>w.tags))];
   const all = filteredWords();
@@ -1739,6 +1794,7 @@ function renderWords(){
     <span class="muted" style="font-size:12px">共 ${all.length} 条</span>
     <span style="flex:1"></span>
     <button class="btn ghost" onclick="exportFilteredWords()">导出当前列表</button>
+    <button class="btn ghost" onclick="startListen()">🎧 连读 ${all.length} 词</button>
     <button class="btn gold" onclick="startFlash()">卡片记忆</button>
     <button class="btn ghost" onclick="startDictation()">听写模式</button>
   </div>
@@ -1932,6 +1988,7 @@ function autoSpeakAfter(w){ if(DB.settings.autoSpeak) setTimeout(()=>speak(w.ter
 function startFlash(){
   const pool = lowWords(20);
   if(pool.length===0){ toast('词库为空，请先导入数据'); return; }
+  stopListen(true);
   flash = { list:pool, idx:0, showZh:false, title:'卡片记忆', review:false };
   wordFilter.mode='flash';
   switchView('words');
@@ -1940,6 +1997,7 @@ function startReview(){
   const due = dueWords();
   const pool = due.length ? due : lowWords(15);
   if(pool.length===0){ toast('词库为空，请先导入数据'); return; }
+  stopListen(true);
   flash = { list:pickN(pool, Math.min(pool.length, 30)), idx:0, showZh:false,
             title: due.length ? ('到期复习 · '+due.length+' 个单词') : '巩固练习（暂无到期单词）' };
   wordFilter.mode='flash';
@@ -2002,6 +2060,181 @@ function gradeCard(v){
   saveDB(); updateTop();
   flash.idx++; flash.showZh=false;
   renderFlash();
+}
+
+/* ================= 连读模式：把当前词表顺序听一遍 ================= */
+let listen = null;
+
+function listenGap(){ const n = Number(DB.settings.listenGap); return (n>=0 && DB.settings.listenGap!=null) ? n : 1200; }
+function listenRepeat(){ const n = Number(DB.settings.listenRepeat); return (n>=1 && n<=3) ? n : 1; }
+function listenShowZh(){ return DB.settings.listenShowZh !== false; }
+
+function stopAudio(){
+  try{ speechSynthesis.cancel(); }catch(e){}
+  if(_audioEl){ try{ _audioEl.pause(); }catch(e){} }
+}
+
+function startListen(){
+  const list = filteredWords().slice();   /* 当前筛选结果全部，不受分页限制 */
+  if(!list.length){ toast('当前筛选结果为空，换个筛选条件再试'); return; }
+  stopListen(true);
+  listen = { list, idx:0, paused:false, finished:false, token:0, timer:null, watch:null };
+  wordFilter.mode = 'listen';
+  switchView('words');        /* 同一次点击里渲染并开口，保住用户手势，不被自动播放策略拦 */
+  playListen();
+}
+
+function playListen(){
+  const l = listen;
+  if(!l || l.paused) return;
+  const w = l.list[l.idx];
+  if(!w){ l.finished = true; renderListen(); return; }
+  const token = ++l.token;
+  clearTimeout(l.timer); clearTimeout(l.watch);
+  const still = ()=> listen===l && l.token===token && !l.paused;
+  const advance = ()=>{
+    clearTimeout(l.timer); clearTimeout(l.watch);
+    if(listen!==l || l.token!==token) return;
+    if(l.idx < l.list.length-1){
+      l.idx++; renderListen(); playListen();
+    }else{
+      l.finished = true; l.paused = true; renderListen();
+    }
+  };
+  /* 兜底看门狗：万一某个音色既没 onend 也没 onerror，也不让整轮卡死 */
+  l.watch = setTimeout(advance, Math.max(6000, String(w.term).length*520));
+  let round = 0;
+  const speakOnce = ()=>{
+    if(!still()) return;
+    round++;
+    speak(w.term, ()=>{
+      if(!still()) return;
+      if(round < listenRepeat()){ setTimeout(speakOnce, 300); return; }
+      clearTimeout(l.watch);
+      l.timer = setTimeout(advance, listenGap());
+    }, { silent:true });
+  };
+  speakOnce();
+  renderListen();
+}
+
+function listenToggle(){
+  const l = listen; if(!l) return;
+  if(l.finished){ l.finished=false; l.idx=0; l.paused=false; renderListen(); playListen(); return; }
+  if(l.paused){ l.paused=false; renderListen(); playListen(); return; }
+  l.paused = true; l.token++;
+  clearTimeout(l.timer); clearTimeout(l.watch);
+  stopAudio();
+  renderListen();
+}
+function listenStep(d){
+  const l = listen; if(!l) return;
+  l.idx = Math.max(0, Math.min(l.list.length-1, l.idx+d));
+  l.finished = false; l.paused = false;
+  renderListen(); playListen();
+}
+function listenJump(i){
+  const l = listen; if(!l) return;
+  l.idx = Math.max(0, Math.min(l.list.length-1, i));
+  l.finished = false; l.paused = false;
+  renderListen(); playListen();
+}
+function listenReplay(){
+  const l = listen; if(!l || l.finished) return;
+  l.paused = false; playListen();
+}
+function setListenOpt(k, v){
+  DB.settings[k] = (v==='true'||v==='false') ? (v==='true') : (Number(v)||0);
+  saveDB();
+  renderListen();
+}
+function toggleListenZh(){
+  DB.settings.listenShowZh = !listenShowZh();
+  saveDB(); renderListen();
+}
+function stopListen(silent){
+  if(listen){ listen.token++; clearTimeout(listen.timer); clearTimeout(listen.watch); listen = null; }
+  stopAudio();
+  if(wordFilter.mode==='listen') wordFilter.mode = 'list';
+  if(!silent) renderWords();
+}
+
+function renderListen(){
+  const root = document.getElementById('viewRoot');
+  const l = listen;
+  if(!l){ wordFilter.mode='list'; renderWords(); return; }
+  const total = l.list.length;
+  const pos = l.finished ? total : Math.min(l.idx+1, total);
+  const pct = total ? Math.round(pos/total*100) : 0;
+  const zhOn = listenShowZh();
+  const cur = l.finished ? null : l.list[l.idx];
+
+  const top = `<div class="listen-top">
+    <span>连读 <b class="num">${pos}</b> / ${total}</span>
+    <div class="listen-bar"><i style="width:${pct}%"></i></div>
+    <span style="min-width:44px;text-align:right;color:${l.finished?'var(--green)':(l.paused?'var(--orange)':'var(--brand)')}">${l.finished?'已完成':(l.paused?'已暂停':'播放中')}</span>
+  </div>`;
+
+  const card = l.finished ? `<div class="listen-card">
+      <div style="font-size:38px;line-height:1">🎧</div>
+      <div class="listen-term" style="font-size:23px;margin-top:14px">这一轮听完了</div>
+      <div class="muted" style="margin-top:10px;font-size:13px">共 ${total} 个单词 · 每个 ${listenRepeat()} 遍</div>
+      <div class="listen-ctrl">
+        <button class="listen-play" onclick="listenToggle()">再听一遍</button>
+        <button class="listen-play ghost" onclick="stopListen()">返回列表</button>
+      </div>
+    </div>` : `<div class="listen-card">
+      <div class="listen-idx">${l.idx+1} / ${total}</div>
+      <div class="listen-term" onclick="listenReplay()" title="点单词重听" style="cursor:pointer">${esc(cur.term)}</div>
+      ${cur.phonetic?`<div class="listen-phon">${esc(cur.phonetic)}</div>`:''}
+      <div class="listen-zh ${zhOn?'':'hide'}">${esc(cur.translation)}</div>
+      <div class="listen-ctrl">
+        <button class="listen-play ghost" onclick="listenStep(-1)"${l.idx<=0?' disabled':''}>← 上一个</button>
+        <button class="listen-play" onclick="listenToggle()">${l.paused?'▶ 继续':'❚❚ 暂停'}</button>
+        <button class="listen-play ghost" onclick="listenStep(1)"${l.idx>=total-1?' disabled':''}>下一个 →</button>
+      </div>
+    </div>`;
+
+  const opts = l.finished ? '' : `<div class="listen-opts">
+    <label>间隔
+      <select onchange="setListenOpt('listenGap',this.value)">
+        ${[[600,'0.6 秒'],[1200,'1.2 秒'],[2000,'2 秒'],[3000,'3 秒']].map(p=>`<option value="${p[0]}"${listenGap()===p[0]?' selected':''}>${p[1]}</option>`).join('')}
+      </select>
+    </label>
+    <label>每词
+      <select onchange="setListenOpt('listenRepeat',this.value)">
+        ${[1,2,3].map(n=>`<option value="${n}"${listenRepeat()===n?' selected':''}>${n} 遍</option>`).join('')}
+      </select>
+    </label>
+    <label>语速
+      <select onchange="setListenOpt('rate',this.value)">
+        ${[0.7,0.8,0.9,1,1.1,1.3].map(r=>`<option value="${r}"${Number(DB.settings.rate)===r?' selected':''}>${r}x</option>`).join('')}
+      </select>
+    </label>
+    <label style="cursor:pointer"><input type="checkbox" ${zhOn?'checked':''} onchange="toggleListenZh()"> 显示中文</label>
+  </div>`;
+
+  const side = `<div class="listen-side"><div class="card" style="margin-bottom:0">
+    <div class="card-head">
+      <h3>本轮词表 · ${total} 词</h3>
+      <button class="btn ghost sm" onclick="stopListen()">退出连读</button>
+    </div>
+    <div class="listen-list" id="listenList">
+      ${l.list.map((w,i)=>`<div class="listen-item ${(!l.finished && i===l.idx)?'on':''} ${(i<l.idx||l.finished)?'done':''}" onclick="listenJump(${i})">
+        <span class="n">${i+1}</span><span class="t">${esc(w.term)}</span></div>`).join('')}
+    </div>
+  </div></div>`;
+
+  root.innerHTML = `<div class="listen-wrap">
+    <div class="listen-main">${top}${card}${opts}
+      ${l.finished ? '' : `<div class="muted" style="margin-top:14px;font-size:11px;text-align:center">
+        <span class="kbd">空格</span> 暂停 / 继续 · <span class="kbd">←</span> <span class="kbd">→</span> 上一个 / 下一个 · <span class="kbd">Esc</span> 退出
+      </div>`}
+    </div>
+    ${side}
+  </div>`;
+  const onItem = document.querySelector('#listenList .listen-item.on');
+  if(onItem && onItem.scrollIntoView) onItem.scrollIntoView({ block:'nearest' });
 }
 
 /* ================= 句子学习 ================= */
@@ -2140,6 +2373,7 @@ function startQuiz(){
 }
 function startDictation(){
   if(!DB.words.length){ toast('词库为空，请先导入单词'); return; }
+  stopListen(true);
   const n = Math.min(getCount(), DB.words.length);
   const words = quizPool(n);
   quiz = { qs: words.map(w=>({type:'dictation', w, hint:false})), idx:0, score:0, answered:false, mode:'dictation' };
@@ -2964,11 +3198,20 @@ const DEMO_DATA = {
 
 /* ================= 键盘快捷键 ================= */
 document.addEventListener('keydown', e=>{
-  if(e.key==='Escape'){ closeModal(); return; }
+  if(e.key==='Escape'){
+    if(listen && currentView==='words'){ stopListen(); return; }
+    closeModal(); return;
+  }
   if(document.getElementById('modalRoot').innerHTML) return;
   const tag = String((e.target && e.target.tagName) || '').toLowerCase();
   if(tag==='input' || tag==='textarea'){
     if(e.key==='Enter' && quiz && quiz.answered && currentView==='quiz'){ e.preventDefault(); nextQ(); }
+    return;
+  }
+  if(currentView==='words' && listen){
+    if(e.code==='Space'){ e.preventDefault(); listenToggle(); return; }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); listenStep(-1); return; }
+    if(e.key==='ArrowRight'){ e.preventDefault(); listenStep(1); return; }
     return;
   }
   if(currentView==='words' && flash){
