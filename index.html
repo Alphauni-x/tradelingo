@@ -249,6 +249,12 @@
   /* ===== 句子 ===== */
   .sent-en{font-size:15px;color:var(--text);line-height:1.75;}
   .sent-zh{font-size:13px;color:var(--muted);line-height:1.75;margin-top:6px;transition:.2s;}
+  .sent-meta{display:none;}
+  /* 窄窗口：场景与掌握度并到句子下方，把宽度让给正文 */
+  @media (max-width:1180px){
+    .col-scene,.col-smastery{display:none;}
+    .sent-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px;font-size:11px;color:var(--muted);}
+  }
   .scene-chip{display:inline-block;font-size:10.5px;background:#ecfdf5;color:#047857;border:1px solid #d1fae5;border-radius:5px;padding:1px 7px;font-weight:500;}
 
   /* ===== 测验 ===== */
@@ -366,7 +372,7 @@
       <button class="nav-item" data-view="quiz" onclick="switchView('quiz')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span><span class="txt">测验中心</span></button>
       <button class="nav-item" data-view="data" onclick="switchView('data')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span><span class="txt">数据管理</span></button>
     </nav>
-    <div class="side-footer">v2.5 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
+    <div class="side-footer">v2.6 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
   </aside>
 
   <div class="main">
@@ -407,7 +413,7 @@ function toast(msg){
 
 /* ================= 数据层 ================= */
 function emptyDB(){ return { words:[], sentences:[], imports:[], quizLog:[], studyLog:{}, trash:[], collections:[],
-  settings:{ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30, pageSize:20 } }; }
+  settings:{ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30, pageSize:20, sentPageSize:20 } }; }
 function loadDB(){
   try{ const raw = localStorage.getItem(STORE_KEY); if(!raw) return emptyDB();
     return Object.assign(emptyDB(), JSON.parse(raw));
@@ -417,7 +423,7 @@ function saveDB(){ invalidateDictIndex(); try{ localStorage.setItem(STORE_KEY, J
 let DB = loadDB();
 /* 兼容旧版本数据 */
 function migrate(){
-  DB.settings = Object.assign({ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30, pageSize:20 }, DB.settings||{});
+  DB.settings = Object.assign({ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30, pageSize:20, sentPageSize:20 }, DB.settings||{});
   if(!DB.studyLog) DB.studyLog = {};
   if(!Array.isArray(DB.trash)) DB.trash = [];
   if(!Array.isArray(DB.collections)) DB.collections = [];
@@ -970,6 +976,176 @@ teu|/ˌtiː iː ˈjuː/|abbr.|20 英尺标准箱
 hq|/ˌeɪtʃ ˈkjuː/|abbr.|高柜（40 英尺高箱）
 cy|/ˌsiː ˈwaɪ/|abbr.|集装箱堆场
 cfs|/ˌsiː ef ˈes/|abbr.|集装箱货运站
+/* ---- 通用高频词（补足句子里的日常用词，避免每次都联网） ---- */
+before|/bɪˈfɔː/|prep.|在…之前
+after|/ˈɑːftə/|prep.|在…之后
+during|/ˈdjʊərɪŋ/|prep.|在…期间
+within|/wɪˈðɪn/|prep.|在…之内
+without|/wɪˈðaʊt/|prep.|没有；不
+under|/ˈʌndə/|prep.|在…之下；根据
+upon|/əˈpɒn/|prep.|在…之后；一…就（upon receipt 收到后）
+against|/əˈɡenst/|prep.|以…为条件；凭；对抗
+beyond|/bɪˈjɒnd/|prep.|超出；除…之外
+onto|/ˈɒntə/|prep.|到…之上
+per|/pɜː/|prep.|每；按照（as per 按照）
+plus|/plʌs/|prep.|加上
+instead|/ɪnˈsted/|adv.|代替；反而（instead of 而不是）
+whether|/ˈweðə/|conj.|是否
+which|/wɪtʃ/|pron.|哪一个；（定语从句）…的
+once|/wʌns/|conj.|一旦；一次
+otherwise|/ˈʌðəwaɪz/|adv.|否则；另外
+since|/sɪns/|prep.|自从；因为
+like|/laɪk/|prep.|像；例如
+following|/ˈfɒləʊɪŋ/|adj.|下列的；以下的
+next|/nekst/|adj.|下一个的；紧接着的
+current|/ˈkʌrənt/|adj.|当前的；现行的
+currently|/ˈkʌrəntli/|adv.|目前；当前
+final|/ˈfaɪnl/|adj.|最终的
+overall|/ˌəʊvərˈɔːl/|adj.|总体的；全部的
+greater|/ˈɡreɪtə/|adj.|更大的（Greater China 大中华区）
+high|/haɪ/|adj.|高的
+long|/lɒŋ/|adj.|长的；长久的
+long-term|/ˌlɒŋ ˈtɜːm/|adj.|长期的
+short|/ʃɔːt/|adj.|短的；短缺的
+small|/smɔːl/|adj.|小的
+free|/friː/|adj.|免费的；自由的（free time 免费时间）
+due|/djuː/|adj.|到期的；应付的（due date 到期日）
+used|/juːzd/|adj.|使用的；二手的
+dangerous|/ˈdeɪndʒərəs/|adj.|危险的（dangerous goods 危险品）
+chargeable|/ˈtʃɑːdʒəbl/|adj.|应计费的；收费的
+adequate|/ˈædɪkwət/|adj.|足够的；适当的
+exactly|/ɪɡˈzæktli/|adv.|确切地；正好
+accurately|/ˈækjərətli/|adv.|准确地；精确地
+soon|/suːn/|adv.|不久；很快
+one|/wʌn/|num.|一
+two|/tuː/|num.|二
+three|/θriː/|num.|三
+four|/fɔː/|num.|四
+five|/faɪv/|num.|五
+six|/sɪks/|num.|六
+seven|/ˈsevn/|num.|七
+eight|/eɪt/|num.|八
+nine|/naɪn/|num.|九
+ten|/ten/|num.|十
+day|/deɪ/|n.|天；日期
+week|/wiːk/|n.|周；星期
+month|/mʌnθ/|n.|月
+year|/jɪə/|n.|年
+morning|/ˈmɔːnɪŋ/|n.|上午
+today|/təˈdeɪ/|adv.|今天
+tomorrow|/təˈmɒrəʊ/|adv.|明天
+wednesday|/ˈwenzdeɪ/|n.|星期三
+november|/nəʊˈvembə/|n.|十一月
+december|/dɪˈsembə/|n.|十二月
+need|/niːd/|v.|需要
+send|/send/|v.|发送；寄送
+include|/ɪnˈkluːd/|v.|包括
+found|/faʊnd/|v.|发现（find 的过去式）；建立
+match|/mætʃ/|v.|匹配；与…相符
+prevent|/prɪˈvent/|v.|阻止；避免
+support|/səˈpɔːt/|v.|支持；协助
+update|/ˌʌpˈdeɪt/|v.|更新；最新情况
+investigate|/ɪnˈvestɪɡeɪt/|v.|调查；核查
+calculate|/ˈkælkjuleɪt/|v.|计算
+cause|/kɔːz/|v.|导致；原因
+revert|/rɪˈvɜːt/|v.|回复；答复（revert to 回复）
+notify|/ˈnəʊtɪfaɪ/|v.|通知
+acknowledge|/əkˈnɒlɪdʒ/|v.|确认；告知收到
+report|/rɪˈpɔːt/|v.|报告；汇报
+list|/lɪst/|n.|清单；列表
+number|/ˈnʌmbə/|n.|号码；数量
+code|/kəʊd/|n.|编码；代码
+status|/ˈsteɪtəs/|n.|状态；情况
+location|/ləʊˈkeɪʃn/|n.|位置；地点
+way|/weɪ/|n.|方式；路线
+party|/ˈpɑːti/|n.|当事人；方（notify party 通知方）
+partner|/ˈpɑːtnə/|n.|合作伙伴
+factory|/ˈfæktri/|n.|工厂
+depot|/ˈdepəʊ/|n.|仓库；场站；堆场
+terminal|/ˈtɜːmɪnl/|n.|码头；场站；航站楼
+flight|/flaɪt/|n.|航班；空运航次
+ocean|/ˈəʊʃn/|n.|海洋（ocean freight 海运费）
+trade|/treɪd/|n.|贸易
+transit|/ˈtrænzɪt/|n.|运输；过境（transit time 运输时间）
+treatment|/ˈtriːtmənt/|n.|处理；待遇
+trucking|/ˈtrʌkɪŋ/|n.|卡车运输
+pickup|/ˈpɪkʌp/|n.|提货；上门提货
+instruction|/ɪnˈstrʌkʃn/|n.|指示；说明
+photo|/ˈfəʊtəʊ/|n.|照片
+telex|/ˈteleks/|n.|电传
+cut-off|/ˈkʌt ɒf/|n.|截止（时间）
+beach|/biːtʃ/|n.|海滩（Long Beach 长滩港）
+foot|/fʊt/|n.|英尺；脚
+cube|/kjuːb/|n.|立方体；立方
+marks|/mɑːks/|n.|唛头；标记（shipping marks 运输标志）
+sailing|/ˈseɪlɪŋ/|n.|航行；船期（sailing date 开航日）
+lading|/ˈleɪdɪŋ/|n.|装载（bill of lading 提单）
+readiness|/ˈredinəs/|n.|准备就绪（cargo readiness date 备货完成日）
+shifting|/ˈʃɪftɪŋ/|n.|倒箱；翻舱
+advance|/ədˈvɑːns/|n.|提前；预付（in advance 提前）
+air|/eə/|n.|空运；航空（by air 空运）
+based|/beɪst/|adj.|位于…的；以…为基础（based on 根据）
+bonded|/ˈbɒndɪd/|adj.|保税的（bonded warehouse 保税仓）
+commercial|/kəˈmɜːʃl/|adj.|商业的
+constraints|/kənˈstreɪnts/|n.|限制；约束条件
+scheduled|/ˈʃedjuːld/|adj.|计划好的；预定的
+selected|/sɪˈlektɪd/|adj.|选定的
+paid|/peɪd/|adj.|已付的；付讫
+preferential|/ˌprefəˈrenʃl/|adj.|优惠的（preferential tariff 优惠关税）
+volumetric|/ˌvɒljʊˈmetrɪk/|adj.|体积的（volumetric weight 体积重）
+inland|/ˈɪnlænd/|adj.|内陆的（inland transport 内陆运输）
+couriered|/ˈkʊriəd/|v.|快递寄送
+picked|/pɪkt/|v.|提货；挑选（picked up 提货）
+lodged|/lɒdʒd/|v.|提交；提出（lodge a claim 提出索赔）
+rolled|/rəʊld/|v.|被甩柜；滚动（rolled cargo 甩柜货）
+contain|/kənˈteɪn/|v.|包含；容纳
+arrive|/əˈraɪv/|v.|到达
+depart|/dɪˈpɑːt/|v.|出发；离港
+deliver|/dɪˈlɪvə/|v.|交付；送货
+confirm|/kənˈfɜːm/|v.|确认
+attach|/əˈtætʃ/|v.|附上（please find attached 请查收附件）
+enclose|/ɪnˈkləʊz/|v.|随函附上
+kindly|/ˈkaɪndli/|adv.|请；烦请（函电礼貌用语）
+sure|/ʃʊə/|adj.|确定的（make sure 确认）
+usd|/ˌjuː es ˈdiː/|abbr.|美元
+cy-cy|/ˌsiː ˈwaɪ/|abbr.|集装箱堆场到堆场
+cfs-cfs|/ˌsiː ef ˈes/|abbr.|集装箱货运站到货运站
+short-landed|/ˌʃɔːt ˈlændɪd/|adj.|短卸的（卸货时数量短少）
+ningbo|/ˈnɪŋˈbɔː/|n.|宁波（港口）
+shanghai|/ˌʃæŋˈhaɪ/|n.|上海（港口）
+singapore|/ˌsɪŋəˈpɔː/|n.|新加坡（港口）
+rotterdam|/ˈrɒtədæm/|n.|鹿特丹（港口）
+hamburg|/ˈhæmbɜːɡ/|n.|汉堡（港口）
+antwerp|/ˈæntwɜːp/|n.|安特卫普（港口）
+los angeles|/lɒs ˈændʒələs/|n.|洛杉矶（港口）
+long beach|/lɒŋ biːtʃ/|n.|长滩（港口）
+new york|/njuː jɔːk/|n.|纽约（港口）
+felixstowe|/ˈfiːlɪkstəʊ/|n.|费利克斯托（港口）
+await|/əˈweɪt/|v.|等待；等候
+clearance|/ˈklɪərəns/|n.|清关；结关；报关放行
+declaration|/ˌdekləˈreɪʃn/|n.|申报；报关（customs declaration 报关单）
+departure|/dɪˈpɑːtʃə/|n.|出发；离港
+destination|/ˌdestɪˈneɪʃn/|n.|目的地；目的港
+documentation|/ˌdɒkjumenˈteɪʃn/|n.|单证；文件资料
+origin|/ˈɒrɪdʒɪn/|n.|原产地；起运地
+arrival|/əˈraɪvl/|n.|到达（arrival notice 到货通知）
+delivery|/dɪˈlɪvəri/|n.|交付；交货
+shipment|/ˈʃɪpmənt/|n.|装运；货物（一批货）
+consignment|/kənˈsaɪnmənt/|n.|托运的货物；一批货
+commodity|/kəˈmɒdəti/|n.|商品；货物
+packing|/ˈpækɪŋ/|n.|包装
+quantity|/ˈkwɒntəti/|n.|数量
+quality|/ˈkwɒləti/|n.|质量
+price|/praɪs/|n.|价格
+order|/ˈɔːdə/|n.|订单；订购
+sample|/ˈsɑːmpl/|n.|样品
+weight|/weɪt/|n.|重量
+volume|/ˈvɒljuːm/|n.|体积；量
+route|/ruːt/|n.|路线；航线
+schedule|/ˈʃedjuːl/|n.|时间表；船期
+delay|/dɪˈleɪ/|n.|延误；延迟
+risk|/rɪsk/|n.|风险
+claim|/kleɪm/|n.|索赔；声称
 `;
 const COMMON_DICT = {};
 COMMON_RAW.split('\n').forEach(line=>{
@@ -1000,7 +1176,10 @@ function dictIndex(){
   const m = Object.assign({}, COMMON_DICT);
   DB.words.forEach(w=>{
     const k = String(w.term||'').toLowerCase().trim(); if(!k) return;
-    m[k] = { term:w.term, phonetic:w.phonetic||'', pos:w.pos||'', zh:w.translation||'', def:w.definition||'', from:'db' };
+    /* 词库里字段留空时沿用内置词表的值，避免把已有的中文覆盖成空 */
+    const base = m[k] || {};
+    m[k] = { term:w.term, phonetic:w.phonetic||base.phonetic||'', pos:w.pos||base.pos||'',
+             zh:w.translation||base.zh||'', def:w.definition||base.def||'', from:'db' };
   });
   _dictIdx = m; return m;
 }
@@ -1050,8 +1229,72 @@ function enHTML(text){
 /* 在线词典兜底（结果缓存到本机，两次失败后 5 分钟内不再请求） */
 const DICT_CACHE_KEY = 'tradelingo_dict_v1';
 let dictCache = {}; try{ dictCache = JSON.parse(localStorage.getItem(DICT_CACHE_KEY)||'{}')||{}; }catch(e){ dictCache = {}; }
-let _dictSeq = 0, _dictFail = 0, _dictBlockUntil = 0;
-function saveDictCache(){ try{ localStorage.setItem(DICT_CACHE_KEY, JSON.stringify(dictCache)); }catch(e){} }
+let _dictFail = 0, _dictBlockUntil = 0;
+const _dictInflight = {};   /* 同一个词并发只发一次请求 */
+let _dictSaveTimer = null;
+function saveDictCache(){
+  /* 写盘合并，避免每查一个词就序列化整个缓存 */
+  clearTimeout(_dictSaveTimer);
+  _dictSaveTimer = setTimeout(()=>{ try{ localStorage.setItem(DICT_CACHE_KEY, JSON.stringify(dictCache)); }catch(e){} }, 600);
+}
+/* 机翻结果里没有汉字、或原样返回英文，都等于没查到中文 */
+function cleanZh(raw, key){
+  let s = String(raw==null?'':raw);
+  s = s.replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+  if(!s) return '';
+  const pm = s.match(/^(n|vt|vi|v|adj|adv|prep|conj|pron|num|art|abbr|int)\.[\s、,]*/i);
+  let pos = pm ? pm[1].toLowerCase() : '';
+  if(pm) s = s.slice(pm[0].length).trim();
+  if(!/[\u4e00-\u9fa5]/.test(s)) return '';          /* 没有汉字 → 无效 */
+  if(s.toLowerCase() === String(key||'').toLowerCase()) return '';
+  return { zh:s, pos };
+}
+function lookupOnline(word, cb){
+  const key = String(word==null?'':word).toLowerCase().trim();
+  if(!key){ cb(null); return; }
+  if(dictCache[key]){ cb(dictCache[key]); return; }
+  if(!DB.settings.onlineDict || Date.now() < _dictBlockUntil || typeof fetch!=='function'){ cb(null); return; }
+  /* 排队：同一词正在查询时，直接挂在这个请求上 */
+  if(_dictInflight[key]){ _dictInflight[key].push(cb); return; }
+  const waiters = _dictInflight[key] = [cb];
+  const done = (res)=>{
+    const list = _dictInflight[key] || [];
+    delete _dictInflight[key];
+    list.forEach(fn=>{ try{ fn(res); }catch(e){} });
+  };
+  const out = { term: word, from:'online' };
+  let networkDown = false;
+  Promise.all([
+    fetchJSON('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(key)),
+    fetchJSON('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(key) + '&langpair=en|zh-CN')
+  ]).then(([d1,d2])=>{
+    networkDown = !d1 && !d2;                         /* 两个源都没回数据才算网络问题 */
+    try{
+      if(Array.isArray(d1) && d1[0]){
+        const o = d1[0];
+        out.phonetic = o.phonetic || ((o.phonetics||[]).map(p=>p.text).filter(Boolean)[0] || '');
+        const m = (o.meanings||[])[0];
+        if(m){ out.pos = m.partOfSpeech || ''; out.def = (m.definitions||[]).map(x=>x.definition).filter(Boolean).slice(0,2).join('；'); }
+      }
+      const zhRaw = d2 && d2.responseData && d2.responseData.translatedText;
+      if(zhRaw && (!d2.responseStatus || d2.responseStatus === 200)){
+        const c = cleanZh(zhRaw, key);
+        if(c){ out.zh = c.zh; if(c.pos) out.pos = out.pos || c.pos; }
+      }
+    }catch(e){}
+    if(!out.zh && !out.def){
+      /* 只有网络级连续失败才短暂降级，单个词查不到不封全局 */
+      if(networkDown){ _dictFail++; if(_dictFail>=4) _dictBlockUntil = Date.now() + 30*1000; }
+      else _dictFail = 0;
+      done(null); return;
+    }
+    _dictFail = 0;
+    dictCache[key] = out; saveDictCache(); done(out);
+  }).catch(()=>{
+    _dictFail++; if(_dictFail>=4) _dictBlockUntil = Date.now() + 30*1000;
+    done(null);
+  });
+}
 function fetchJSON(url, ms){
   return new Promise(resolve=>{
     if(typeof fetch!=='function'){ resolve(null); return; }
@@ -1060,36 +1303,6 @@ function fetchJSON(url, ms){
     fetch(url, ctl?{ signal:ctl.signal } : undefined)
       .then(r=> r && r.ok ? r.json() : null).catch(()=>null).then(j=>{ clearTimeout(timer); resolve(j||null); });
   });
-}
-function lookupOnline(word, cb){
-  const key = String(word==null?'':word).toLowerCase().trim();
-  if(!key){ cb(null); return; }
-  if(dictCache[key]){ cb(dictCache[key]); return; }
-  if(!DB.settings.onlineDict || Date.now() < _dictBlockUntil || typeof fetch!=='function'){ cb(null); return; }
-  const seq = ++_dictSeq, out = { term: word, from:'online' };
-  Promise.all([
-    fetchJSON('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(key)),
-    fetchJSON('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(key) + '&langpair=en|zh-CN')
-  ]).then(([d1,d2])=>{
-    if(seq !== _dictSeq) return;
-    try{
-      if(Array.isArray(d1) && d1[0]){
-        const o = d1[0];
-        out.phonetic = o.phonetic || ((o.phonetics||[]).map(p=>p.text).filter(Boolean)[0] || '');
-        const m = (o.meanings||[])[0];
-        if(m){ out.pos = m.partOfSpeech || ''; out.def = (m.definitions||[]).map(x=>x.definition).filter(Boolean).slice(0,2).join('；'); }
-      }
-      let zh = d2 && d2.responseData && d2.responseData.translatedText;
-      if(zh && d2.responseStatus === 200){
-        zh = String(zh).replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
-        const pm = zh.match(/^(n|vt|vi|v|adj|adv|prep|conj|pron|num|art|abbr|int)\.[\s、,]*/i);
-        if(pm){ out.pos = out.pos || pm[1].toLowerCase(); zh = zh.slice(pm[0].length); }
-        if(zh && zh.toLowerCase() !== key) out.zh = zh;
-      }
-    }catch(e){}
-    if(!out.zh && !out.def){ _dictFail++; if(_dictFail>=2) _dictBlockUntil = Date.now()+5*60000; cb(null); return; }
-    _dictFail = 0; dictCache[key] = out; saveDictCache(); cb(out);
-  }).catch(()=>cb(null));
 }
 /* ---- 悬停词义卡片 ---- */
 let _popTimer = null, _popWord = '', _popEntry = null;
@@ -1151,14 +1364,15 @@ function renderDictPop(e){
       <button class="icon-btn" data-say="${esc(term)}" onclick="speakEl(this)" title="朗读"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7 6.6 8.3H3.4v7.4h3.2L11 19.3z"/><path d="M15.6 8.6a4.8 4.8 0 0 1 0 6.8"/><path d="M18.6 5.6a9 9 0 0 1 0 12.8"/></svg></button></div>
     ${e.phonetic?`<div class="dp">${esc(e.phonetic)}</div>`:''}
     ${e.lemma?`<div class="dn" style="margin-top:2px">词形还原 → <b>${esc(e.lemma)}</b></div>`:''}
-    <div class="dm">${e.zh?esc(e.zh):'<span class="muted" style="font-weight:400">暂未收录释义</span>'}</div>
+    <div class="dm">${e.zh?esc(e.zh):'<span class="muted" style="font-weight:400">'+(e.def?'暂无中文释义':'未查到这个词')+'</span>'}</div>
     ${e.def?`<div class="dn">${esc(e.def)}</div>`:''}
     <div class="dmeta">
       <span class="src">${srcLabel}</span>
       ${e.pos?`<span>${esc(e.pos)}</span>`:''}
       ${inLib?'<span class="dok">✓ 已在词库</span>':'<button class="dadd" onclick="addPopEntryToLib()">＋ 加入词库</button>'}
     </div>
-    ${e.from==='miss'?'<div class="dn">未收录该词，可开启「在线查词」或先加入词库后补全释义。</div>':''}
+    ${e.from==='miss'?'<div class="dn">在线词典也没查到，点上方词条可手动补释义，或先加入词库。</div>':''}
+    ${(!e.zh && e.from!=='miss')?'<div class="dn">这个词只有英文释义，点词条可补中文。</div>':''}
     <div class="dhint">点击单词可查看详情</div>`;
   el.style.display = 'block';
 }
@@ -1215,11 +1429,20 @@ function addPopEntryToLib(fromModal){
 }
 function toggleHoverDict(){ DB.settings.hoverDict = !DB.settings.hoverDict; saveDB(); hideDictPop(); render(); }
 /* 事件委托：页面任何 .hiword 都可悬停查词 */
+let _hoverTimer = null;
 document.addEventListener('mouseover', e=>{
   if(!DB.settings.hoverDict) return;
   const t = e.target;
   const word = t && t.closest ? t.closest('.hiword') : null;
-  if(word){ showDictPop(word.getAttribute('data-w'), e); return; }
+  if(word){
+    const w = word.getAttribute('data-w');
+    clearTimeout(_hoverTimer);
+    /* 本地词库命中立即显示；需要联网的等 200ms，避免鼠标扫过整句时连发几十个请求 */
+    if(lookupLocal(w)) showDictPop(w, e);
+    else _hoverTimer = setTimeout(()=>showDictPop(w, e), 200);
+    return;
+  }
+  clearTimeout(_hoverTimer);
   const pop = document.getElementById('dictPop');
   if(pop && pop.style.display === 'block'){
     if(pop.contains(t)) clearTimeout(_popTimer);   /* 鼠标在卡片上：保持展开 */
@@ -1228,7 +1451,7 @@ document.addEventListener('mouseover', e=>{
 });
 document.addEventListener('mouseout', e=>{
   const t = e.target;
-  if(t && t.closest && t.closest('.hiword')) scheduleHidePop();
+  if(t && t.closest && t.closest('.hiword')){ clearTimeout(_hoverTimer); scheduleHidePop(); }
 });
 window.addEventListener('scroll', hideDictPop, true);
 window.addEventListener('resize', hideDictPop);
@@ -2583,6 +2806,137 @@ function renderListen(){
 
 /* ================= 句子学习 ================= */
 let sentHide = true;
+let sentFilter = { q:'', scene:'全部', scope:'全部', page:1 };
+/* 句子页的常用虚词：不参与「收生词」，否则一次能塞进词库几十个 the/a/of */
+const STOP_WORDS = new Set(('a an the and or of to in on at for with by from as is are was were be been being am ' +
+  'it its this that these those we our us you your they their them he she his her him i me my ' +
+  'not no nor if then than so such can could will would shall should may might must do does did done ' +
+  'have has had having there here what which who whom whose when where why how all any some each every ' +
+  'more most other another same very just also only own about into over after before between through during ' +
+  'up down out off again further once both few many much please kindly dear re').split(/\s+/));
+function filteredSentences(){
+  const q = String(sentFilter.q||'').toLowerCase();
+  const dueIds = new Set(dueSentences().map(s=>s.id));
+  return DB.sentences.filter(s=>{
+    if(sentFilter.scene!=='全部' && String(s.scene||'') !== sentFilter.scene) return false;
+    if(sentFilter.scope==='待复习' && !dueIds.has(s.id)) return false;
+    if(sentFilter.scope==='未掌握' && (s.mastery||0)>=4) return false;
+    if(sentFilter.scope==='已收藏' && !s.starred) return false;
+    if(q){
+      const hay = ((s.en||'') + ' ' + (s.zh||'') + ' ' + (s.notes||'')).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+function sentPageSize(){ const n = Number(DB.settings.sentPageSize); return n>0 ? n : 20; }
+function sentPageSlice(list){
+  const per = sentPageSize();
+  const pages = Math.max(1, Math.ceil(list.length/per));
+  sentFilter.page = Math.max(1, Math.min(pages, sentFilter.page||1));
+  const s = (sentFilter.page-1)*per;
+  return list.slice(s, s+per);
+}
+function sentPagerHTML(total){
+  const per = sentPageSize();
+  const pages = Math.max(1, Math.ceil(total/per));
+  const cur = Math.max(1, Math.min(pages, sentFilter.page||1));
+  const from = total ? (cur-1)*per+1 : 0, to = Math.min(total, cur*per);
+  return `<div class="pager">
+    <span class="muted" style="font-size:12px">第 ${from}–${to} 条 / 共 ${total} 条</span>
+    <span style="flex:1"></span>
+    <span class="muted" style="font-size:12px">每页</span>
+    <select onchange="setSentPageSize(this.value)" style="width:auto;min-width:88px;padding:6px 28px 6px 10px;font-size:12.5px">
+      ${[20,50,100].map(n=>`<option value="${n}"${per===n?' selected':''}>${n} 条</option>`).join('')}
+    </select>
+    <button class="btn ghost sm" onclick="goSentPage(-1)"${cur<=1?' disabled':''}>上一页</button>
+    <span class="num" style="font-size:12.5px;color:var(--navy3);min-width:54px;text-align:center">${cur} / ${pages}</span>
+    <button class="btn ghost sm" onclick="goSentPage(1)"${cur>=pages?' disabled':''}>下一页</button>
+  </div>`;
+}
+function goSentPage(d){ sentFilter.page = Math.max(1, (sentFilter.page||1)+d); renderSentences(); }
+function setSentPageSize(v){
+  DB.settings.sentPageSize = parseInt(v,10) || 20;
+  saveDB(); sentFilter.page = 1; renderSentences();
+}
+let _st=null; function renderSentencesDebounced(){ clearTimeout(_st); _st = setTimeout(renderSentences, 250); }
+
+/* 把当前筛选句子里「词库没有的词」一次性收进词库，再用在线词典慢慢补中文 */
+function collectUnknownWords(){
+  const list = filteredSentences();
+  if(!list.length){ toast('当前没有可处理的句子'); return; }
+  const found = new Map();
+  list.forEach(s=>{
+    const ws = String(s.en||'').match(/[A-Za-z][A-Za-z'’\-]*/g) || [];
+    ws.forEach(raw=>{
+      const w = raw.replace(/['’]s$/,'');
+      const k = w.toLowerCase();
+      if(k.length < 3 || STOP_WORDS.has(k)) return;
+      if(lookupLocal(k)) return;
+      if(!found.has(k)) found.set(k, w);
+    });
+  });
+  if(!found.size){ toast('这些句子里的词都已经在词库或内置词表里了'); return; }
+  const items = [...found.values()].slice(0, 200);
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-head"><h3>收集句中生词</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <p class="muted" style="font-size:13px;line-height:1.8;margin-bottom:12px">
+          当前 ${list.length} 句里有 <b class="num" style="color:var(--brand2)">${items.length}</b> 个词不在词库中${found.size>200?'（最多收 200 个）':''}。
+          加入后会自动联网补中文释义，也可以在词库里手动修改。</p>
+        <div style="max-height:210px;overflow:auto;border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:12.5px;line-height:2;color:var(--navy3);margin-bottom:16px">
+          ${items.map(w=>`<span class="tag">${esc(w)}</span>`).join('')}
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn ghost" onclick="closeModal()">取消</button>
+          <button class="btn gold" onclick="doCollectWords()">加入词库</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  window.__collectList = items;
+}
+function doCollectWords(){
+  const items = window.__collectList || [];
+  if(!items.length){ closeModal(); return; }
+  const exist = new Set(DB.words.map(w=>String(w.term||'').toLowerCase()));
+  let added = 0;
+  items.forEach(term=>{
+    const k = String(term).toLowerCase();
+    if(exist.has(k)) return;
+    exist.add(k);
+    const local = lookupLocal(k);
+    DB.words.push({ id:uid('w_'), term:term, phonetic:(local&&local.phonetic)||'', pos:(local&&local.pos)||'',
+      translation:(local&&local.zh)||'', definition:(local&&local.def)||'',
+      exampleEn:'', exampleZh:'', tags:['句中生词'],
+      mastery:0, level:0, starred:false, wrongBook:false, right:0, wrong:0,
+      addedAt:Date.now(), lastReviewAt:0, nextReviewAt:0 });
+    added++;
+  });
+  saveDB(); updateTop(); closeModal();
+  toast('已加入 '+added+' 个词，正在联网补释义…');
+  /* 限并发 3，逐个补中文；补到就写入并静默保存 */
+  const need = DB.words.filter(w=>w.tags.includes('句中生词') && !w.translation);
+  let i = 0, running = 0, filled = 0;
+  const pump = ()=>{
+    while(running < 3 && i < need.length){
+      const w = need[i++]; running++;
+      lookupOnline(w.term, e=>{
+        running--;
+        if(e && e.zh){ w.translation = e.zh; if(!w.phonetic) w.phonetic = e.phonetic||''; if(!w.pos) w.pos = e.pos||''; if(!w.definition) w.definition = e.def||''; filled++; }
+        if(i >= need.length && running === 0){
+          saveDB();
+          if(filled) toast('已补全 '+filled+' 个词的中文释义');
+          if(currentView==='words') renderWords();
+        } else pump();
+      });
+    }
+  };
+  pump();
+}
+
 function renderSentences(){
   const root = document.getElementById('viewRoot');
   if(DB.sentences.length===0){
@@ -2592,7 +2946,10 @@ function renderSentences(){
     return;
   }
   const dueS = dueSentences().length;
-  const rows = DB.sentences.map(s=>{
+  const all = filteredSentences();
+  const list = sentPageSlice(all);
+  const scenes = uniq(DB.sentences.map(s=>s.scene).filter(Boolean));
+  const rows = list.map(s=>{
     const dots = [0,1,2,3,4].map(i=>`<span class="${i<(s.mastery||0)?'on':'off'}">●</span>`).join('');
     const when = s.nextReviewAt>Date.now() ? ('下次 '+fmtDate(s.nextReviewAt).slice(5)) : (s.lastReviewAt?'待复习':'新句');
     return `<tr class="row-hover">
@@ -2601,9 +2958,14 @@ function renderSentences(){
         <div class="sent-en">${enHTML(s.en)}</div>
         <div class="sent-zh" style="filter:${sentHide?'blur(5px)':'none'};user-select:${sentHide?'none':'auto'}">${esc(s.zh)}</div>
         ${s.notes?`<div class="muted" style="font-size:12px;margin-top:6px">${esc(s.notes)}</div>`:''}
+        <div class="sent-meta">
+          ${s.scene?`<span class="scene-chip">${esc(s.scene)}</span>`:''}
+          <span class="mastery-dots">${dots}</span>
+          <span>${when}</span>
+        </div>
       </td>
-      <td style="width:100px">${s.scene?`<span class="scene-chip">${esc(s.scene)}</span>`:'—'}</td>
-      <td style="width:120px"><span class="mastery-dots">${dots}</span><br><span class="muted" style="font-size:11px">${when}</span></td>
+      <td class="col-scene" style="width:100px">${s.scene?`<span class="scene-chip">${esc(s.scene)}</span>`:'—'}</td>
+      <td class="col-smastery" style="width:120px"><span class="mastery-dots">${dots}</span><br><span class="muted" style="font-size:11px">${when}</span></td>
       <td style="white-space:nowrap;width:170px">
         <button class="mini-btn ${s.starred?'on':''}" data-star="s:${s.id}" onclick="toggleStar('sent','${s.id}')" title="收藏">${s.starred?'★':'☆'}</button>
         <button class="mini-btn" onclick="openSentEdit('${s.id}')" title="编辑">✎</button>
@@ -2614,16 +2976,26 @@ function renderSentences(){
   }).join('');
   root.innerHTML = `
   <div class="filter-bar">
+    <input type="text" placeholder="搜索句子或译文…" value="${esc(sentFilter.q)}" oninput="sentFilter.q=this.value;sentFilter.page=1;renderSentencesDebounced()">
+    <select onchange="sentFilter.scene=this.value;sentFilter.page=1;renderSentences()">
+      ${['全部', ...scenes].map(t=>`<option ${t===sentFilter.scene?'selected':''}>${esc(t)}</option>`).join('')}
+    </select>
+    <select onchange="sentFilter.scope=this.value;sentFilter.page=1;renderSentences()">
+      ${['全部','待复习','未掌握','已收藏'].map(t=>`<option ${t===sentFilter.scope?'selected':''}>${esc(t)}</option>`).join('')}
+    </select>
+    <span class="muted" style="font-size:12px">共 ${all.length} 句 · 到期 ${dueS} 句</span>
+    <span style="flex:1"></span>
     <button class="btn gold" onclick="startSentReview()">句子复习${dueS?` (${dueS})`:''}</button>
-    <button class="btn ghost" onclick="startSentQuiz('dictation')">句子听写</button>
-    <button class="btn ghost" onclick="sentHide=!sentHide;renderSentences()">${sentHide?'显示全部译文':'隐藏译文（自测）'}</button>
-    <button class="btn ghost" onclick="toggleHoverDict()">${DB.settings.hoverDict?'悬停查词：开':'悬停查词：关'}</button>
-    <button class="btn ghost" onclick="exportSentencesCSV()">导出句子</button>
-    <span class="muted" style="font-size:12px">共 ${DB.sentences.length} 句 · 到期 ${dueS} 句</span>
+    <button class="btn ghost" onclick="startSentQuiz('dictation')">听写</button>
+    <button class="btn ghost" onclick="collectUnknownWords()" title="把当前筛选句子里词库没有的词批量加入词库">＋ 收生词</button>
+    <button class="btn ghost" onclick="sentHide=!sentHide;renderSentences()">${sentHide?'显示译文':'隐藏译文'}</button>
+    <button class="btn ghost" onclick="toggleHoverDict()">查词${DB.settings.hoverDict?'开':'关'}</button>
+    <button class="btn ghost" onclick="exportSentencesCSV()">导出</button>
   </div>
   <div class="card"><table>
-    <thead><tr><th>朗读</th><th>句子</th><th>场景</th><th>掌握度</th><th>操作</th></tr></thead>
-    <tbody>${rows}</tbody></table></div>`;
+    <thead><tr><th>朗读</th><th>句子</th><th class="col-scene">场景</th><th class="col-smastery">掌握度</th><th>操作</th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="5" class="muted" style="text-align:center;padding:30px">无匹配结果</td></tr>'}</tbody>
+  </table>${all.length ? sentPagerHTML(all.length) : ''}</div>`;
 }
 function toggleSent(id){
   const s = DB.sentences.find(x=>x.id===id); if(!s) return;
