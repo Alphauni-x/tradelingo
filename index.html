@@ -85,6 +85,12 @@
   .mini-btn svg{width:14px;height:14px;display:block;}
   .mini-btn:hover{color:#f59e0b;}
   .mini-btn.on{color:#f59e0b;}
+  /* 收藏状态就地变化时的微动画（替代整页重渲染） */
+  .mini-btn.pop{animation:starPop .34s ease;}
+  @keyframes starPop{0%{transform:scale(1);}44%{transform:scale(1.36);}100%{transform:scale(1);}}
+  /* 取消收藏后该行要离开「生词本」视图：淡出再重排，避免整表闪现 */
+  tr.row-out{opacity:0;transition:opacity .18s ease;}
+  tr.row-out td{background:#fff8e6;}
   .toast{position:fixed;left:50%;bottom:36px;transform:translateX(-50%);background:rgba(15,23,42,.94);color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;z-index:300;max-width:80%;text-align:center;box-shadow:0 8px 28px rgba(15,23,42,.28);backdrop-filter:blur(6px);}
   .kbd{display:inline-block;background:var(--line2);border:1px solid #e3e8ef;border-bottom-width:2px;border-radius:5px;padding:0 5px;font-size:11px;font-family:Consolas,monospace;color:var(--navy3);}
   @keyframes fadeIn{from{opacity:0}}
@@ -360,7 +366,7 @@
       <button class="nav-item" data-view="quiz" onclick="switchView('quiz')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span><span class="txt">测验中心</span></button>
       <button class="nav-item" data-view="data" onclick="switchView('data')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span><span class="txt">数据管理</span></button>
     </nav>
-    <div class="side-footer">v2.4 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
+    <div class="side-footer">v2.5 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
   </aside>
 
   <div class="main">
@@ -2027,7 +2033,7 @@ function renderWords(){
       <td class="col-tags">${w.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</td>
       <td class="col-mastery"><span class="mastery-dots">${dots}</span><br><span class="muted" style="font-size:11px">${when}</span></td>
       <td class="col-ops" style="white-space:nowrap">
-        <button class="mini-btn ${w.starred?'on':''}" onclick="toggleStar('word','${w.id}')" title="生词本">${w.starred?'★':'☆'}</button>
+        <button class="mini-btn ${w.starred?'on':''}" data-star="w:${w.id}" onclick="toggleStar('word','${w.id}')" title="生词本">${w.starred?'★':'☆'}</button>
         <button class="mini-btn" onclick="openWordEdit('${w.id}')" title="编辑">✎</button>
         <button class="mini-btn" onclick="deleteWord('${w.id}')" title="删除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6 7v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7"/><path d="M10 11v5M14 11v5"/></svg></button>
       </td>
@@ -2136,21 +2142,56 @@ function filteredWords(){
   });
 }
 
-function toggleStar(kind, id){
-  if(kind==='word'){
-    const w=DB.words.find(x=>x.id===id); if(!w) return;
-    w.starred = !w.starred;
-    saveDB(); render();
-    /* 详情弹窗是独立 DOM，render() 不会刷新它，得手动重建，否则按钮文字不变、用户以为没生效 */
-    const mr = document.getElementById('modalRoot');
-    if(mr && mr.querySelector('.detail-row')) openWordDetail(id);
-    toast(w.starred ? '已加入生词本' : '已移出生词本');
-  } else {
-    const s=DB.sentences.find(x=>x.id===id); if(!s) return;
-    s.starred = !s.starred;
-    saveDB(); render();
-    toast(s.starred ? '已收藏' : '已取消收藏');
+/* 就地刷新收藏图标 —— 不重建 DOM，所以点一下不会整页闪 */
+const _starTimers = {};
+function paintStar(kind, id, starred){
+  const key = (kind==='word' ? 'w:' : 's:') + id;
+  const mark = starred ? '★' : '☆';
+  const icons = document.querySelectorAll('[data-star="' + key + '"]');
+  for(let i=0;i<icons.length;i++){
+    const el = icons[i];
+    el.textContent = mark;
+    el.classList.toggle('on', !!starred);
+    /* 只有「已收藏」这一下给个轻微弹跳，取消时不弹 */
+    if(starred){ el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+    else el.classList.remove('pop');
   }
+  const label = kind==='word'
+    ? (starred ? '★ 移出生词本' : '☆ 加入生词本')
+    : (starred ? '★ 已收藏' : '☆ 收藏');
+  const bigs = document.querySelectorAll('[data-star-btn="' + key + '"]');
+  for(let i=0;i<bigs.length;i++){
+    const el = bigs[i];
+    el.textContent = label;
+    el.classList.toggle('on', !!starred);
+    if(starred){ el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+    else el.classList.remove('pop');
+  }
+}
+function toggleStar(kind, id){
+  const isWord = kind==='word';
+  const item = (isWord ? DB.words : DB.sentences).find(x=>x.id===id);
+  if(!item) return;
+  item.starred = !item.starred;
+  saveDB();
+  paintStar(kind, id, item.starred);
+  /* 只有「生词本」筛选依赖 starred：取消收藏后这一行不该再出现 */
+  if(isWord && currentView==='words' && wordFilter.mode==='list' && wordFilter.scope==='生词本'){
+    const icon = document.querySelector('[data-star="w:'+id+'"]');
+    const row = icon && icon.closest('tr');
+    clearTimeout(_starTimers[id]);
+    if(!item.starred){
+      if(row){
+        row.classList.add('row-out');
+        _starTimers[id] = setTimeout(()=>{
+          if(currentView==='words' && wordFilter.mode==='list' && wordFilter.scope==='生词本') renderWords();
+        }, 190);
+      } else renderWords();
+    } else if(row){
+      row.classList.remove('row-out');   /* 连点两次：撤销淡出，行留在原位 */
+    }
+  }
+  toast(item.starred ? (isWord ? '已加入生词本' : '已收藏') : (isWord ? '已移出生词本' : '已取消收藏'));
 }
 function deleteWord(id){
   const w = DB.words.find(x=>x.id===id); if(!w) return;
@@ -2204,7 +2245,7 @@ function openWordDetail(id){
           掌握等级 <b class="num">Lv.${w.level}</b> · 答对 <b class="num" style="color:var(--green)">${w.right}</b> · 答错 <b class="num" style="color:var(--red)">${w.wrong}</b><br>
           下次复习：<b>${nextTxt}</b> · 加入于 ${fmtDate(w.addedAt)}</div></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:18px">
-          <button class="btn ghost" onclick="toggleStar('word','${w.id}')">${w.starred?'★ 移出生词本':'☆ 加入生词本'}</button>
+          <button class="btn ghost" data-star-btn="w:${w.id}" onclick="toggleStar('word','${w.id}')">${w.starred?'★ 移出生词本':'☆ 加入生词本'}</button>
           <button class="btn ghost" onclick="openWordEdit('${w.id}')">✎ 编辑</button>
           <button class="btn danger" onclick="deleteWord('${w.id}')">删除</button>
         </div>
@@ -2341,7 +2382,7 @@ function renderFlash(){
       <span class="kbd">1</span> 不认识 · <span class="kbd">2</span> 模糊 · <span class="kbd">3</span> 认识
     </div>
     <div style="margin-top:12px;display:flex;gap:8px">
-      <button class="btn ghost sm" onclick="toggleFlashStar('${w.id}')">${w.starred?'★ 已在生词本':'☆ 加入生词本'}</button>
+      <button class="btn ghost sm" data-star-btn="w:${w.id}" onclick="toggleFlashStar('${w.id}')">${w.starred?'★ 已在生词本':'☆ 加入生词本'}</button>
       <button class="btn ghost sm" onclick="wordFilter.mode='list';flash=null;renderWords()">退出卡片模式</button>
     </div>
   </div>`;
@@ -2349,7 +2390,8 @@ function renderFlash(){
 }
 function toggleFlashStar(id){
   const w=DB.words.find(x=>x.id===id); if(!w) return;
-  w.starred=!w.starred; saveDB(); renderFlash();
+  w.starred=!w.starred; saveDB();
+  paintStar('word', id, w.starred);   /* 只改按钮与图标，不重排卡片 */
   toast(w.starred ? '已加入生词本' : '已移出生词本');
 }
 function flipCard(){ if(flash){ flash.showZh=true; renderFlash(); } }
@@ -2563,7 +2605,7 @@ function renderSentences(){
       <td style="width:100px">${s.scene?`<span class="scene-chip">${esc(s.scene)}</span>`:'—'}</td>
       <td style="width:120px"><span class="mastery-dots">${dots}</span><br><span class="muted" style="font-size:11px">${when}</span></td>
       <td style="white-space:nowrap;width:170px">
-        <button class="mini-btn ${s.starred?'on':''}" onclick="toggleStar('sent','${s.id}')" title="收藏">${s.starred?'★':'☆'}</button>
+        <button class="mini-btn ${s.starred?'on':''}" data-star="s:${s.id}" onclick="toggleStar('sent','${s.id}')" title="收藏">${s.starred?'★':'☆'}</button>
         <button class="mini-btn" onclick="openSentEdit('${s.id}')" title="编辑">✎</button>
         <button class="mini-btn" onclick="deleteSent('${s.id}')" title="删除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6 7v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7"/><path d="M10 11v5M14 11v5"/></svg></button>
         <button class="btn ghost sm" onclick="toggleSent('${s.id}')">${s.mastery>=4?'取消掌握':'标记掌握'}</button>
