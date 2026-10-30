@@ -158,6 +158,9 @@
 
   /* ===== 筛选栏 ===== */
   .filter-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px;}
+  .filter-bar .btn{padding:8px 12px;font-size:12.5px;}
+  .filter-bar input[type=text]{flex:1 1 185px;min-width:140px;width:auto;}
+  .filter-bar select{width:auto;min-width:84px;}
   .filter-bar input{max-width:230px;}
   .filter-bar select{width:auto;min-width:120px;}
   .pager{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line2);}
@@ -166,6 +169,19 @@
   .pos-chip{display:inline-block;font-size:10.5px;color:var(--brand2);background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:5px;padding:1px 6px;margin-right:6px;font-weight:600;}
   .mastery-dots{letter-spacing:2.5px;font-size:11px;white-space:nowrap;}
   .mastery-dots .on{color:var(--brand);} .mastery-dots .off{color:#dde4ec;}
+
+  /* ===== 词单 / 批量选择 ===== */
+  .sel-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:10px;margin-bottom:12px;font-size:12.5px;color:var(--brand2);}
+  .sel-bar>span:first-child{font-weight:600;}
+  .coll-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;background:#fff;border:1px solid var(--brand-line);border-left:3px solid var(--brand);border-radius:10px;margin-bottom:12px;font-size:12.5px;color:var(--navy3);}
+  .coll-banner b{color:var(--brand2);}
+  .coll-banner>span{flex:1;min-width:120px;}
+  tr.row-sel td{background:#f5f7ff;}
+  .coll-row{display:flex;align-items:center;gap:10px;width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;background:#fff;font-family:inherit;font-size:13.5px;color:var(--navy);cursor:pointer;text-align:left;transition:.14s;}
+  .coll-row:hover{border-color:var(--brand-line);background:var(--brand-soft);}
+  .coll-row .coll-name{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .coll-row .coll-plus{color:var(--brand);font-weight:700;font-size:15px;flex:none;}
+  .coll-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border:1px solid var(--line);border-radius:9px;}
 
   /* ===== 翻转卡片 ===== */
   .flash-stage{display:flex;flex-direction:column;align-items:center;padding:14px 0;}
@@ -299,6 +315,13 @@
   .dict-pop .dadd:hover{text-decoration:underline;}
   .dict-pop .dhint{margin-top:9px;padding-top:8px;border-top:1px solid var(--line2);font-size:10.5px;color:var(--faint);}
 
+  /* 窄窗口（1000–1180）：标签列让位，列宽收紧，避免单词与释义被挤到换行 */
+  @media (max-width:1180px){
+    table th,table td{padding:11px 10px;}
+    .col-tags{display:none;}
+    .col-mastery{width:112px;}
+    .col-ops{width:96px;}
+  }
   @media (max-width:900px){
     .sidebar{width:62px;} .logo .cn .name,.logo .en,.nav-item .txt,.nav-item .badge,.side-footer{display:none;}
     .logo{padding:20px 0;display:flex;justify-content:center;} .logo .cn{justify-content:center;}
@@ -337,7 +360,7 @@
       <button class="nav-item" data-view="quiz" onclick="switchView('quiz')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span><span class="txt">测验中心</span></button>
       <button class="nav-item" data-view="data" onclick="switchView('data')"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span><span class="txt">数据管理</span></button>
     </nav>
-    <div class="side-footer">v2.3 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
+    <div class="side-footer">v2.4 · 数据保存在本机浏览器<br>发音由语音合成提供 · 支持悬停查词</div>
   </aside>
 
   <div class="main">
@@ -377,7 +400,7 @@ function toast(msg){
 }
 
 /* ================= 数据层 ================= */
-function emptyDB(){ return { words:[], sentences:[], imports:[], quizLog:[], studyLog:{}, trash:[],
+function emptyDB(){ return { words:[], sentences:[], imports:[], quizLog:[], studyLog:{}, trash:[], collections:[],
   settings:{ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30, pageSize:20 } }; }
 function loadDB(){
   try{ const raw = localStorage.getItem(STORE_KEY); if(!raw) return emptyDB();
@@ -391,6 +414,8 @@ function migrate(){
   DB.settings = Object.assign({ engine:'auto', accent:'us', rate:0.9, autoSpeak:true, hoverDict:true, onlineDict:true, dailyGoal:30, pageSize:20 }, DB.settings||{});
   if(!DB.studyLog) DB.studyLog = {};
   if(!Array.isArray(DB.trash)) DB.trash = [];
+  if(!Array.isArray(DB.collections)) DB.collections = [];
+  DB.collections.forEach(c=>{ if(!Array.isArray(c.wordIds)) c.wordIds = []; });
   if(!(DB.settings.dailyGoal>0)) DB.settings.dailyGoal = 30;
   if(DB.settings.pageSize==null) DB.settings.pageSize = 20;
   DB.words.forEach(w=>{
@@ -1745,6 +1770,229 @@ function renderDashboard(){
 let wordFilter = { q:'', tag:'全部', scope:'全部', mode:'list', page:1 };
 let flash = null;
 
+/* ================= 词单（自定义生词本） ================= */
+let wordSel = new Set();      /* 列表页勾选的单词 id */
+let _collReturn = null;       /* 从单词详情进「加入词单」时，完成后回详情 */
+
+function collById(id){ return (DB.collections||[]).find(c=>c.id===id) || null; }
+function collOfWord(wid){ return (DB.collections||[]).filter(c=>c.wordIds.includes(wid)); }
+function newCollId(){ return 'c_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+function createCollection(name){
+  name = String(name||'').trim();
+  if(!name) return null;
+  DB.collections = DB.collections || [];
+  if(DB.collections.some(c=>c.name===name)){ toast('已有同名词单'); return DB.collections.find(c=>c.name===name); }
+  const c = { id:newCollId(), name, wordIds:[], createdAt:Date.now() };
+  DB.collections.push(c); saveDB();
+  return c;
+}
+function renameCollection(cid, name){
+  const c = collById(cid); if(!c) return;
+  name = String(name||'').trim(); if(!name) return;
+  c.name = name; saveDB();
+}
+function deleteCollection(cid){
+  DB.collections = (DB.collections||[]).filter(c=>c.id!==cid);
+  if(wordFilter.scope==='coll:'+cid){ wordFilter.scope='全部'; wordFilter.page=1; }
+  saveDB();
+}
+function addToColl(cid, ids){
+  const c = collById(cid); if(!c) return 0;
+  let n = 0;
+  ids.forEach(id=>{ if(DB.words.some(w=>w.id===id) && !c.wordIds.includes(id)){ c.wordIds.push(id); n++; } });
+  saveDB(); return n;
+}
+function removeFromColl(cid, ids){
+  const c = collById(cid); if(!c) return;
+  c.wordIds = c.wordIds.filter(id=>!ids.includes(id)); saveDB();
+}
+function purgeWordFromColls(wid){
+  (DB.collections||[]).forEach(c=>{ c.wordIds = c.wordIds.filter(id=>id!==wid); });
+}
+function currentColl(){
+  const s = wordFilter.scope||'';
+  return s.indexOf('coll:')===0 ? collById(s.slice(5)) : null;
+}
+
+/* ---------- 勾选 ---------- */
+function clearSel(){ wordSel = new Set(); renderWords(); }
+function toggleSel(id, on){
+  if(on) wordSel.add(id); else wordSel.delete(id);
+  renderWords();
+}
+function toggleSelPage(on){
+  pageSlice(filteredWords()).forEach(w=>{ if(on) wordSel.add(w.id); else wordSel.delete(w.id); });
+  renderWords();
+}
+function batchStar(on){
+  const ids = [...wordSel]; if(!ids.length) return;
+  ids.forEach(id=>{ const w=DB.words.find(x=>x.id===id); if(w) w.starred = on; });
+  saveDB(); toast(on?('已将 '+ids.length+' 个词加入生词本'):('已将 '+ids.length+' 个词移出生词本'));
+  clearSel();
+}
+function removeSelFromColl(){
+  const c = currentColl(); if(!c) return;
+  const ids = [...wordSel]; if(!ids.length) return;
+  removeFromColl(c.id, ids);
+  toast('已从「'+c.name+'」移出 '+ids.length+' 个');
+  clearSel();
+}
+function batchDelete(){
+  const ids = [...wordSel]; if(!ids.length) return;
+  if(!confirm('将选中的 '+ids.length+' 个单词移入回收站？\n可在「数据管理 → 回收站」中恢复。')) return;
+  ids.forEach(id=>{
+    const w = DB.words.find(x=>x.id===id); if(!w) return;
+    DB.words = DB.words.filter(x=>x.id!==id);
+    pushTrash('word', w);
+    purgeWordFromColls(id);
+  });
+  wordSel = new Set();
+  saveDB(); updateTop(); renderWords();
+  toast('已移入回收站 '+ids.length+' 个');
+}
+
+/* ---------- 加入词单 ---------- */
+function openAddToColl(){
+  const ids = [...wordSel];
+  if(!ids.length){ toast('先勾选要加入的单词'); return; }
+  const colls = DB.collections||[];
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="max-width:470px">
+      <div class="modal-head"><h3>把 ${ids.length} 个单词加入词单</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        ${colls.length ? `<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">
+          ${colls.map(c=>`<button class="coll-row" onclick="addSelToColl('${c.id}')">
+            <span class="coll-name">${esc(c.name)}</span>
+            <span class="muted" style="font-size:12px">${c.wordIds.length} 词</span>
+            <span class="coll-plus">＋</span></button>`).join('')}
+        </div>` : `<p class="muted" style="margin-bottom:16px;font-size:13px">还没有词单，新建一个即可。</p>`}
+        <div class="form-row"><div class="k">新建词单</div>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="newCollName" placeholder="例如：物流高频词 / 本周必背" style="flex:1;min-width:0">
+            <button class="btn" style="flex:none;white-space:nowrap" onclick="createCollWithSel()">创建并加入</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  const i = document.getElementById('newCollName'); if(i) i.focus();
+}
+function afterAddToColl(){
+  closeModal();
+  if(_collReturn){ const id=_collReturn; _collReturn=null; openWordDetail(id); return; }
+  wordSel = new Set();
+  renderWords();
+}
+function addSelToColl(cid){
+  const c = collById(cid); if(!c) return;
+  const n = addToColl(cid, [...wordSel]);
+  afterAddToColl();
+  render();
+  toast(n ? ('已加入「'+c.name+'」'+n+' 个') : '这些词都已在词单里');
+}
+function createCollWithSel(){
+  const inp = document.getElementById('newCollName');
+  const c = createCollection(inp ? inp.value : '');
+  if(!c) return;
+  addSelToColl(c.id);
+}
+function openAddOneToColl(wid){
+  wordSel = new Set([wid]); _collReturn = wid;
+  openAddToColl();
+}
+
+/* ---------- 词单管理 ---------- */
+function openCollections(){ renderCollModal(); }
+function renderCollModal(){
+  const colls = DB.collections||[];
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-head"><h3>词单管理</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <div style="display:flex;gap:8px;margin-bottom:18px">
+          <input type="text" id="collNameInput" placeholder="新词单名称，例如：报关常用 / 第 3 单元" style="flex:1;min-width:0">
+          <button class="btn" style="flex:none;white-space:nowrap" onclick="createCollOnly()">新建</button>
+        </div>
+        ${colls.length ? `<div style="display:flex;flex-direction:column;gap:8px">
+          ${colls.map(c=>`<div class="coll-item">
+            <div style="min-width:0">
+              <b style="font-size:13.5px;color:var(--navy)">${esc(c.name)}</b>
+              <span class="muted" style="font-size:12px;margin-left:6px">${c.wordIds.length} 词</span>
+            </div>
+            <div style="display:flex;gap:6px;flex:none">
+              <button class="btn ghost sm" onclick="gotoColl('${c.id}')">查看</button>
+              <button class="btn ghost sm" onclick="renameCollPrompt('${c.id}')">重命名</button>
+              <button class="btn danger sm" onclick="deleteCollConfirm('${c.id}')">删除</button>
+            </div>
+          </div>`).join('')}
+        </div>` : `<p class="muted" style="font-size:13px;line-height:1.8">还没有自定义词单。<br>新建一个后，回到单词列表勾选单词，点「加入词单」即可。</p>`}
+        <p class="muted" style="font-size:12px;margin-top:18px;line-height:1.8">
+          提示：词单与「生词本」不冲突，一个单词可以同时在多个词单里；在单词列表顶部的范围筛选里选中词单，
+          卡片记忆 / 连读 / 测验就都只作用在这个词单上。</p>
+      </div>
+    </div>
+  </div>`;
+}
+function createCollOnly(){
+  const inp = document.getElementById('collNameInput');
+  const c = createCollection(inp ? inp.value : '');
+  if(!c) return;
+  renderCollModal(); renderWords(); toast('已创建「'+c.name+'」');
+}
+function gotoColl(cid){
+  closeModal();
+  wordFilter.scope = 'coll:'+cid; wordFilter.page = 1;
+  wordSel = new Set();
+  if(currentView!=='words') switchView('words'); else renderWords();
+}
+function renameCollPrompt(cid){
+  const c = collById(cid); if(!c) return;
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-head"><h3>重命名词单</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <div class="form-row"><div class="k">名称</div><input type="text" id="collRenameInput" value="${esc(c.name)}"></div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px">
+          <button class="btn ghost" onclick="openCollections()">取消</button>
+          <button class="btn" onclick="doRenameColl('${cid}')">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  const i = document.getElementById('collRenameInput'); if(i){ i.focus(); i.select(); }
+}
+function doRenameColl(cid){
+  const v = document.getElementById('collRenameInput').value;
+  renameCollection(cid, v);
+  openCollections(); renderWords(); toast('已重命名');
+}
+function deleteCollConfirm(cid){
+  const c = collById(cid); if(!c) return;
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-head"><h3>删除词单「${esc(c.name)}」？</h3></div>
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--navy3);line-height:1.8">只会删除这个词单，里面的 ${c.wordIds.length} 个单词仍会留在词库中。</p>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">
+          <button class="btn ghost" onclick="openCollections()">取消</button>
+          <button class="btn danger" onclick="doDeleteColl('${cid}')">删除词单</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function doDeleteColl(cid){
+  const c = collById(cid);
+  deleteCollection(cid);
+  openCollections(); renderWords();
+  toast(c ? ('已删除「'+c.name+'」') : '已删除');
+}
+
 function renderWords(){
   const root = document.getElementById('viewRoot');
   if(DB.words.length===0){
@@ -1758,10 +2006,13 @@ function renderWords(){
   const tags = ['全部', ...uniq(DB.words.flatMap(w=>w.tags))];
   const all = filteredWords();
   const list = pageSlice(all);
+  if(wordSel.size){ const alive = new Set(DB.words.map(w=>w.id)); [...wordSel].forEach(id=>{ if(!alive.has(id)) wordSel.delete(id); }); }
+  const coll = currentColl();
   const rows = list.map(w=>{
     const dots = [0,1,2,3,4].map(i=>`<span class="${i<w.mastery?'on':'off'}">●</span>`).join('');
     const when = w.nextReviewAt>Date.now() ? ('下次复习 '+fmtDate(w.nextReviewAt)) : (w.lastReviewAt?'待复习':'新词');
-    return `<tr class="row-hover">
+    return `<tr class="row-hover${wordSel.has(w.id)?' row-sel':''}">
+      <td style="width:34px;padding-right:0"><input type="checkbox" ${wordSel.has(w.id)?'checked':''} onchange="toggleSel('${w.id}',this.checked)"></td>
       <td>
         <div style="display:flex;align-items:center;gap:9px">
           <button class="icon-btn" data-say="${esc(w.term)}" onclick="speakEl(this)" title="朗读"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7 6.6 8.3H3.4v7.4h3.2L11 19.3z"/><path d="M15.6 8.6a4.8 4.8 0 0 1 0 6.8"/><path d="M18.6 5.6a9 9 0 0 1 0 12.8"/></svg></button>
@@ -1773,9 +2024,9 @@ function renderWords(){
         </div>
       </td>
       <td style="cursor:pointer" onclick="openWordDetail('${w.id}')">${w.pos?`<span class="pos-chip">${esc(w.pos)}</span>`:''}${esc(w.translation)}</td>
-      <td>${w.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</td>
-      <td><span class="mastery-dots">${dots}</span><br><span class="muted" style="font-size:11px">${when}</span></td>
-      <td style="white-space:nowrap">
+      <td class="col-tags">${w.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</td>
+      <td class="col-mastery"><span class="mastery-dots">${dots}</span><br><span class="muted" style="font-size:11px">${when}</span></td>
+      <td class="col-ops" style="white-space:nowrap">
         <button class="mini-btn ${w.starred?'on':''}" onclick="toggleStar('word','${w.id}')" title="生词本">${w.starred?'★':'☆'}</button>
         <button class="mini-btn" onclick="openWordEdit('${w.id}')" title="编辑">✎</button>
         <button class="mini-btn" onclick="deleteWord('${w.id}')" title="删除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6 7v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7"/><path d="M10 11v5M14 11v5"/></svg></button>
@@ -1789,18 +2040,39 @@ function renderWords(){
       ${tags.map(t=>`<option ${t===wordFilter.tag?'selected':''}>${esc(t)}</option>`).join('')}
     </select>
     <select onchange="wordFilter.scope=this.value;wordFilter.page=1;renderWords()">
-      ${['全部','未掌握','待复习','生词本','错题本'].map(t=>`<option ${t===wordFilter.scope?'selected':''}>${esc(t)}</option>`).join('')}
+      ${[['全部','全部'],['未掌握','未掌握'],['待复习','待复习'],['生词本','生词本'],['错题本','错题本']]
+        .concat((DB.collections||[]).map(c=>['coll:'+c.id, '词单：'+c.name]))
+        .map(p=>`<option value="${p[0]}"${p[0]===wordFilter.scope?' selected':''}>${esc(p[1])}</option>`).join('')}
     </select>
     <span class="muted" style="font-size:12px">共 ${all.length} 条</span>
     <span style="flex:1"></span>
-    <button class="btn ghost" onclick="exportFilteredWords()">导出当前列表</button>
-    <button class="btn ghost" onclick="startListen()">🎧 连读 ${all.length} 词</button>
+    <button class="btn ghost" onclick="openCollections()">📚 词单</button>
+    <button class="btn ghost" onclick="exportFilteredWords()" title="导出当前筛选结果">导出</button>
+    <button class="btn ghost" onclick="startListen()" title="把当前筛选结果顺序听一遍">🎧 连读 ${all.length}</button>
     <button class="btn gold" onclick="startFlash()">卡片记忆</button>
-    <button class="btn ghost" onclick="startDictation()">听写模式</button>
+    <button class="btn ghost" onclick="startDictation()">听写</button>
   </div>
+  ${coll ? `<div class="coll-banner">
+    <span>正在查看词单 <b>${esc(coll.name)}</b> · ${coll.wordIds.length} 词</span>
+    <button class="btn ghost sm" onclick="wordFilter.scope='全部';wordFilter.page=1;renderWords()">退出词单</button>
+    <button class="btn ghost sm" onclick="openCollections()">管理词单</button>
+  </div>` : ''}
+  ${wordSel.size ? `<div class="sel-bar">
+    <span>已选 <b class="num">${wordSel.size}</b> 个</span>
+    <button class="btn sm" onclick="openAddToColl()">加入词单</button>
+    <button class="btn ghost sm" onclick="batchStar(true)">加入生词本</button>
+    <button class="btn ghost sm" onclick="batchStar(false)">移出生词本</button>
+    ${coll ? `<button class="btn ghost sm" onclick="removeSelFromColl()">移出本词单</button>` : ''}
+    <button class="btn danger sm" onclick="batchDelete()">删除</button>
+    <button class="btn ghost sm" onclick="clearSel()">取消选择</button>
+  </div>` : ''}
   <div class="card"><table>
-    <thead><tr><th style="width:30%">单词</th><th style="width:28%">释义</th><th>标签</th><th style="width:150px">掌握 / 复习</th><th style="width:110px">操作</th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="5" class="muted" style="text-align:center;padding:30px">无匹配结果</td></tr>'}</tbody>
+    <thead><tr>
+      <th style="width:34px;padding-right:0"><input type="checkbox" title="全选本页" ${list.length && list.every(w=>wordSel.has(w.id))?'checked':''} onchange="toggleSelPage(this.checked)"></th>
+      <th style="width:30%">单词</th><th style="width:28%">释义</th><th class="col-tags">标签</th>
+      <th class="col-mastery" style="width:150px">掌握 / 复习</th><th class="col-ops" style="width:110px">操作</th>
+    </tr></thead>
+    <tbody>${rows || '<tr><td colspan="6" class="muted" style="text-align:center;padding:30px">无匹配结果</td></tr>'}</tbody>
   </table>${all.length ? pagerHTML(all.length) : ''}</div>`;
 }
 let _wt=null; function renderWordsDebounced(){ clearTimeout(_wt); _wt=setTimeout(renderWords,250); }
@@ -1851,27 +2123,41 @@ function setPageSize(v){
 function filteredWords(){
   const q = wordFilter.q.toLowerCase();
   const dueIds = new Set(dueWords().map(w=>w.id));
+  const coll = currentColl();
   return DB.words.filter(w=>{
     if(wordFilter.tag!=='全部' && !w.tags.includes(wordFilter.tag)) return false;
     if(wordFilter.scope==='未掌握' && w.mastery>=4) return false;
     if(wordFilter.scope==='生词本' && !w.starred) return false;
     if(wordFilter.scope==='错题本' && !w.wrongBook) return false;
     if(wordFilter.scope==='待复习' && !dueIds.has(w.id)) return false;
+    if(coll && !coll.wordIds.includes(w.id)) return false;
     if(q && !(w.term.toLowerCase().includes(q)||w.translation.toLowerCase().includes(q))) return false;
     return true;
   });
 }
 
 function toggleStar(kind, id){
-  if(kind==='word'){ const w=DB.words.find(x=>x.id===id); if(!w) return; w.starred=!w.starred; }
-  else { const s=DB.sentences.find(x=>x.id===id); if(!s) return; s.starred=!s.starred; }
-  saveDB(); render();
+  if(kind==='word'){
+    const w=DB.words.find(x=>x.id===id); if(!w) return;
+    w.starred = !w.starred;
+    saveDB(); render();
+    /* 详情弹窗是独立 DOM，render() 不会刷新它，得手动重建，否则按钮文字不变、用户以为没生效 */
+    const mr = document.getElementById('modalRoot');
+    if(mr && mr.querySelector('.detail-row')) openWordDetail(id);
+    toast(w.starred ? '已加入生词本' : '已移出生词本');
+  } else {
+    const s=DB.sentences.find(x=>x.id===id); if(!s) return;
+    s.starred = !s.starred;
+    saveDB(); render();
+    toast(s.starred ? '已收藏' : '已取消收藏');
+  }
 }
 function deleteWord(id){
   const w = DB.words.find(x=>x.id===id); if(!w) return;
   if(!confirm('将单词「'+w.term+'」移入回收站？\n可在「数据管理 → 回收站」中恢复。')) return;
   DB.words = DB.words.filter(x=>x.id!==id);
   pushTrash('word', w);
+  purgeWordFromColls(id);
   saveDB(); updateTop();
   closeModal(); render();
   toast('已移入回收站');
@@ -1908,6 +2194,12 @@ function openWordDetail(id){
           <button class="icon-btn" style="width:22px;height:22px;font-size:11px;margin-left:6px" data-say="${esc(w.exampleEn)}" onclick="speakEl(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7 6.6 8.3H3.4v7.4h3.2L11 19.3z"/><path d="M15.6 8.6a4.8 4.8 0 0 1 0 6.8"/><path d="M18.6 5.6a9 9 0 0 1 0 12.8"/></svg></button>
         </div><div class="v" style="font-style:italic;color:var(--navy2)">${enHTML(w.exampleEn)}</div>${w.exampleZh?`<div class="v sent-zh">${esc(w.exampleZh)}</div>`:''}</div>`:''}
         ${w.tags.length?`<div class="detail-row"><div class="k">标签</div><div>${w.tags.map(t=>`<span class="tag gold">${esc(t)}</span>`).join('')}</div></div>`:''}
+        <div class="detail-row"><div class="k">词单</div><div class="v">
+          ${collOfWord(w.id).length
+            ? collOfWord(w.id).map(c=>`<span class="tag gold">${esc(c.name)}</span>`).join('')
+            : '<span class="muted" style="font-size:12.5px">未加入词单</span>'}
+          <button class="btn ghost sm" style="margin-left:6px" onclick="openAddOneToColl('${w.id}')">＋ 加入词单</button>
+        </div></div>
         <div class="detail-row"><div class="k">学习记录</div><div class="v muted">
           掌握等级 <b class="num">Lv.${w.level}</b> · 答对 <b class="num" style="color:var(--green)">${w.right}</b> · 答错 <b class="num" style="color:var(--red)">${w.wrong}</b><br>
           下次复习：<b>${nextTxt}</b> · 加入于 ${fmtDate(w.addedAt)}</div></div>
@@ -1986,7 +2278,13 @@ function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
 function autoSpeakAfter(w){ if(DB.settings.autoSpeak) setTimeout(()=>speak(w.term), 260); }
 
 function startFlash(){
-  const pool = lowWords(20);
+  let pool;
+  if(hasActiveWordFilter()){
+    pool = activeWordPool(20);
+    if(!pool){ toast('当前筛选结果为空，换个条件再试'); return; }
+  } else {
+    pool = lowWords(20);
+  }
   if(pool.length===0){ toast('词库为空，请先导入数据'); return; }
   stopListen(true);
   flash = { list:pool, idx:0, showZh:false, title:'卡片记忆', review:false };
@@ -2049,7 +2347,11 @@ function renderFlash(){
   </div>`;
   if(!f.showZh) autoSpeakAfter(w);
 }
-function toggleFlashStar(id){ const w=DB.words.find(x=>x.id===id); if(!w) return; w.starred=!w.starred; saveDB(); renderFlash(); }
+function toggleFlashStar(id){
+  const w=DB.words.find(x=>x.id===id); if(!w) return;
+  w.starred=!w.starred; saveDB(); renderFlash();
+  toast(w.starred ? '已加入生词本' : '已移出生词本');
+}
 function flipCard(){ if(flash){ flash.showZh=true; renderFlash(); } }
 function gradeCard(v){
   if(!flash) return;
@@ -2356,10 +2658,24 @@ function quizPool(n){
   const rest = shuffle(DB.words.filter(w=>!weakIds.has(w.id)));
   return shuffle([...pickN(weak, Math.max(n*2, n)), ...rest]).slice(0,n);
 }
+/* 是否设置了筛选条件（词单 / 标签 / 范围 / 搜索）——有的话卡片、听写、测验都只在这个池子里取词 */
+function hasActiveWordFilter(){
+  return !!wordFilter.q || wordFilter.tag!=='全部' || wordFilter.scope!=='全部';
+}
+function activeWordPool(n){
+  const f = filteredWords();
+  if(!f.length) return null;
+  return pickN(f, Math.min(n, f.length));
+}
 function startQuiz(){
   if(!DB.words.length){ toast('词库为空，请先导入单词'); return; }
-  const n = Math.min(getCount(), DB.words.length);
-  const words = quizPool(n);
+  let words;
+  if(hasActiveWordFilter()){
+    words = activeWordPool(getCount());
+    if(!words){ toast('当前筛选结果为空，换个条件再试'); return; }
+  } else {
+    words = quizPool(Math.min(getCount(), DB.words.length));
+  }
   const qs = words.map(w=>{
     const others = DB.words.filter(x=>x.id!==w.id && x.translation);
     if(!w.translation || others.length<3) return { type:'spell', w };
@@ -2374,8 +2690,13 @@ function startQuiz(){
 function startDictation(){
   if(!DB.words.length){ toast('词库为空，请先导入单词'); return; }
   stopListen(true);
-  const n = Math.min(getCount(), DB.words.length);
-  const words = quizPool(n);
+  let words;
+  if(hasActiveWordFilter()){
+    words = activeWordPool(getCount());
+    if(!words){ toast('当前筛选结果为空，换个条件再试'); return; }
+  } else {
+    words = quizPool(Math.min(getCount(), DB.words.length));
+  }
   quiz = { qs: words.map(w=>({type:'dictation', w, hint:false})), idx:0, score:0, answered:false, mode:'dictation' };
   renderQuizQ();
 }
@@ -2493,6 +2814,34 @@ function submitSentDict(e){
   if(ok){ quiz.score++; schedule(q.s, 1); } else schedule(q.s, -1);
   saveDB(); updateTop(); showNext();
 }
+/* 退出本轮测验：已答题则先确认，避免误触丢成绩 */
+function confirmQuitQuiz(){
+  if(!quiz) return;
+  const answered = quiz.idx + (quiz.answered ? 1 : 0);
+  if(answered <= 0){ quiz = null; renderQuizHome(); toast('已退出测验'); return; }
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-head"><h3>退出本轮测验？</h3></div>
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--navy3);line-height:1.85">
+          已答 ${answered} 题，还剩 ${Math.max(0, quiz.qs.length-answered)} 题。<br>
+          退出后本轮成绩不会记入统计，已答对/答错的单词进度会保留。</p>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">
+          <button class="btn ghost" onclick="closeModal()">继续答题</button>
+          <button class="btn danger" onclick="doQuitQuiz()">退出测验</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function doQuitQuiz(){
+  closeModal();
+  quiz = null;
+  renderQuizHome();
+  toast('已退出测验');
+}
+
 function renderQuizQ(){
   const root = document.getElementById('viewRoot');
   const q = quiz.qs[quiz.idx];
@@ -2551,7 +2900,13 @@ function renderQuizQ(){
   }
   root.innerHTML = `
   <div class="card"><div class="card-body">
-    <div class="quiz-meta"><span>${modeLabel(quiz.mode)} · 第 <b class="num">${quiz.idx+1}</b> / ${quiz.qs.length} 题</span><span>当前得分 <b class="num">${quiz.score}</b></span></div>
+    <div class="quiz-meta">
+      <span>${modeLabel(quiz.mode)} · 第 <b class="num">${quiz.idx+1}</b> / ${quiz.qs.length} 题</span>
+      <span style="display:flex;align-items:center;gap:14px">
+        <span>当前得分 <b class="num">${quiz.score}</b></span>
+        <button class="btn ghost sm" onclick="confirmQuitQuiz()" title="结束本轮并返回测验中心">✕ 退出测验</button>
+      </span>
+    </div>
     ${body}
     <div id="quizNext" style="margin-top:16px;text-align:right;display:none">
       <button class="btn gold" onclick="nextQ()">下一题 →</button>
@@ -3199,7 +3554,9 @@ const DEMO_DATA = {
 /* ================= 键盘快捷键 ================= */
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){
+    if(document.getElementById('modalRoot').innerHTML){ closeModal(); return; }
     if(listen && currentView==='words'){ stopListen(); return; }
+    if(currentView==='quiz' && quiz){ confirmQuitQuiz(); return; }
     closeModal(); return;
   }
   if(document.getElementById('modalRoot').innerHTML) return;
